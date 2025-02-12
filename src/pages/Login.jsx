@@ -9,7 +9,7 @@ function Login() {
 
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h2>Login Page</h2>
+      <h2 className="text-red-500">Login Page</h2>
       <button onClick={handleLogin}>Login</button>
     </div>
   );

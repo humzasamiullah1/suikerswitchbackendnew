@@ -11,7 +11,7 @@ function Sidebar() {
     }}>
       <h2>Dashboard</h2>
       <ul style={{ listStyle: "none", padding: 0 }}>
-        <li><Link to="/dashboard/" style={{ color: "white" }}>Home</Link></li>
+        <li className="text-red-500"><Link to="/dashboard/" style={{ color: "white" }}>Home</Link></li>
         <li><Link to="/dashboard/profile" style={{ color: "white" }}>Profile</Link></li>
         <li><Link to="/dashboard/settings" style={{ color: "white" }}>Settings</Link></li>
       </ul>
