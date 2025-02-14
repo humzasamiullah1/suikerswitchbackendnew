@@ -6,11 +6,11 @@ import Settings from "./Settings";
 
 function Dashboard() {
   return (
-    <div className="flex">
-      <div className="w-[20%]">
+    <div className="flex lg:flex-row flex-col w-full">
+      <div className="lg:w-[20%]">
         <Sidebar />
       </div>
-      <div className="w-[75%]">
+      <div className="lg:w-[80%]">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />

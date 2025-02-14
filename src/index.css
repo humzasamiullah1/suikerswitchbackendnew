@@ -55,3 +55,7 @@ input[type="checkbox"]:checked {
 select {
   border: none !important;
 }
+
+body {
+  background-color: #F4F4F4; /* Apne desired color ka code yahan lagayein */
+}
