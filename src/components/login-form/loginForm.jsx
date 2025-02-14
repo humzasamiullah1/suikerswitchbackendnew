@@ -19,7 +19,7 @@ const FormSection = () => {
         <input
           type="text"
           placeholder="Enter your email.."
-          className="w-full mt-1 text-sm font-popinsRegular bg-bgColor px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50"
+          className="w-full mt-1 text-sm font-popinsRegular rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50"
         />
       </div>
       <div className="w-full mt-3">
@@ -28,7 +28,7 @@ const FormSection = () => {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password here.."
-            className="w-full mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50"
+            className="w-full mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50"
           />
           <div
             title="Show password"

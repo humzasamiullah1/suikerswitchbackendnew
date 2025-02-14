@@ -25,9 +25,6 @@ function Login() {
             <div className="w-full pt-16 h-full">
               <h1 className="text-fontColor font-HelveticaNeueMedium font-bold xl:text-2xl 2xl:text-3xl">Log in</h1>
               <p className="text-fontColor text-xs pt-1 font-HelveticaNeueRegular">Welcome back! , Please put your login credentials below to start using the dashboard.</p>
-              {/* <h1 className='font-popinsSemiBold text-themeColor xl:text-2xl 2xl:text-3xl'></h1> */}
-              {/* <ParagraphTag content={login.description} classes='text-paraColor text-xs pt-1 font-popinsRegular' />
-              <FormSection /> */}
               <FormSection/>
             </div>
           </div>

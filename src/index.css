@@ -3,16 +3,55 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "HelveticaNeueBold";
-    src: url("/public/assets/font/HelveticaNeue-Black.otf");
+  font-family: "HelveticaNeueBold";
+  src: url("/public/assets/font/HelveticaNeue-Black.otf");
 }
 
 @font-face {
-    font-family: "HelveticaNeueMedium";
-    src: url("/public/assets/font/HelveticaNeue-Medium.otf");
+  font-family: "HelveticaNeueMedium";
+  src: url("/public/assets/font/HelveticaNeue-Medium.otf");
 }
 
 @font-face {
-    font-family: "HelveticaNeueRegular";
-    src: url("/public/assets/font/HelveticaNeue-Light.otf");
+  font-family: "HelveticaNeueRegular";
+  src: url("/public/assets/font/HelveticaNeue-Light.otf");
+}
+
+textarea:focus,
+select:focus,
+input:focus {
+  outline: #c4161b solid 2px !important;
+  background-color: #f4f4f4 !important;
+  color: #1a1a1a !important;
+}
+
+[type="text"]:focus,
+[type="number"]:focus,
+[type="date"]:focus,
+select:focus,
+[type="password"]:focus {
+  box-shadow: none !important; /* Removes shadow */
+  border-color: transparent !important; /* Resets border color */
+  --tw-ring-color: #c4161b !important;
+}
+
+[type="text"],
+[type="password"],
+[type="number"],
+[type="date"],
+select:focus {
+  border: none !important;
+}
+
+.panelScroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+input[type="checkbox"]:checked {
+  background-color: #22c55e !important; /* Green */
+  color: white !important; /* White check icon */
+}
+
+select {
+  border: none !important;
 }
