@@ -1,7 +1,6 @@
 module.exports = {
-  content: [
-    "./src/**/*.{html,js,jsx,ts,tsx}", // Tailwind will scan these files
-  ],
+  content: ["./src/**/*.{html,js,jsx,ts,tsx}"], // Adjust based on your file structure
+
   theme: {
     extend: {
       colors: {
@@ -10,7 +9,8 @@ module.exports = {
         linkColor: "#218FDA",
         "gkRedColor": "#C4161B",
         "bgColor": "#F3F3F3",
-        "paraColor": "#686868"
+        "paraColor": "#686868",
+        "darkColor": "#060606"
       },
 
       fontFamily: {
