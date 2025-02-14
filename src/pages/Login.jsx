@@ -10,10 +10,6 @@ function Login() {
   };
 
   return (
-    // <div style={{ textAlign: "center", marginTop: "100px" }}>
-    //   <h2 className="text-red-500 font-HelveticaNeueBold">Login Page</h2>
-    //   <button onClick={handleLogin}>Login</button>
-    // </div>
     <div className="lg:h-screen flex items-center py-12 lg:py-0">
       <div className="flex w-[90%] mx-auto lg:h-[90vh] rounded-xl">
         <div className="w-[50%] h-full hidden lg:block">

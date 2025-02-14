@@ -9,7 +9,8 @@ module.exports = {
         fontColor: "#383838",
         linkColor: "#218FDA",
         "gkRedColor": "#C4161B",
-        "bgColor": "#F3F3F3"
+        "bgColor": "#F3F3F3",
+        "paraColor": "#686868"
       },
 
       fontFamily: {
