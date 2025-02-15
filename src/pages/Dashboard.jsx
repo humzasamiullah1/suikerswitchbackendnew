@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar"; // ✅ Ensure this is correct
 import Home from "./Home";
 import Profile from "./Profile";
 import Settings from "./Settings";
+import Product from "./Product"
 
 function Dashboard() {
   return (
@@ -13,6 +14,7 @@ function Dashboard() {
       <div className="lg:w-[80%] overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Product />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

@@ -59,3 +59,13 @@ select {
 body {
   background-color: #F4F4F4; /* Apne desired color ka code yahan lagayein */
 }
+
+#gk-cards>div:nth-child(4n) {
+  margin-right: 0px !important;
+}
+
+@media (max-width: 1024px) {
+  #gk-cards>div:nth-child(3n) {
+    margin-right: 0px !important;
+  }
+}
