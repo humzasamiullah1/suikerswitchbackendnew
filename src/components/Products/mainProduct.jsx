@@ -213,7 +213,7 @@ const MainProucts = () => {
               <Menu className="h-4 w-4" />
             </button>
             <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
-              <p className="text-sm pr-3">Add New Blog</p>
+              <p className="text-sm pr-3">Add New Product</p>
               <CircleArrowDown className="h-4 w-4" />
             </button>
           </div>

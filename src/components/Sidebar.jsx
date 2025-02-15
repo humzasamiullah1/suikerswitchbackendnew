@@ -68,9 +68,9 @@ export default function Sidebar() {
               <span className="font-HelveticaNeueRegular pl-3">Products</span>
             </Link>
             <Link
-              to="/blogs"
+              to="/dashboard/blogs"
               className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/blogs") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
+                isActive("/dashboard/blogs") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
               }`}
             >
               <StickyNote size={20} />
