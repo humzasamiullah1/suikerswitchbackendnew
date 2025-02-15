@@ -50,7 +50,7 @@ export default function Sidebar() {
           </div>
           <nav className="flex flex-col space-y-2 pt-5 w-full">
             <Link
-              to="/"
+              to="/dashboard"
               className={`flex items-center px-6 py-[10px] rounded-full ${
                 isActive("/dashboard") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
               }`}
