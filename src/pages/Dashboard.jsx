@@ -10,7 +10,7 @@ function Dashboard() {
       <div className="lg:w-[20%]">
         <Sidebar />
       </div>
-      <div className="lg:w-[80%]">
+      <div className="lg:w-[80%] overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
