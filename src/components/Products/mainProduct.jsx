@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import ProductCard from "./productCard"
+import { motion } from "framer-motion";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
@@ -186,14 +187,19 @@ const MainProucts = () => {
   )
 
   return (
-    <div className="bg-white rounded-[30px] shadow-md px-5 h-full">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }} // Pehle invisible aur neeche se aayega
+      animate={{ opacity: 1, y: 0 }} // Phir smoothly dikhai dega
+      transition={{ duration: 0.6, ease: "easeOut" }} // 0.6s ka smooth transition
+      className="bg-white rounded-[30px] shadow-md px-5 h-full"
+    >
       <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
             All Products
           </p>
           <div className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center">
-          <Plus size={20}/>
+            <Plus size={20} />
           </div>
         </div>
         <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
@@ -219,14 +225,36 @@ const MainProucts = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap lg:h-[88%] lg:overflow-y-scroll panelScroll" id='gk-cards'>
-      {cardData.map((item) => (
-        <div className="w-full md:w-[32%] xl:w-[23%] md:mr-[2%]">
-            <ProductCard data={item}/>
-        </div>
-      ))}
-      </div>
-    </div>
+      
+      {/* Cards Section with Staggered Animation */}
+      <motion.div 
+        className="flex flex-wrap lg:h-[88%] lg:overflow-y-scroll panelScroll"
+        id='gk-cards'
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.2 } // Har card thoda delay se aayega
+          }
+        }}
+      >
+        {cardData.map((item, index) => (
+          <motion.div
+            key={index}
+            className="w-full md:w-[32%] xl:w-[23%] md:mr-[2%]"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <ProductCard data={item} />
+          </motion.div>
+        ))}
+      </motion.div>
+    </motion.div>
   );
 };
 

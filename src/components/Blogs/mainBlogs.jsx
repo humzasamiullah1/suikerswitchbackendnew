@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import BlogCard from "./blogCard"
+import { motion } from "framer-motion";
 
 const MainBlogs = () => {
   const [search, setSearch] = useState("");
@@ -58,15 +59,25 @@ const MainBlogs = () => {
     ]);
 
   return (
-    <div className="bg-white rounded-[30px] shadow-md px-5 h-full">
+    <motion.div
+      className="bg-white rounded-[30px] shadow-md px-5 h-full"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
+      {/* Header Section */}
       <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
             All Products
           </p>
-          <div className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center">
+          <motion.div
+            className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
             <Plus size={20} />
-          </div>
+          </motion.div>
         </div>
         <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
@@ -80,27 +91,42 @@ const MainBlogs = () => {
               />
               <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
             </div>
-            <button className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200">
+            <motion.button
+              className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <p className="text-sm pr-3">Filters</p>
               <Menu className="h-4 w-4" />
-            </button>
-            <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
+            </motion.button>
+            <motion.button
+              className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <p className="text-sm pr-3">Add New Blog</p>
               <CircleArrowDown className="h-4 w-4" />
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
-      <div
-        className="lg:h-[88%] lg:overflow-y-scroll panelScroll"
-      >
-        {blogsData.map((item) => (
-        <div className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto">
-            <BlogCard data={item}/>
-        </div>
-      ))}
+
+      {/* Blog List Section */}
+      <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+        {blogsData.map((item, index) => (
+          <motion.div
+            key={index}
+            className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
+            viewport={{ once: true }}
+          >
+            <BlogCard data={item} />
+          </motion.div>
+        ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
