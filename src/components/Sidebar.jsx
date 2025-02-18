@@ -1,133 +1,163 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom"; // ✅ Import useLocation
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import ImageTag from "../components/reuseable/imageTag";
+import { useLocation } from "react-router-dom";
 import {
-  Menu,
+  ChevronLeft,
+  ChevronRight,
+  Settings,
   X,
   House,
   Pencil,
   StickyNote,
   ReceiptText,
   MessageCircle,
-  Settings,
   LogOut,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import ImageTag from "../components/reuseable/imageTag";
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+const menuItems = [
+  { title: "Home", icon: House, path: "/dashboard" },
+  {
+    title: "Products",
+    icon: Pencil,
+    path: "/dashboard/products",
+  },
+  {
+    title: "Blogs",
+    icon: StickyNote,
+    path: "/dashboard/blogs",
+  },
+  { title: "Recipes", icon: ReceiptText, path: "/dashboard/recipes" },
+  { title: "Posts", icon: MessageCircle, path: "/dashboard/Posts" },
+  { title: "Help Elkar Screen", icon: StickyNote, path: "/dashboard/help" },
+  { title: "Settings", icon: Settings, path: "/dashboard/settings" },
+  // { title: "Help Elkar Screen", icon: Settings, path: "/dashboard/settings" },
+];
+
+const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
   const location = useLocation(); // ✅ Get Current Route
 
   // ✅ Function to check if the route is active
   const isActive = (path) => location.pathname === path;
 
-  return (
-    <div className="flex">
-      {/* Burger Menu for small screens */}
-      <button
-        className="lg:hidden p-2 text-gray-600"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {!isOpen && <Menu size={24} />}
-      </button>
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
 
-      {/* Sidebar */}
-      <div
-        className={`fixed z-[999] top-0 left-0 h-full w-64 bg-white shadow-md p-5 transition-transform transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 lg:relative flex flex-col lg:w-full lg:h-screen`}
-      >
-        <div className="flex flex-col space-y-4 w-full h-[90%]">
-          <div className="flex justify-center relative">
-            <ImageTag
-              path="/assets/images/round-logo.png"
-              classes="size-24"
-              altText="login"
-            />
-            <div className="lg:hidden absolute top-0 right-0">
-              {isOpen && <X size={24} onClick={() => setIsOpen(!isOpen)} />}
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+    isCollapse(isOpen);
+  };
+
+  const sidebarVariants = {
+    open: { width: "20%" },
+    closed: { width: "80px", minWidth: "80px" },
+  };
+
+  const menuItemVariants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: -10 },
+  };
+
+  const mobileSidebarVariants = {
+    open: { y: 0, opacity: 1 },
+    closed: { y: "-15%", opacity: 0 },
+  };
+
+  return (
+    <AnimatePresence>
+      {(isLargeScreen || isMobileMenuOpen) && (
+        <motion.aside
+          className={`fixed top-0 left-0 z-40 h-screen w-full bg-white shadow-md overflow-y-auto
+            ${isLargeScreen ? "" : "w-full"}`}
+          initial={isLargeScreen ? "open" : "closed"}
+          animate={isLargeScreen ? (isOpen ? "open" : "closed") : "open"}
+          exit="closed"
+          variants={isLargeScreen ? sidebarVariants : mobileSidebarVariants}
+        >
+          <div className="h-[87%]">
+            <div className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}  py-4 px-2 border-b`}>
+              {isOpen && (
+                <motion.span
+                  variants={menuItemVariants}
+                  className="text-xl font-semibold w-full flex justify-center"
+                >
+                  <ImageTag
+                    path="/assets/images/round-logo.png"
+                    classes="size-24"
+                    altText="login"
+                  />
+                </motion.span>
+              )}
+              {isLargeScreen && (
+                <button
+                  onClick={toggleSidebar}
+                  className="p-2 rounded-full bg-gray-300 hover:bg-gray-200"
+                >
+                  {isOpen ? <ChevronLeft /> : <ChevronRight />}
+                </button>
+              )}
+              {!isLargeScreen && (
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-full hover:bg-gray-200"
+                >
+                  <X />
+                </button>
+              )}
             </div>
+            <nav className="p-4 space-y-2">
+              {menuItems.map((item) => (
+                <div key={item.title} className="w-[60%] md:w-[40%] lg:w-full mx-auto">
+                  <Link
+                    to={item.path}
+                    className={`flex items-center py-2 px-4 rounded-full text-darkColor hover:bg-gkRedColor hover:text-white transition-colors ${
+                      isActive(item.path) ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
+                    }`}
+                    onClick={() => !isLargeScreen && setIsMobileMenuOpen(false)}
+                  >
+                    <item.icon className="h-5 w-5 min-w-[20px]" />
+                    {isOpen && (
+                      <motion.span
+                        variants={menuItemVariants}
+                        className="pl-3"
+                      >
+                        {item.title}
+                      </motion.span>
+                    )}
+                  </Link>
+                </div>
+              ))}
+            </nav>
           </div>
-          <nav className="flex flex-col space-y-2 pt-5 w-full">
+          <div className="p-4 space-y-2 h-[13%] w-[60%] md:w-[40%] lg:w-full mx-auto">
             <Link
-              to="/dashboard"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/dashboard") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
+              to={"/login"}
+              className="flex items-center py-2 px-4 rounded-md text-darkColor hover:bg-gkRedColor hover:text-white transition-colors"
+              onClick={() => !isLargeScreen && setIsMobileMenuOpen(false)}
             >
-              <House size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">Home</span>
+              <LogOut className="h-5 w-5 min-w-[20px]" />
+              {isOpen && (
+                <motion.span variants={menuItemVariants} className="pl-3">
+                  LogOut
+                </motion.span>
+              )}
             </Link>
-            <Link
-              to="/dashboard/products"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/dashboard/products") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
-            >
-              <Pencil size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">Products</span>
-            </Link>
-            <Link
-              to="/dashboard/blogs"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/dashboard/blogs") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
-            >
-              <StickyNote size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">Blogs</span>
-            </Link>
-            <Link
-              to="/recipes"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/recipes") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
-            >
-              <ReceiptText size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">Recipes</span>
-            </Link>
-            <Link
-              to="/posts"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/posts") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
-            >
-              <MessageCircle size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">Posts</span>
-            </Link>
-            <Link
-              to="/help"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/help") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
-            >
-              <StickyNote size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">
-                Help Elkar Screen
-              </span>
-            </Link>
-            <Link
-              to="/settings"
-              className={`flex items-center px-6 py-[10px] rounded-full ${
-                isActive("/settings") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-              }`}
-            >
-              <Settings size={20} />
-              <span className="font-HelveticaNeueRegular pl-3">Settings</span>
-            </Link>
-          </nav>
-        </div>
-        <div className="h-[10%]">
-          <Link
-            to="/logout"
-            className={`flex items-center px-6 py-[10px] rounded-full ${
-              isActive("/logout") ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
-            }`}
-          >
-            <LogOut size={20} />
-            <span className="font-HelveticaNeueRegular pl-3">Log Out</span>
-          </Link>
-        </div>
-      </div>
-    </div>
+          </div>
+        </motion.aside>
+      )}
+    </AnimatePresence>
   );
-}
+};
+
+export default Sidebar;

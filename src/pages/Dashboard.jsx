@@ -1,22 +1,51 @@
 import { Routes, Route } from "react-router-dom";
+import { useState } from "react";
 import Sidebar from "../components/Sidebar"; // ✅ Ensure this is correct
 import Home from "./Home";
-import Product from "./Product"
-import Blogs from "./Blogs"
+import Product from "./Product";
+import Blogs from "./Blogs";
+import { Menu } from "lucide-react"
+import { motion } from "framer-motion"
+
 
 function Dashboard() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCollapseBar, setIsCollapseBar] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const getCollpase = (value) => {
+    setIsCollapseBar(value)
+  }
+
   return (
     <div className="flex lg:flex-row flex-col w-full">
-      <div className="lg:w-[20%]">
-        <Sidebar />
+      <div className={`${isCollapseBar ? 'lg:w-[10%]' : 'lg:w-[20%]'} `}>
+        <button
+          className={`fixed top-3 left-4 z-50 ${isMobileMenuOpen ? 'hidden' : ''} lg:hidden bg-gray-300 p-2 rounded-full`}
+          onClick={toggleMobileMenu}
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+        <Sidebar
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          isCollapse={getCollpase}
+        />
       </div>
-      <div className="lg:w-[80%] overflow-y-auto">
+      <motion.div
+      initial={{x:0}}
+      animate={isCollapseBar ? {x:-50} : {}}
+      transition={{type: 'spring', stiffness:260,damping:30}}
+      className={`${isCollapseBar ? 'lg:w-[90%]' : 'lg:w-[80%]'}  overflow-y-auto}`} >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
           <Route path="/blogs" element={<Blogs />} />
         </Routes>
-      </div>
+      </motion.div>
     </div>
   );
 }

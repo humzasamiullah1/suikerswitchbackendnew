@@ -27,7 +27,7 @@ function Home() {
     },
   ]);
   return (
-    <div className="w-[95%] mx-auto lg:h-screen">
+    <div className="w-[95%] mx-auto lg:h-screen pt-12 lg:pt-0">
       <div className="pt-5 w-full lg:h-[15%]">
         <HeaderBar
           heading="Hello, John!"
