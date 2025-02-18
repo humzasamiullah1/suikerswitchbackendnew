@@ -102,7 +102,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
               {isLargeScreen && (
                 <button
                   onClick={toggleSidebar}
-                  className="p-2 rounded-full bg-gray-300 hover:bg-gray-200"
+                  className="p-2 rounded-full bg-gray-200 hover:bg-gray-200"
                 >
                   {isOpen ? <ChevronLeft /> : <ChevronRight />}
                 </button>
