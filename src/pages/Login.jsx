@@ -10,12 +10,12 @@ function Login() {
   };
 
   return (
-    <div className="lg:h-screen flex items-center py-12 lg:py-0">
-      <div className="flex w-[90%] mx-auto lg:h-[90vh] rounded-xl">
+    <div className="lg:h-screen flex items-center">
+      <div className="flex w-full lg:w-[90%] mx-auto lg:h-[90vh] rounded-xl">
         <div className="w-[50%] h-full hidden lg:block">
           <ImageTag path='/assets/images/auth/auth-image.png' classes='w-full h-full' altText='login' />
         </div>
-        <div className="lg:w-[50%] w-full h-full my-auto flex flex-col items-center justify-center bg-white">
+        <div className="lg:w-[50%] w-full h-screen lg:h-full my-auto flex flex-col items-center justify-center bg-white">
           <div className="w-[80%] mx-auto flex flex-col items-center justify-center">
             <ImageTag path='/assets/images/logo.png' classes='w-full lg:w-[80%] h-20' altText='logo' />
             <div className="w-full pt-16 h-full">

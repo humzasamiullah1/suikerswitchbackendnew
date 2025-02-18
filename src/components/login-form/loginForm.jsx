@@ -4,8 +4,6 @@ import LabelTag from "../reuseable/label";
 import { EyeOff, Eye } from "lucide-react";
 
 const FormSection = () => {
- 
-
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -15,7 +13,7 @@ const FormSection = () => {
   return (
     <form>
       <div class="w-full mt-3">
-        <LabelTag name='Email' classes="!text-xs" />
+        <LabelTag name="Email" classes="!text-xs" />
         <input
           type="text"
           placeholder="Enter your email.."
@@ -23,7 +21,7 @@ const FormSection = () => {
         />
       </div>
       <div className="w-full mt-3">
-        <LabelTag name='Password' classes="!text-xs" />
+        <LabelTag name="Password" classes="!text-xs" />
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -45,7 +43,9 @@ const FormSection = () => {
             type="checkbox"
             className="w-4 bg-bgColor rounded-sm cursor-pointer"
           />
-          <p className="font-HelveticaNeueRegular text-fontColor text-xs pl-3">Remember me</p>
+          <p className="font-HelveticaNeueRegular text-fontColor text-xs pl-3">
+            Remember me
+          </p>
           {/* <ParagraphTag
             content={login.remember}
             classes="text-[#686868] text-xs pl-3 font-popinsRegular"
@@ -56,7 +56,9 @@ const FormSection = () => {
             content={login.forgetPass}
             classes="text-themeColor text-xs font-popinsMedium cursor-pointer"
           /> */}
-          <p className="font-HelveticaNeueRegular text-xs cursor-pointer text-linkColor">Forgot Password?</p>
+          <p className="font-HelveticaNeueRegular text-xs cursor-pointer text-linkColor">
+            Forgot Password?
+          </p>
         </Link>
       </div>
       {/* {
@@ -64,12 +66,11 @@ const FormSection = () => {
           <MyLoader />
         </div> : <ButtonTag onSubmit={loginHandler} name={login.SubmitBtn} classes='text-base bg-themeColor hover:bg-themeColor/90 mt-3 text-center  text-white' />
       } */}
-      <button
-        className="text-base bg-btnColor hover:bg-btnColor/90 mt-3 text-center  text-white cursor-pointer font-HelveticaNeueBold rounded-md flex justify-center mx-auto py-2 w-full items-center"
-      >
-        <span>Log In</span>
-        {/* yaha loader open krlena jb login ki api hit kroge */}
-        {/* {loader && (
+      <Link to={"/dashboard"}>
+        <button className="text-base bg-btnColor hover:bg-btnColor/90 mt-3 text-center  text-white cursor-pointer font-HelveticaNeueBold rounded-md flex justify-center mx-auto py-2 w-full items-center">
+          <span>Log In</span>
+          {/* yaha loader open krlena jb login ki api hit kroge */}
+          {/* {loader && (
           <div role="status" className="pl-3">
             <svg
               aria-hidden="true"
@@ -90,8 +91,16 @@ const FormSection = () => {
             <span class="sr-only">Loading...</span>
           </div>
         )} */}
-      </button>
-
+        </button>
+      </Link>
+      <div className="font-HelveticaNeueRegular text-darkColor/60 text-sm text-center pt-2">
+        <p>
+          Don&apos;t have an account ?{" "}
+          <Link to={"/signup"} className="font-HelveticaNeueMedium text-darkColor  ">
+            Sign Up
+          </Link>
+        </p>
+      </div>
       {/* <div className="flex items-center my-2">
         <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
         <div className="w-[70%] lg:w-[40%] 2xl:w-[30%] flex justify-center">

@@ -142,7 +142,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
           </div>
           <div className="p-4 space-y-2 h-[13%] w-[60%] md:w-[40%] lg:w-full mx-auto">
             <Link
-              to={"/login"}
+              to={"/"}
               className="flex items-center py-2 px-4 rounded-md text-darkColor hover:bg-gkRedColor hover:text-white transition-colors"
               onClick={() => !isLargeScreen && setIsMobileMenuOpen(false)}
             >
