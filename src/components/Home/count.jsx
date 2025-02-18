@@ -45,8 +45,8 @@ const UserCounter = ({ countData }) => {
         <motion.div
           className="text-3xl pt-3 font-HelveticaNeueMedium text-darkColor"
           key={count}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{}}
+          animate={{ }}
           transition={{ duration: 0.3 }}
         >
           {count.toLocaleString()}

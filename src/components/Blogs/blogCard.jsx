@@ -12,12 +12,14 @@ const BlogCard = ({ data }) => {
             classes="size-10"
             altText="logo"
           />
-          <p className="font-HelveticaNeueMedium text-darkColor text-base pl-3">
-            {data.title}
-          </p>
-          <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs pl-7">
-            {data.time}
-          </p>
+          <div className="pl-3">
+            <p className="font-HelveticaNeueMedium text-darkColor text-base">
+              {data.title}
+            </p>
+            <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
+              {data.time}
+            </p>
+          </div>
         </div>
         <div className="w-[40%] flex justify-end text-darkColor">
           <Ellipsis size={30} />
