@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import BlogCard from "./blogCard"
+import LikePopup from "../../components/popup/like"
 import { motion } from "framer-motion";
 
 const MainBlogs = () => {
   const [search, setSearch] = useState("");
+  const [isLikePopup, setIsLikePopup] = useState(false);
   const [blogsData, setBlogsData] = useState(
     [
         {
@@ -57,6 +59,7 @@ const MainBlogs = () => {
             comments: 11
         },
     ]);
+
 
   return (
     <motion.div
@@ -122,10 +125,18 @@ const MainBlogs = () => {
             transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <BlogCard data={item} />
+            <BlogCard data={item} onLikePopup={()=> {
+              setIsLikePopup(true)
+            }}/>
           </motion.div>
         ))}
       </div>
+      {
+        isLikePopup && 
+        <LikePopup onClose={()=>{
+          setIsLikePopup(false)
+        }}/>
+      }
     </motion.div>
   );
 };
