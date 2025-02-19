@@ -7,6 +7,7 @@ import Blogs from "./Blogs";
 import Notification from "./Notification"
 import Recipies from "./Recipies"
 import HelpElker from './Help'
+import AddProduct from './AddProduct'
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -46,6 +47,7 @@ function Dashboard() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
+          <Route path="/add-product" element={<AddProduct />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/notification" element={<Notification />} />
           <Route path="/recipies" element={<Recipies />} />

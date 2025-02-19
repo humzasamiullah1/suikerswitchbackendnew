@@ -1,190 +1,188 @@
 import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
-import ProductCard from "./productCard"
+import ProductCard from "./productCard";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
-  const [cardData, setCardData] = useState(
-    [
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-        {
-            mart: 'Daraz Mart',
-            title: 'Mango Jam 1KG Bucket By Ashifa Foods',
-            price: 'Rs. 749'
-        },
-
-    ]
-  )
+  const [cardData, setCardData] = useState([
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
+  ]);
 
   return (
     <motion.div
@@ -198,9 +196,11 @@ const MainProucts = () => {
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
             All Products
           </p>
-          <div className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center">
-            <Plus size={20} />
-          </div>
+          <Link to={"/dashboard/add-product"}>
+            <div className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center">
+              <Plus size={20} />
+            </div>
+          </Link>
         </div>
         <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
@@ -218,26 +218,28 @@ const MainProucts = () => {
               <p className="text-sm pr-3">Filters</p>
               <Menu className="h-4 w-4" />
             </button>
-            <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
-              <p className="text-sm pr-3">Add New Product</p>
-              <CircleArrowDown className="h-4 w-4" />
-            </button>
+            <Link to={"/dashboard/add-product"}>
+              <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
+                <p className="text-sm pr-3">Add New Product</p>
+                <CircleArrowDown className="h-4 w-4" />
+              </button>
+            </Link>
           </div>
         </div>
       </div>
-      
+
       {/* Cards Section with Staggered Animation */}
-      <motion.div 
+      <motion.div
         className="flex flex-wrap lg:h-[88%] lg:overflow-y-scroll panelScroll"
-        id='gk-cards'
+        id="gk-cards"
         initial="hidden"
         animate="visible"
         variants={{
           hidden: { opacity: 0 },
           visible: {
             opacity: 1,
-            transition: { staggerChildren: 0.2 } // Har card thoda delay se aayega
-          }
+            transition: { staggerChildren: 0.2 }, // Har card thoda delay se aayega
+          },
         }}
       >
         {cardData.map((item, index) => (
@@ -246,7 +248,7 @@ const MainProucts = () => {
             className="w-full md:w-[32%] xl:w-[23%] md:mr-[2%]"
             variants={{
               hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
+              visible: { opacity: 1, y: 0 },
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
