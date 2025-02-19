@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar"; // ✅ Ensure this is correct
 import Home from "./Home";
 import Product from "./Product";
 import Blogs from "./Blogs";
+import Notification from "./Notification"
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -44,6 +45,7 @@ function Dashboard() {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/notification" element={<Notification />} />
         </Routes>
       </motion.div>
     </div>
