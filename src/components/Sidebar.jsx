@@ -30,7 +30,7 @@ const menuItems = [
     icon: StickyNote,
     path: "/dashboard/blogs",
   },
-  { title: "Recipes", icon: ReceiptText, path: "/dashboard/recipes" },
+  { title: "Recipes", icon: ReceiptText, path: "/dashboard/recipies" },
   { title: "Posts", icon: MessageCircle, path: "/dashboard/Posts" },
   { title: "Help Elkar Screen", icon: StickyNote, path: "/dashboard/help" },
   { title: "Settings", icon: Settings, path: "/dashboard/settings" },

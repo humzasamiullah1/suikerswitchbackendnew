@@ -1,7 +1,7 @@
 import HeaderBar from "../components/reuseable/headerBar";
-import MainProucts from "../components/Products/mainProduct";
+import MainRecipies from "../components/Recipies/mainRecipies"
 
-function Product() {
+function Recipies() {
   return (
     <div className="w-[95%] mx-auto lg:h-screen pt-12 lg:pt-0">
       <div className="pt-5 w-full lg:h-[15%]">
@@ -11,10 +11,10 @@ function Product() {
         />
       </div>
       <div className="h-[85%] pt-5 lg:pt-0">
-        <MainProucts />
+        <MainRecipies/>
       </div>
     </div>
   );
 }
 
-export default Product;
+export default Recipies;
