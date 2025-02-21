@@ -13,8 +13,8 @@ const FormSection = () => {
 
   return (
     <form className="border-2 border-gray-100 rounded-2xl w-full px-3 py-4 mt-3">
-      <div className="p-4">
-        <h2 className="text-lg font-HelveticaNeueMedium mb-2">Images</h2>
+      <div className="px-2 pt-2">
+        <h2 className="text-lg font-HelveticaNeueMedium pb-2">Images</h2>
         <div className="flex space-x-2">
           {images.map((image, index) => (
             <div key={index} className="w-20 h-20 rounded-lg overflow-hidden">
@@ -73,7 +73,7 @@ const FormSection = () => {
           </select>
         </div>
       </div>
-      <div className="pt-2 w-full mt-4">
+      <div className="pt-4 w-full">
         <LabelTag isStaric={false} name="Description" classes="!text-sm" />
         <textarea
           type="text"

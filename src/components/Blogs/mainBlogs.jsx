@@ -1,65 +1,71 @@
 import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
-import BlogCard from "./blogCard"
-import LikePopup from "../../components/popup/like"
+import BlogCard from "./blogCard";
+import LikePopup from "../../components/popup/like";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const MainBlogs = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
-  const [blogsData, setBlogsData] = useState(
-    [
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-        {
-            title: 'Olivia Martin',
-            time: '1m ago',
-            description: "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            like: 24,
-            comments: 11
-        },
-    ]);
-
+  const [blogsData, setBlogsData] = useState([
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      description:
+        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      like: 24,
+      comments: 11,
+    },
+  ]);
 
   return (
     <motion.div
@@ -102,14 +108,16 @@ const MainBlogs = () => {
               <p className="text-sm pr-3">Filters</p>
               <Menu className="h-4 w-4" />
             </motion.button>
-            <motion.button
-              className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <p className="text-sm pr-3">Add New Blog</p>
-              <CircleArrowDown className="h-4 w-4" />
-            </motion.button>
+            <Link to={"/dashboard/add-blog"}>
+              <motion.button
+                className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <p className="text-sm pr-3">Add New Blog</p>
+                <CircleArrowDown className="h-4 w-4" />
+              </motion.button>
+            </Link>
           </div>
         </div>
       </div>
@@ -125,18 +133,22 @@ const MainBlogs = () => {
             transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <BlogCard data={item} onLikePopup={()=> {
-              setIsLikePopup(true)
-            }}/>
+            <BlogCard
+              data={item}
+              onLikePopup={() => {
+                setIsLikePopup(true);
+              }}
+            />
           </motion.div>
         ))}
       </div>
-      {
-        isLikePopup && 
-        <LikePopup onClose={()=>{
-          setIsLikePopup(false)
-        }}/>
-      }
+      {isLikePopup && (
+        <LikePopup
+          onClose={() => {
+            setIsLikePopup(false);
+          }}
+        />
+      )}
     </motion.div>
   );
 };

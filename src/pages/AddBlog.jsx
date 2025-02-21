@@ -1,7 +1,7 @@
 import HeaderBar from '../components/reuseable/headerBar'
-import MainAddProucts from "../components/add-product/mainAdd"
+import RichTextEditor from '../components/add-blog/mainAddBlog'
 
-function AddProduct() {
+function AddBlog() {
 
 
   return (
@@ -13,10 +13,10 @@ function AddProduct() {
         />
       </div>
       <div className="h-[85%] pt-5 lg:pt-0 pb-5">
-        <MainAddProucts/>
+        <RichTextEditor/>
       </div>
     </div>
   );
 }
 
-export default AddProduct;
+export default AddBlog;
