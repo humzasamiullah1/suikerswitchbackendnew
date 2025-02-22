@@ -30,13 +30,25 @@ const HeaderBar = (props) => {
           </div>
         </div>
         <div className="flex w-[40%] md:w-[25%] lg:w-[35%] xl:w-[20%] justify-end">
-          <div className="bg-white size-12 rounded-full flex justify-center items-center">
-            <MessageCircleMore />
-          </div>
+          <Link to={"/dashboard/chat"}>
+            <div
+              className={`size-12 rounded-full flex justify-center items-center ${
+                isActive("/dashboard/chat")
+                  ? "bg-gkRedColor text-white"
+                  : "text-darkColor bg-white hover:bg-gkRedColor hover:text-white"
+              } `}
+            >
+              <MessageCircleMore/>
+            </div>
+          </Link>
           <Link to={"/dashboard/notification"}>
-            <div className={`${
-                      isActive('/dashboard/notification') ? "bg-gkRedColor text-white" : "text-darkColor bg-white hover:bg-gkRedColor hover:text-white"
-                    } size-12 rounded-full flex justify-center items-center ml-3`}>
+            <div
+              className={`${
+                isActive("/dashboard/notification")
+                  ? "bg-gkRedColor text-white"
+                  : "text-darkColor bg-white hover:bg-gkRedColor hover:text-white"
+              } size-12 rounded-full flex justify-center items-center ml-3`}
+            >
               <Bell />
             </div>
           </Link>
