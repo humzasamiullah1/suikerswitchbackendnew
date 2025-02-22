@@ -14,6 +14,7 @@ import Settings from './Settings'
 import Supermarkets from './Supermarkets'
 import AddSuperMarket from './AddSupermarket'
 import RecipesDetail from './RecipesDetail'
+import BlogsDetail from './BlogDetail'
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -55,6 +56,7 @@ function Dashboard() {
           <Route path="/products" element={<Product />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs-detail" element={<BlogsDetail />} />
           <Route path="/add-blog" element={<AddBlog />} />
           <Route path="/notification" element={<Notification />} />
           <Route path="/recipies" element={<Recipies />} />

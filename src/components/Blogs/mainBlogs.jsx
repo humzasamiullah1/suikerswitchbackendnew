@@ -135,15 +135,17 @@ const MainBlogs = () => {
             transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <BlogCard
-              data={item}
-              onLikePopup={() => {
-                setIsLikePopup(true);
-              }}
-              onCommentPopup={()=>{
-                setIsCommentPopup(true)
-              }}
-            />
+            <Link to={"/dashboard/blogs-detail"}>
+              <BlogCard
+                data={item}
+                onLikePopup={() => {
+                  setIsLikePopup(true);
+                }}
+                onCommentPopup={() => {
+                  setIsCommentPopup(true);
+                }}
+              />
+            </Link>
           </motion.div>
         ))}
       </div>
@@ -155,7 +157,13 @@ const MainBlogs = () => {
         />
       )}
 
-      {isCommentPopup && <CommentsPopup onClose={()=> {setIsCommentPopup(false)}}/>}
+      {isCommentPopup && (
+        <CommentsPopup
+          onClose={() => {
+            setIsCommentPopup(false);
+          }}
+        />
+      )}
     </motion.div>
   );
 };
