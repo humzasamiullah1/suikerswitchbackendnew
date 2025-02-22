@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ImageTag from "../components/reuseable/imageTag";
-import { useLocation } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,39 +17,58 @@ import {
   LogOut,
 } from "lucide-react";
 
+// ✅ Menu Items Array with Multiple Paths
 const menuItems = [
-  { title: "Home", icon: House, path: "/dashboard" },
-  {
-    title: "Products",
-    icon: Pencil,
-    path: "/dashboard/products",
+  { title: "Home", icon: House, paths: ["/dashboard"] },
+  { 
+    title: "Products", 
+    icon: Pencil, 
+    paths: [
+      "/dashboard/products",
+      "/dashboard/add-product"
+    ]
   },
-  {
-    title: "Blogs",
-    icon: StickyNote,
-    path: "/dashboard/blogs",
+  { 
+    title: "Blogs", 
+    icon: StickyNote, 
+    paths: [
+      "/dashboard/blogs",
+      "/dashboard/add-blog"
+    ] 
   },
-  { title: "Recipes", icon: ReceiptText, path: "/dashboard/recipies" },
-  // { title: "Posts", icon: MessageCircle, path: "/dashboard/Posts" },
-  { title: "Help Elkar", icon: StickyNote, path: "/dashboard/help-elker" },
-  { title: "Supermarkets", icon: Store, path: "/dashboard/supermarkets" },
-  { title: "Settings", icon: Settings, path: "/dashboard/account-settings" },
-  // { title: "Help Elkar Screen", icon: Settings, path: "/dashboard/settings" },
+  { 
+    title: "Recipes", 
+    icon: ReceiptText, 
+    paths: [
+      "/dashboard/recipies",
+      "/dashboard/recipes-detail"
+    ] 
+  },
+  { title: "Help Elkar", icon: StickyNote, paths: ["/dashboard/help-elker"] },
+  {
+    title: "Supermarkets",
+    icon: Store,
+    paths: [
+      "/dashboard/supermarkets",
+      "/dashboard/add-supermarkets",
+    ],
+  },
+  { title: "Settings", icon: Settings, paths: ["/dashboard/account-settings"] },
 ];
 
 const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
-  const location = useLocation(); // ✅ Get Current Route
+  const location = useLocation();
 
-  // ✅ Function to check if the route is active
-  const isActive = (path) => location.pathname === path;
+  // ✅ Corrected Active State Logic
+  const isActive = (paths) =>
+    paths.some((path) => location.pathname === path);
 
   useEffect(() => {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 1024);
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -79,15 +97,20 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
     <AnimatePresence>
       {(isLargeScreen || isMobileMenuOpen) && (
         <motion.aside
-          className={`fixed top-0 left-0 z-40 h-screen w-full bg-white shadow-md overflow-y-auto
-            ${isLargeScreen ? "" : "w-full"}`}
+          className={`fixed top-0 left-0 z-40 h-screen w-full bg-white shadow-md overflow-y-auto ${
+            isLargeScreen ? "" : "w-full"
+          }`}
           initial={isLargeScreen ? "open" : "closed"}
           animate={isLargeScreen ? (isOpen ? "open" : "closed") : "open"}
           exit="closed"
           variants={isLargeScreen ? sidebarVariants : mobileSidebarVariants}
         >
           <div className="h-[87%]">
-            <div className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}  py-4 px-2 border-b`}>
+            <div
+              className={`flex items-center ${
+                isOpen ? "justify-between" : "justify-center"
+              } py-4 px-2 border-b`}
+            >
               {isOpen && (
                 <motion.span
                   variants={menuItemVariants}
@@ -119,13 +142,20 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
             </div>
             <nav className="p-4 space-y-2">
               {menuItems.map((item) => (
-                <div key={item.title} className="w-[60%] md:w-[40%] lg:w-full mx-auto">
+                <div
+                  key={item.title}
+                  className="w-[60%] md:w-[40%] lg:w-full mx-auto"
+                >
                   <Link
-                    to={item.path}
+                    to={item.paths[0]}
                     className={`flex items-center py-2 px-4 rounded-full text-darkColor hover:bg-gkRedColor hover:text-white transition-colors ${
-                      isActive(item.path) ? "bg-gkRedColor text-white" : "text-darkColor hover:bg-gkRedColor hover:text-white"
+                      isActive(item.paths)
+                        ? "bg-gkRedColor text-white"
+                        : "text-darkColor hover:bg-gkRedColor hover:text-white"
                     }`}
-                    onClick={() => !isLargeScreen && setIsMobileMenuOpen(false)}
+                    onClick={() =>
+                      !isLargeScreen && setIsMobileMenuOpen(false)
+                    }
                   >
                     <item.icon className="h-5 w-5 min-w-[20px]" />
                     {isOpen && (

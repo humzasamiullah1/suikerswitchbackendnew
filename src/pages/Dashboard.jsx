@@ -12,6 +12,8 @@ import AddProduct from './AddProduct'
 import Chat from './Chat'
 import Settings from './Settings'
 import Supermarkets from './Supermarkets'
+import AddSuperMarket from './AddSupermarket'
+import RecipesDetail from './RecipesDetail'
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -58,8 +60,10 @@ function Dashboard() {
           <Route path="/recipies" element={<Recipies />} />
           <Route path="/help-elker" element={<HelpElker />} />
           <Route path="/supermarkets" element={<Supermarkets />} />
+          <Route path="/add-supermarkets" element={<AddSuperMarket />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/account-settings" element={<Settings />} />
+          <Route path="/recipes-detail" element={<RecipesDetail />} />
         </Routes>
       </motion.div>
     </div>

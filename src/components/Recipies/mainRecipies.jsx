@@ -1,69 +1,52 @@
 import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import RecipiesCard from "./recipiesCard";
-import LikePopup from "../../components/popup/like";
 import { motion } from "framer-motion";
 
 const MainRecipies = () => {
   const [search, setSearch] = useState("");
-  const [isLikePopup, setIsLikePopup] = useState(false);
   const [blogsData, setBlogsData] = useState([
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
+      name: "Mrs Balbir Singh's | Biryani"
     },
+    {
+      title: "Olivia Martin",
+      time: "1m ago",
+      name: "Mrs Balbir Singh's | Biryani"
+    },
+  
   ]);
 
   return (
@@ -132,20 +115,10 @@ const MainRecipies = () => {
           >
             <RecipiesCard
               data={item}
-              onLikePopup={() => {
-                setIsLikePopup(true);
-              }}
             />
           </motion.div>
         ))}
       </div>
-      {isLikePopup && (
-        <LikePopup
-          onClose={() => {
-            setIsLikePopup(false);
-          }}
-        />
-      )}
     </motion.div>
   );
 };

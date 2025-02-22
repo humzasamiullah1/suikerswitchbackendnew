@@ -203,7 +203,7 @@ const MainSuperMarket = () => {
               <p className="text-sm pr-3">Filters</p>
               <Menu className="h-4 w-4" />
             </button>
-            <Link to={"/dashboard/add-product"}>
+            <Link to={"/dashboard/add-supermarkets"}>
               <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
                 <p className="text-sm pr-3">Add New Supermarkets</p>
                 <CircleArrowDown className="h-4 w-4" />
