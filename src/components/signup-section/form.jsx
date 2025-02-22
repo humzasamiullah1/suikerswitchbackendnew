@@ -83,7 +83,7 @@ const FormSection = () => {
       <div>
         <ButtonTag
           name="Create Account"
-          classes="text-base bg-btnColor hover:bg-btnColor/90 mt-5 text-center  text-white"
+          classes="text-base bg-btnColor hover:bg-btnColor/90 mt-5 text-center text-white"
         />
       </div>
       <div className="font-HelveticaNeueRegular text-darkColor/60 text-sm text-center pt-2">

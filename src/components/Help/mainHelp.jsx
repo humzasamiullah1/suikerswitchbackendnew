@@ -119,79 +119,26 @@ const MainHelp = () => {
 
   const pageVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
 
   return (
     <AnimatePresence>
-    <motion.div
-      className="bg-white rounded-[30px] shadow-md px-5 h-full"
-      initial="hidden"
-      animate="visible"
-      exit={{ opacity: 0, y: 20 }}
-    >
-      {/* Header Section */}
-      <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
-        <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[60%]">
-          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
-            Help Elkar
-          </p>
-        </div>
-        <div className="flex items-center lg:w-[70%] xl:w-[40%] justify-end">
-          <div className="flex items-center gap-2 mt-3 md:mt-0">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
-            </div>
-            <motion.button
-              className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <p className="text-sm pr-3">Filters</p>
-              <Menu className="h-4 w-4" />
-            </motion.button>
-          </div>
-        </div>
-      </div>
-
-      {/* Blog List Section */}
-      <div className="lg:h-[88%] w-full flex lg:flex-row flex-col justify-between">
-        <div className="w-full lg:w-[73%] lg:overflow-y-scroll panelScroll h-full">
-          {blogsData.map((item, index) => (
-            <motion.div
-              key={index}
-              className="w-full"
-              initial="hidden"
-              whileInView="visible"
-              variants={pageVariants}
-              viewport={{ once: true }}
-            >
-              <HelpCard
-                data={item}
-                onLikePopup={() => {
-                  setIsLikePopup(true);
-                }}
-              />
-            </motion.div>
-          ))}
-        </div>
-        <motion.div
-          className="w-full lg:w-[25%] mt-5 lg:mt-0 h-full lg:overflow-y-scroll panelScroll bg-white border border-gray-100 rounded-xl"
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-        >
+      <motion.div
+        className="w-full lg:w-[25%] mt-5 lg:mt-0 h-full lg:hidden bg-white border border-gray-100 rounded-xl overflow-x-auto whitespace-nowrap px-2 pb-2 mb-4"
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+      >
+        <div className="flex space-x-4">
           {requestData.map((item, index) => (
             <motion.div
               key={index}
-              className="w-[95%] mx-auto"
+              className="w-[90%] md:w-[35%] flex-shrink-0"
               initial="hidden"
               whileInView="visible"
               variants={pageVariants}
@@ -200,11 +147,90 @@ const MainHelp = () => {
               <RequestCard data={item} />
             </motion.div>
           ))}
-        </motion.div>
-      </div>
-      {isLikePopup && <LikePopup />}
-    </motion.div>
-  </AnimatePresence>
+        </div>
+      </motion.div>
+
+      <motion.div
+        className="bg-white rounded-[30px] shadow-md px-5 h-full"
+        initial="hidden"
+        animate="visible"
+        exit={{ opacity: 0, y: 20 }}
+      >
+        {/* Header Section */}
+        <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
+          <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[60%]">
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+              Help Elkar
+            </p>
+          </div>
+          <div className="flex items-center lg:w-[70%] xl:w-[40%] justify-end">
+            <div className="flex items-center gap-2 mt-3 md:mt-0">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
+              </div>
+              <motion.button
+                className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <p className="text-sm pr-3">Filters</p>
+                <Menu className="h-4 w-4" />
+              </motion.button>
+            </div>
+          </div>
+        </div>
+
+        {/* Blog List Section */}
+        <div className="lg:h-[88%] w-full flex lg:flex-row flex-col justify-between">
+          <div className="w-full lg:w-[73%] lg:overflow-y-scroll panelScroll h-full">
+            {blogsData.map((item, index) => (
+              <motion.div
+                key={index}
+                className="w-full"
+                initial="hidden"
+                whileInView="visible"
+                variants={pageVariants}
+                viewport={{ once: true }}
+              >
+                <HelpCard
+                  data={item}
+                  onLikePopup={() => {
+                    setIsLikePopup(true);
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
+          <motion.div
+            className="w-full lg:w-[25%] mt-5 lg:mt-0 h-full hidden lg:block lg:overflow-y-scroll panelScroll bg-white border border-gray-100 rounded-xl"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+          >
+            {requestData.map((item, index) => (
+              <motion.div
+                key={index}
+                className="w-[95%] mx-auto"
+                initial="hidden"
+                whileInView="visible"
+                variants={pageVariants}
+                viewport={{ once: true }}
+              >
+                <RequestCard data={item} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+        {isLikePopup && <LikePopup />}
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

@@ -135,17 +135,15 @@ const MainBlogs = () => {
             transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <Link to={"/dashboard/blogs-detail"}>
-              <BlogCard
-                data={item}
-                onLikePopup={() => {
-                  setIsLikePopup(true);
-                }}
-                onCommentPopup={() => {
-                  setIsCommentPopup(true);
-                }}
-              />
-            </Link>
+            <BlogCard
+              data={item}
+              onLikePopup={() => {
+                setIsLikePopup(true);
+              }}
+              onCommentPopup={() => {
+                setIsCommentPopup(true);
+              }}
+            />
           </motion.div>
         ))}
       </div>

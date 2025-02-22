@@ -182,6 +182,11 @@ const MainProucts = () => {
       title: "Mango Jam 1KG Bucket By Ashifa Foods",
       price: "Rs. 749",
     },
+    {
+      mart: "Daraz Mart",
+      title: "Mango Jam 1KG Bucket By Ashifa Foods",
+      price: "Rs. 749",
+    },
   ]);
 
   return (
@@ -230,8 +235,7 @@ const MainProucts = () => {
 
       {/* Cards Section with Staggered Animation */}
       <motion.div
-        className="flex flex-wrap lg:h-[88%] lg:overflow-y-scroll panelScroll"
-        id="gk-cards"
+        className="flex flex-wrap justify-between lg:h-[88%] lg:overflow-y-scroll panelScroll pb-3"
         initial="hidden"
         animate="visible"
         variants={{
@@ -245,7 +249,7 @@ const MainProucts = () => {
         {cardData.map((item, index) => (
           <motion.div
             key={index}
-            className="w-full md:w-[32%] xl:w-[23%] md:mr-[2%]"
+            className="w-[49%] md:w-[32%] xl:w-[23%]"
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 },

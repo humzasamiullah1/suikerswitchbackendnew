@@ -33,7 +33,8 @@ const menuItems = [
     icon: StickyNote, 
     paths: [
       "/dashboard/blogs",
-      "/dashboard/add-blog"
+      "/dashboard/add-blog",
+      "/dashboard/blogs-detail"
     ] 
   },
   { 
@@ -41,7 +42,8 @@ const menuItems = [
     icon: ReceiptText, 
     paths: [
       "/dashboard/recipies",
-      "/dashboard/recipes-detail"
+      "/dashboard/recipes-detail",
+      "/dashboard/add-recipies"
     ] 
   },
   { title: "Help Elkar", icon: StickyNote, paths: ["/dashboard/help-elker"] },

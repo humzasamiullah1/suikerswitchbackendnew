@@ -49,7 +49,7 @@ function Home() {
           <div className="mt-5 lg:mt-0">
             <PlansCard />
           </div>
-          <div className="mt-5">
+          <div className="mt-5 mb-5 lg:mb-0">
             <Reminder />
           </div>
         </div>

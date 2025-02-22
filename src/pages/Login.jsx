@@ -17,7 +17,7 @@ function Login() {
         </div>
         <div className="lg:w-[50%] w-full h-screen lg:h-full my-auto flex flex-col items-center justify-center bg-white">
           <div className="w-[80%] mx-auto flex flex-col items-center justify-center">
-            <ImageTag path='/assets/images/logo.png' classes='w-full lg:w-[80%] h-20' altText='logo' />
+            <ImageTag path='/assets/images/logo.png' classes='w-[80%] h-16 md:w-[60%] lg:w-[80%] md:h-20' altText='logo' />
             <div className="w-full pt-16 h-full">
               <h1 className="text-fontColor font-HelveticaNeueMedium font-bold xl:text-2xl 2xl:text-3xl">Log in</h1>
               <p className="text-fontColor text-xs pt-1 font-HelveticaNeueRegular">Welcome back! , Please put your login credentials below to start using the dashboard.</p>

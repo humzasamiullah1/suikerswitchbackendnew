@@ -19,6 +19,66 @@ const LikePopup = ({ data, onClose }) => {
     {
       name: "Olivia Martin",
     },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
+    {
+      name: "Olivia Martin",
+    },
   ]);
   return (
     <main className="w-full h-screen backdrop-blur-sm bg-black/80 fixed inset-0 z-50 flex items-center justify-center">
@@ -28,20 +88,22 @@ const LikePopup = ({ data, onClose }) => {
             <h1 className="font-HelveticaNeueMedium text-darkColor text-base">
               4 Likes
             </h1>
-            <X className="cursor-pointer" onClick={onClose}/>
+            <X className="cursor-pointer" onClick={onClose} />
           </div>
-          {likeData.map((item, index) => (
-            <div className="flex items-center justify-start w-[90%] mt-2">
-              <ImageTag
-                path="/assets/images/blog.png"
-                classes="size-10 rounded-full object-cover"
-                altText="logo"
-              />
-              <p className="font-HelveticaNeueMedium pl-2 text-darkColor text-sm">
-                {item.name}
-              </p>
-            </div>
-          ))}
+          <div className="max-h-[400px] overflow-y-scroll panelScroll w-[90%] mx-auto">
+            {likeData.map((item, index) => (
+              <div className="flex items-center justify-start w-[90%] mt-2">
+                <ImageTag
+                  path="/assets/images/blog.png"
+                  classes="size-10 rounded-full object-cover"
+                  altText="logo"
+                />
+                <p className="font-HelveticaNeueMedium pl-2 text-darkColor text-sm">
+                  {item.name}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </main>

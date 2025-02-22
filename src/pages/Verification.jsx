@@ -23,7 +23,7 @@ function Verification() {
           <div className="w-[80%] mx-auto flex flex-col items-center justify-center">
             <ImageTag
               path="/assets/images/logo.png"
-              classes="w-full lg:w-[80%] h-20"
+              classes="w-[80%] h-16 md:w-[60%] lg:w-[80%] md:h-20"
               altText="logo"
             />
             <div className="w-full pt-16 h-full">

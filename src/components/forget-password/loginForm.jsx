@@ -19,7 +19,7 @@ const FormSection = () => {
         </div> : <ButtonTag onSubmit={loginHandler} name={login.SubmitBtn} classes='text-base bg-themeColor hover:bg-themeColor/90 mt-3 text-center  text-white' />
       } */}
       <Link to={"/dashboard"}>
-        <button className="text-base bg-btnColor hover:bg-btnColor/90 mt-10 text-center  text-white cursor-pointer font-HelveticaNeueBold rounded-md flex justify-center mx-auto py-2 w-full items-center">
+        <button className="text-base bg-btnColor hover:bg-btnColor/90 mt-4 text-center  text-white cursor-pointer font-HelveticaNeueBold rounded-full flex justify-center mx-auto py-2 w-full items-center">
           <span>Send</span>
           {/* yaha loader open krlena jb login ki api hit kroge */}
           {/* {loader && (

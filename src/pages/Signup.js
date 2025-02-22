@@ -14,10 +14,10 @@ function Signup() {
           />
         </div>
         <div className="w-full lg:w-[50%] bg-[#FFFFFF] flex flex-col items-center justify-center h-full">
-          <div className="w-[90%] lg:w-[80%] mx-auto flex flex-col items-center justify-center">
+          <div className="w-[90%] lg:w-[80%] mx-auto flex flex-col items-center justify-center py-5">
             <ImageTag
               path="/assets/images/logo.png"
-              classes="w-full lg:w-[80%] h-20"
+              classes="w-[80%] h-16 md:w-[60%] lg:w-[80%] md:h-20"
               altText="logo"
             />
             <div className="w-full pt-16 h-full">

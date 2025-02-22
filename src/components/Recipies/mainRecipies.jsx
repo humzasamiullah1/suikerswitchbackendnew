@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import RecipiesCard from "./recipiesCard";
 import { motion } from "framer-motion";
+import {Link} from "react-router-dom"
 
 const MainRecipies = () => {
   const [search, setSearch] = useState("");
@@ -9,44 +10,43 @@ const MainRecipies = () => {
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
     {
       title: "Olivia Martin",
       time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani"
+      name: "Mrs Balbir Singh's | Biryani",
     },
-  
   ]);
 
   return (
@@ -90,14 +90,16 @@ const MainRecipies = () => {
               <p className="text-sm pr-3">Filters</p>
               <Menu className="h-4 w-4" />
             </motion.button>
-            <motion.button
-              className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <p className="text-sm pr-3">Add New Recipes</p>
-              <CircleArrowDown className="h-4 w-4" />
-            </motion.button>
+            <Link to={"/dashboard/add-recipies"}>
+              <motion.button
+                className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <p className="text-sm pr-3">Add New Recipes</p>
+                <CircleArrowDown className="h-4 w-4" />
+              </motion.button>
+            </Link>
           </div>
         </div>
       </div>
@@ -109,13 +111,10 @@ const MainRecipies = () => {
             key={index}
             className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
-            viewport={{ once: true }}
           >
-            <RecipiesCard
-              data={item}
-            />
+            <RecipiesCard data={item} />
           </motion.div>
         ))}
       </div>
