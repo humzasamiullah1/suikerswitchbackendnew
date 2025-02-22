@@ -2,7 +2,7 @@ import React from "react";
 import ImageTag from "../../components/reuseable/imageTag";
 import { Ellipsis, ThumbsUp, MessageCircle } from "lucide-react";
 
-const BlogCard = ({ data, onLikePopup }) => {
+const BlogCard = ({ data, onLikePopup, onCommentPopup }) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
       <div className="flex justify-between items-center border-b-2 border-darkColor/20 pb-3">
@@ -43,7 +43,7 @@ const BlogCard = ({ data, onLikePopup }) => {
             <ThumbsUp size={18} />
             <p className="pl-2 text-sm">{data.like} Likes</p>
           </div>
-          <div className="flex items-center pr-5">
+          <div className="flex items-center pr-5" onClick={onCommentPopup}>
             <MessageCircle size={18} />
             <p className="pl-2 text-sm">{data.comments} Comments</p>
           </div>

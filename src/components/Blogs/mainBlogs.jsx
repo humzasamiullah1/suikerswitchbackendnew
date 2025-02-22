@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import BlogCard from "./blogCard";
 import LikePopup from "../../components/popup/like";
+import CommentsPopup from "../../components/popup/comments";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const MainBlogs = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
+  const [isCommentPopup, setIsCommentPopup] = useState(false);
   const [blogsData, setBlogsData] = useState([
     {
       title: "Olivia Martin",
@@ -138,6 +140,9 @@ const MainBlogs = () => {
               onLikePopup={() => {
                 setIsLikePopup(true);
               }}
+              onCommentPopup={()=>{
+                setIsCommentPopup(true)
+              }}
             />
           </motion.div>
         ))}
@@ -149,6 +154,8 @@ const MainBlogs = () => {
           }}
         />
       )}
+
+      {isCommentPopup && <CommentsPopup onClose={()=> {setIsCommentPopup(false)}}/>}
     </motion.div>
   );
 };
