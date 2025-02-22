@@ -14,7 +14,7 @@ import {
   Pencil,
   StickyNote,
   ReceiptText,
-  MessageCircle,
+  Store,
   LogOut,
 } from "lucide-react";
 
@@ -33,6 +33,7 @@ const menuItems = [
   { title: "Recipes", icon: ReceiptText, path: "/dashboard/recipies" },
   // { title: "Posts", icon: MessageCircle, path: "/dashboard/Posts" },
   { title: "Help Elkar", icon: StickyNote, path: "/dashboard/help-elker" },
+  { title: "Supermarkets", icon: Store, path: "/dashboard/supermarkets" },
   { title: "Settings", icon: Settings, path: "/dashboard/account-settings" },
   // { title: "Help Elkar Screen", icon: Settings, path: "/dashboard/settings" },
 ];

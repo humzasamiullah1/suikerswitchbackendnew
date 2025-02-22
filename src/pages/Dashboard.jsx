@@ -11,6 +11,7 @@ import AddBlog from './AddBlog'
 import AddProduct from './AddProduct'
 import Chat from './Chat'
 import Settings from './Settings'
+import Supermarkets from './Supermarkets'
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -56,6 +57,7 @@ function Dashboard() {
           <Route path="/notification" element={<Notification />} />
           <Route path="/recipies" element={<Recipies />} />
           <Route path="/help-elker" element={<HelpElker />} />
+          <Route path="/supermarkets" element={<Supermarkets />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/account-settings" element={<Settings />} />
         </Routes>
