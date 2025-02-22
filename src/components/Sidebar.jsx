@@ -33,7 +33,7 @@ const menuItems = [
   { title: "Recipes", icon: ReceiptText, path: "/dashboard/recipies" },
   // { title: "Posts", icon: MessageCircle, path: "/dashboard/Posts" },
   { title: "Help Elkar", icon: StickyNote, path: "/dashboard/help-elker" },
-  { title: "Settings", icon: Settings, path: "/dashboard/settings" },
+  { title: "Settings", icon: Settings, path: "/dashboard/account-settings" },
   // { title: "Help Elkar Screen", icon: Settings, path: "/dashboard/settings" },
 ];
 

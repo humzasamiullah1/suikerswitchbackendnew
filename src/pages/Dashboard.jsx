@@ -10,6 +10,7 @@ import HelpElker from './Help'
 import AddBlog from './AddBlog'
 import AddProduct from './AddProduct'
 import Chat from './Chat'
+import Settings from './Settings'
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -56,6 +57,7 @@ function Dashboard() {
           <Route path="/recipies" element={<Recipies />} />
           <Route path="/help-elker" element={<HelpElker />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/account-settings" element={<Settings />} />
         </Routes>
       </motion.div>
     </div>
