@@ -16,6 +16,7 @@ import AddSuperMarket from './AddSupermarket'
 import RecipesDetail from './RecipesDetail'
 import BlogsDetail from './BlogDetail'
 import AddRecipes from './AddRecipes'
+import HelpDetail from './HelpDetail'
 import { Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -63,6 +64,7 @@ function Dashboard() {
           <Route path="/recipies" element={<Recipies />} />
           <Route path="/add-recipies" element={<AddRecipes />} />
           <Route path="/help-elker" element={<HelpElker />} />
+          <Route path="/help-elker-detail" element={<HelpDetail />} />
           <Route path="/supermarkets" element={<Supermarkets />} />
           <Route path="/add-supermarkets" element={<AddSuperMarket />} />
           <Route path="/chat" element={<Chat />} />

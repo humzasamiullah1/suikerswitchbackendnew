@@ -4,10 +4,12 @@ import HelpCard from "./helpCard";
 import RequestCard from "./requestCard";
 import LikePopup from "../popup/like";
 import { motion, AnimatePresence } from "framer-motion";
+import CommentsPopup from "../../components/popup/comments";
 
 const MainHelp = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
+   const [isCommentPopup, setIsCommentPopup] = useState(false);
   const [blogsData, setBlogsData] = useState([
     {
       title: "Olivia Martin",
@@ -117,6 +119,26 @@ const MainHelp = () => {
     },
   ]);
 
+  const opeLikePopup = () => {
+    setIsLikePopup(true);
+    document.body.style.overflow = "hidden"; // Page scroll band
+  };
+
+  const closeLikePopup = () => {
+    setIsLikePopup(false);
+    document.body.style.overflow = "auto"; // Page scroll wapas enable
+  };
+
+  const opeCommentsPopup = () => {
+    setIsCommentPopup(true);
+    document.body.style.overflow = "hidden"; // Page scroll band
+  };
+
+  const closeCommentsPopup = () => {
+    setIsCommentPopup(false);
+    document.body.style.overflow = "auto"; // Page scroll wapas enable
+  };
+
   const pageVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -138,7 +160,7 @@ const MainHelp = () => {
           {requestData.map((item, index) => (
             <motion.div
               key={index}
-              className="w-[90%] md:w-[35%] flex-shrink-0"
+              className="w-[70%] sm:w-[50%] md:w-[30%] flex-shrink-0"
               initial="hidden"
               whileInView="visible"
               variants={pageVariants}
@@ -201,9 +223,8 @@ const MainHelp = () => {
               >
                 <HelpCard
                   data={item}
-                  onLikePopup={() => {
-                    setIsLikePopup(true);
-                  }}
+                  onLikePopup={opeLikePopup}
+                  onCommentsClick={opeCommentsPopup}
                 />
               </motion.div>
             ))}
@@ -228,7 +249,16 @@ const MainHelp = () => {
             ))}
           </motion.div>
         </div>
-        {isLikePopup && <LikePopup />}
+        {isLikePopup && (
+          <LikePopup
+            onClose={closeLikePopup}
+          />
+        )}
+        {isCommentPopup && (
+          <CommentsPopup
+            onClose={closeCommentsPopup}
+          />
+        )}
       </motion.div>
     </AnimatePresence>
   );

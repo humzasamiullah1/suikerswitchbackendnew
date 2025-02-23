@@ -38,19 +38,13 @@ const FormSection = () => {
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-between pt-5">
-        <div className="w-full md:w-[49%]">
+        <div className="w-full">
           <LabelTag isStaric={false} name="Supermarket Name" classes="!text-sm" />
           <input
             type="text"
             placeholder="Write Product Name"
             className="w-full mt-1 text-sm font-popinsRegular rounded-md bg-bgColor px-3 py-[10px] text-darkColor placeholder:text-zinc-700/50"
           />
-        </div>
-        <div className="w-full md:w-[49%]">
-          <LabelTag isStaric={false} name="Select Category" classes="!text-sm" />
-          <select className="w-full mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50">
-            <option>Select Category</option>
-          </select>
         </div>
       </div>
       <div className="pt-4 w-full">

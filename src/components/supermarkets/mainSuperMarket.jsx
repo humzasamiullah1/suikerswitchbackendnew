@@ -177,7 +177,7 @@ const MainSuperMarket = () => {
       className="bg-white rounded-[30px] shadow-md px-5 h-full"
     >
       <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
-        <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
+        <div className="flex justify-between w-full items-center lg:w-[20%] xl:w-[35%] 2xl:w-[50%]">
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
             All Supermarkets
           </p>
@@ -187,7 +187,7 @@ const MainSuperMarket = () => {
             </div>
           </Link>
         </div>
-        <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
+        <div className="flex items-center lg:w-[80%] xl:w-[75%] 2xl:w-[50%] justify-end">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
             <div className="relative">
               <input

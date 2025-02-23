@@ -46,7 +46,14 @@ const menuItems = [
       "/dashboard/add-recipies"
     ] 
   },
-  { title: "Help Elkar", icon: StickyNote, paths: ["/dashboard/help-elker"] },
+  { 
+    title: "Help Elkar", 
+    icon: StickyNote, 
+    paths: [
+      "/dashboard/help-elker",
+      "/dashboard/help-elker-detail"
+    ] 
+  },
   {
     title: "Supermarkets",
     icon: Store,

@@ -69,6 +69,26 @@ const MainBlogs = () => {
     },
   ]);
 
+  const opeLikePopup = () => {
+    setIsLikePopup(true);
+    document.body.style.overflow = "hidden"; // Page scroll band
+  };
+
+  const closeLikePopup = () => {
+    setIsLikePopup(false);
+    document.body.style.overflow = "auto"; // Page scroll wapas enable
+  };
+
+  const opeCommentsPopup = () => {
+    setIsCommentPopup(true);
+    document.body.style.overflow = "hidden"; // Page scroll band
+  };
+
+  const closeCommentsPopup = () => {
+    setIsCommentPopup(false);
+    document.body.style.overflow = "auto"; // Page scroll wapas enable
+  };
+
   return (
     <motion.div
       className="bg-white rounded-[30px] shadow-md px-5 h-full"
@@ -137,29 +157,21 @@ const MainBlogs = () => {
           >
             <BlogCard
               data={item}
-              onLikePopup={() => {
-                setIsLikePopup(true);
-              }}
-              onCommentPopup={() => {
-                setIsCommentPopup(true);
-              }}
+              onLikePopup={opeLikePopup}
+              onCommentPopup={opeCommentsPopup}
             />
           </motion.div>
         ))}
       </div>
       {isLikePopup && (
         <LikePopup
-          onClose={() => {
-            setIsLikePopup(false);
-          }}
+          onClose={closeLikePopup}
         />
       )}
 
       {isCommentPopup && (
         <CommentsPopup
-          onClose={() => {
-            setIsCommentPopup(false);
-          }}
+          onClose={closeCommentsPopup}
         />
       )}
     </motion.div>

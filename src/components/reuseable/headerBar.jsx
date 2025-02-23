@@ -19,7 +19,7 @@ const HeaderBar = (props) => {
         </p>
       </div>
       <div className="lg:w-[50%] w-full flex justify-between pt-4 xl:pt-0">
-        <div className="relative w-[60%] md:w-[75%] lg:w-[65%] xl:w-[79%]">
+        <div className="relative w-[69%] sm:w-[82%] md:w-[84%] lg:w-[69%] xl:w-[78%] 2xl:w-[79%]">
           <input
             type="text"
             placeholder="Search"
@@ -29,7 +29,7 @@ const HeaderBar = (props) => {
             <Search color="#FFFF" size={18} />
           </div>
         </div>
-        <div className="flex w-[40%] md:w-[25%] lg:w-[35%] xl:w-[20%] justify-end">
+        <div className="flex w-[29%] sm:w-[17%] md:w-[14%] lg:w-[29%] xl:w-[28%] 2xl:w-[20%] justify-end">
           <Link to={"/dashboard/chat"}>
             <div
               className={`size-12 rounded-full flex justify-center items-center ${

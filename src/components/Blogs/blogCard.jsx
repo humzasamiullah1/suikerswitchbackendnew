@@ -49,7 +49,7 @@ const BlogCard = ({ data, onLikePopup, onCommentPopup }) => {
             <ThumbsUp size={18} />
             <p className="pl-2 text-sm">{data.like} Likes</p>
           </div>
-          <div className="flex items-center pr-5" onClick={onCommentPopup}>
+          <div className="flex items-center pr-5 cursor-pointer" onClick={onCommentPopup}>
             <MessageCircle size={18} />
             <p className="pl-2 text-sm">{data.comments} Comments</p>
           </div>

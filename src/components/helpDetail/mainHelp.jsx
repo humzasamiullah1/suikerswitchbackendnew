@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Menu, CircleArrowDown, Plus, Ellipsis, Send,
+import LikePopup from "../popup/like";
+import CommentsPopup from "../popup/comments";
+import {
+  Search,
+  Menu,
+  CircleArrowDown,
+  Plus,
+  Ellipsis,
+  ThumbsUp,
+  MessageCircle,
+  Send,
   Paperclip,
-  Reply,ThumbsUp, MessageCircle } from "lucide-react";
+  Reply,
+} from "lucide-react";
 import ImageTag from "../reuseable/imageTag";
-import LikePopup from "../../components/popup/like";
-import CommentsPopup from "../../components/popup/comments";
 
 const commentsData = [
   {
@@ -26,25 +35,25 @@ const commentsData = [
   },
 ];
 
-const MainRecipiesDetail = () => {
+const MainHelpDetail = () => {
   const [search, setSearch] = useState("");
+  const [isLikePopup, setIsLikePopup] = useState(false);
+  const [isCommentPopup, setIsCommentPopup] = useState(false);
   const [comments, setComments] = useState(commentsData);
-   const [isLikePopup, setIsLikePopup] = useState(false);
-    const [isCommentPopup, setIsCommentPopup] = useState(false);
-    const [commentText, setCommentText] = useState("");
-  
-    const handleAddComment = () => {
-      if (commentText.trim() === "") return;
-      const newComment = {
-        id: Date.now(),
-        name: "You",
-        time: "Just now",
-        avatar: "https://via.placeholder.com/40",
-        content: commentText,
-      };
-      setComments([...comments, newComment]);
-      setCommentText("");
+  const [commentText, setCommentText] = useState("");
+
+  const handleAddComment = () => {
+    if (commentText.trim() === "") return;
+    const newComment = {
+      id: Date.now(),
+      name: "You",
+      time: "Just now",
+      avatar: "https://via.placeholder.com/40",
+      content: commentText,
     };
+    setComments([...comments, newComment]);
+    setCommentText("");
+  };
   return (
     <motion.div
       className="bg-white rounded-[30px] shadow-md px-5 h-full"
@@ -53,10 +62,10 @@ const MainRecipiesDetail = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       {/* Header Section */}
-      <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
+      <div className="flex lg:flex-row border-b border-gray-100 flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
-            Recipes Detail
+          Help Elkar Detail
           </p>
           <motion.div
             className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
@@ -85,14 +94,6 @@ const MainRecipiesDetail = () => {
             >
               <p className="text-sm pr-3">Filters</p>
               <Menu className="h-4 w-4" />
-            </motion.button>
-            <motion.button
-              className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <p className="text-sm pr-3">Add New Recipes</p>
-              <CircleArrowDown className="h-4 w-4" />
             </motion.button>
           </div>
         </div>
@@ -128,36 +129,26 @@ const MainRecipiesDetail = () => {
                 <Ellipsis size={30} />
               </div>
             </div>
+            <div className="font-HelveticaNeueRegular text-darkColor text-sm pt-4 px-2">
+              <p>
+                How Ketchup Revolutionized How Food Is Grown, Processed and
+                Regulated | Smithsonian and typesetting industry. Lorem Ipsum
+                has been the industry's standard dummy text ever since the
+                1500s, when an unknown printer took a galley of type and
+                scrambled it to make a type specimen book.
+              </p>
+              <p className="pt-3">
+                Lorem Ipsum has been the industry's standard dummy text ever
+                since the 1500s, when an unknown printer took a galley of type
+                and scrambled it to make a type specimen book.
+              </p>
+            </div>
             <div className="px-2">
               <ImageTag
                 path="/assets/images/recipes.png"
                 classes="w-full h-60 rounded-2xl mt-6 object-cover"
                 altText="logo"
               />
-            </div>
-            <div className="pt-6 px-2">
-              <h1 className="text-darkColor font-HelveticaNeueMedium text-lg">
-                Mrs Balbir Singh's | Biryani
-              </h1>
-              <p className="text-darkColor font-HelveticaNeueRegular text-sm pt-2">
-                Mrs Balbir Singh's | Biryani An absolutely irresistible medley
-                of fluffy and fragrant Basmati rice, tender marinated chicken
-                (or lamb, prawns, fish, or vegetables), aromatic and freshly
-                ground spices bursting with flavour... accentuated by
-                caramelised onions... and all enhanced by the slightly roasted
-                and nutty background note of ghee. This is food-heaven.   We
-                have simplified what can otherwise be quite an ambitious affair,
-                without sacrificing any of the complexity of its wonderfully
-                sumptuous flavours. Once you experience it, we're sure it will
-                become a weekly favourite and one of your go-tos for dinner
-                parties. Category: Rice Recipe: 243 Prep Time: 30 mins |
-                Marination 2hrs | Cooking Time: 1hr Serves 4 - 6 depending on
-                whether serving with other sharing dishes.  INGREDIENTS  FOR THE
-                MARINATION: 50g Natural or Greek Yoghurt 1½ tsp Salt 500g
-                Chicken (or lamb, beef, prawns or vegetables) 15g Ginger Paste
-                (or peeled ginger, finely chopped) 22g (12 level measuring
-                tsp) Mrs Balbir Singh’s Biryani Blend
-              </p>
             </div>
             <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
               <div
@@ -261,6 +252,7 @@ const MainRecipiesDetail = () => {
           </div>
         </div>
       </div>
+
       {isLikePopup && (
         <LikePopup
           onClose={() => {
@@ -280,4 +272,4 @@ const MainRecipiesDetail = () => {
   );
 };
 
-export default MainRecipiesDetail;
+export default MainHelpDetail;
