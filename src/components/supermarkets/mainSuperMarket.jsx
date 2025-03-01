@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Card from "./card"
+import { getSupermarkets } from "../utils/firebasefunctions"; 
 
 const MainSuperMarket = () => {
   const [search, setSearch] = useState("");
@@ -169,6 +170,19 @@ const MainSuperMarket = () => {
     },
   ]);
 
+  const [supermarkets, setSupermarkets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getSupermarkets();
+      setSupermarkets(data);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} // Pehle invisible aur neeche se aayega
@@ -215,7 +229,7 @@ const MainSuperMarket = () => {
 
       {/* Cards Section with Staggered Animation */}
       <motion.div
-        className="flex flex-wrap justify-between lg:h-[88%] lg:overflow-y-scroll panelScroll"
+        className="flex flex-wrap gap-4 lg:h-[88%] lg:overflow-y-scroll panelScroll"
         initial="hidden"
         animate="visible"
         variants={{
@@ -226,7 +240,7 @@ const MainSuperMarket = () => {
           },
         }}
       >
-        {cardData.map((item, index) => (
+        {supermarkets.map((item, index) => (
           <motion.div
             key={index}
             className="w-full md:w-[32%] xl:w-[23%]"

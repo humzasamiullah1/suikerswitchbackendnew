@@ -18,6 +18,7 @@ import {
   ReceiptText,
   Store,
   LogOut,
+  ChartBarStacked
 } from "lucide-react";
 
 // ✅ Menu Items Array with Multiple Paths
@@ -63,6 +64,13 @@ const menuItems = [
     paths: [
       "/dashboard/supermarkets",
       "/dashboard/add-supermarkets",
+    ],
+  },
+  {
+    title: "Category",
+    icon: ChartBarStacked,
+    paths: [
+      "/dashboard/add-category",
     ],
   },
   { title: "Settings", icon: Settings, paths: ["/dashboard/account-settings"] },

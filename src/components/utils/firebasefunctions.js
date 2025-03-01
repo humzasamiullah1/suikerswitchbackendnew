@@ -1,6 +1,7 @@
-import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc,  } from "firebase/firestore"
-import { firestored, app } from "../../firebase/firebaseConfig"
+import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc, arrayRemove  } from "firebase/firestore"
+import { firestored, app, storage } from "../../firebase/firebaseConfig"
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 // import moment from 'moment';
 // import DatePicker from "react-horizontal-datepicker";
 
@@ -32,6 +33,118 @@ export const userlogin = async (email, password) => {
       return err
     });
 }
+
+
+
+export const uploadFormData = async (formData, imageFiles) => {
+  try {
+    // Sare images upload kro aur unke URLs le lo
+    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Firestore me data save kro
+    const docRef = await addDoc(collection(firestored, "supermarkets"), {
+      ...formData,
+      images: imageUrls, // Firebase se milne wale URLs yahan save honge
+      createdAt: new Date(),
+    });
+
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const uploadImage = async (file) => {
+  return new Promise((resolve, reject) => {
+    const storageRef = ref(storage, `supermarket-logos/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      null,
+      (error) => reject(error),
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        resolve(downloadURL);
+      }
+    );
+  });
+};
+
+export const getSupermarkets = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "supermarkets"));
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return data;
+  } catch (error) {
+    console.error("Error fetching supermarkets: ", error);
+    return [];
+  }
+};
+
+// ✅ Categories ko Firestore mein bulk add/update karne ka function
+export const addOrUpdateCategories = async (categories) => {
+  try {
+    const categoryCollection = collection(firestored, "categories");
+
+    for (const category of categories) {
+      if (category.id) {
+        // ✅ Agar category already exist karti hai, toh update karein
+        const categoryRef = doc(firestored, "categories", category.id);
+        await updateDoc(categoryRef, { name: category.name });
+      } else {
+        // ✅ Naya category add karein
+        const docRef = await addDoc(categoryCollection, {
+          name: category.name,
+          createdAt: new Date(),
+        });
+        category.id = docRef.id; // ✅ ID ko frontend pe update karein
+      }
+    }
+
+    return categories; // ✅ Updated list return karein
+  } catch (error) {
+    console.error("Error in bulk add/update:", error);
+    throw error;
+  }
+};
+
+// ✅ Firestore se categories fetch karne ka function
+export const getCategoriesFromFirebase = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "categories"));
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+// ✅ Firestore se category delete karne ka function
+export const deleteCategoryFromFirebase = async (categoryId) => {
+  try {
+    const categoryRef = doc(firestored, "categories", categoryId);
+    await deleteDoc(categoryRef);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+
+
+
+
+
 
 
 export const getuserinformation = async (collectionname, document) => {

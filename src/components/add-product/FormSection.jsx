@@ -1,15 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LabelTag from "../reuseable/label";
 import { Plus } from "lucide-react";
+import {
+  getCategoriesFromFirebase,
+} from "../utils/firebasefunctions";
+import { toast } from "react-toastify";
 
 const FormSection = () => {
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const imageUrls = files.map((file) => URL.createObjectURL(file));
     setImages((prevImages) => [...prevImages, ...imageUrls]);
   };
+
+  useEffect(() => {
+      fetchCategories();
+    }, []);
+  
+    // ✅ Firebase se categories fetch karne ka function
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategoriesFromFirebase();
+        setCategories(data);
+      } catch (error) {
+        toast.error("Error fetching categories");
+      }
+    };
 
   return (
     <form className="border-2 border-gray-100 rounded-2xl w-full px-3 py-4 mt-3">

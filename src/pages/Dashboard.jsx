@@ -4,22 +4,24 @@ import Sidebar from "../components/Sidebar"; // ✅ Ensure this is correct
 import Home from "./Home";
 import Product from "./Product";
 import Blogs from "./Blogs";
-import Notification from "./Notification"
-import Recipies from "./Recipies"
-import HelpElker from './Help'
-import AddBlog from './AddBlog'
-import AddProduct from './AddProduct'
-import Chat from './Chat'
-import Settings from './Settings'
-import Supermarkets from './Supermarkets'
-import AddSuperMarket from './AddSupermarket'
-import RecipesDetail from './RecipesDetail'
-import BlogsDetail from './BlogDetail'
-import AddRecipes from './AddRecipes'
-import HelpDetail from './HelpDetail'
-import { Menu } from "lucide-react"
-import { motion } from "framer-motion"
-
+import Notification from "./Notification";
+import Recipies from "./Recipies";
+import HelpElker from "./Help";
+import AddBlog from "./AddBlog";
+import AddProduct from "./AddProduct";
+import Chat from "./Chat";
+import Settings from "./Settings";
+import Supermarkets from "./Supermarkets";
+import AddSuperMarket from "./AddSupermarket";
+import RecipesDetail from "./RecipesDetail";
+import BlogsDetail from "./BlogDetail";
+import AddRecipes from "./AddRecipes";
+import HelpDetail from "./HelpDetail";
+import AddCategory from "./addCategory";
+import { Menu } from "lucide-react";
+import { motion } from "framer-motion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -30,14 +32,16 @@ function Dashboard() {
   };
 
   const getCollpase = (value) => {
-    setIsCollapseBar(value)
-  }
+    setIsCollapseBar(value);
+  };
 
   return (
     <div className="flex lg:flex-row flex-col w-full">
-      <div className={`${isCollapseBar ? 'lg:w-[10%]' : 'lg:w-[20%]'} `}>
+      <div className={`${isCollapseBar ? "lg:w-[10%]" : "lg:w-[20%]"} `}>
         <button
-          className={`fixed top-3 left-4 z-50 ${isMobileMenuOpen ? 'hidden' : ''} lg:hidden bg-gray-300 p-2 rounded-full`}
+          className={`fixed top-3 left-4 z-50 ${
+            isMobileMenuOpen ? "hidden" : ""
+          } lg:hidden bg-gray-300 p-2 rounded-full`}
           onClick={toggleMobileMenu}
         >
           <Menu className="h-6 w-6" />
@@ -49,10 +53,13 @@ function Dashboard() {
         />
       </div>
       <motion.div
-      initial={{x:0}}
-      animate={isCollapseBar ? {x:-50} : {}}
-      transition={{type: 'spring', stiffness:260,damping:30}}
-      className={`${isCollapseBar ? 'lg:w-[90%]' : 'lg:w-[80%]'}  overflow-y-auto}`} >
+        initial={{ x: 0 }}
+        animate={isCollapseBar ? { x: -50 } : {}}
+        transition={{ type: "spring", stiffness: 260, damping: 30 }}
+        className={`${
+          isCollapseBar ? "lg:w-[90%]" : "lg:w-[80%]"
+        }  overflow-y-auto}`}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
@@ -70,7 +77,17 @@ function Dashboard() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/account-settings" element={<Settings />} />
           <Route path="/recipes-detail" element={<RecipesDetail />} />
+          <Route path="/add-category" element={<AddCategory />} />
         </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </motion.div>
     </div>
   );
