@@ -1,80 +1,125 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import LabelTag from "../reuseable/label";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { EyeOff, Eye } from "lucide-react";
+import { useStateValue } from "../../context/StateProvider";
+import { actionType } from "../../context/reducer";
+import { userlogin, getuserinformation } from "../utils/firebasefunctions";
+import { getAuth, signOut } from "firebase/auth";
 
 const FormSection = () => {
+  const auth = getAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [laoding, setlaoding] = useState(false);
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  // const [isAdmin, setIsAdmin] = useState(null); // 👈 Flag for admin check
+  const navigate = useNavigate();
+  const [{}, dispatch] = useStateValue();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const proceedhandler = async () => {
+    if (email === "") {
+      toast.warn("Please enter your email");
+      return;
+    }
+    if (password === "") {
+      toast.warn("Please enter your password");
+      return;
+    }
+
+    setlaoding(true);
+
+    try {
+      const loginResponse = await userlogin(email, password);
+
+      if (loginResponse?.uid) {
+        const userInfo = await getuserinformation("users", loginResponse?.uid);
+
+        if (userInfo.usertype === "Admin") {
+          dispatch({
+            type: actionType.SET_USER,
+            payload: userInfo,
+          });
+          setlaoding(false);
+          toast.success("login successfully");
+          setTimeout(() => {
+            navigate("/dashboard");
+        }, 1000); // 2 second delay
+        } else {
+          setlaoding(false);
+
+          if (userInfo.usertype === "Project") {
+            toast.warn(
+              "Projects dashboard is under maintenance. Please sign in with your Admin account!"
+            );
+          } else {
+            toast.warn(
+              "Employees are instructed to sign in using the Raftek Mobile Application"
+            );
+            await signOut(auth);
+          }
+        }
+      } else {
+        toast.error(loginResponse.code || "Login failed");
+        setlaoding(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "An error occurred");
+      setlaoding(false);
+    }
+  };
+
+  // 👇 Navigate safely after render cycle
+  // useEffect(() => {
+  //     if (isAdmin === true) {
+  //         navigate("/home");
+  //     }
+  // }, [isAdmin, navigate]);
+
   return (
     <form>
-      <div class="w-full mt-3">
-        <LabelTag name="Email" classes="!text-xs" />
+      <div className="w-full mt-3">
         <input
           type="text"
+          value={email}
+          onChange={(e) => setemail(e.target.value)}
           placeholder="Enter your email.."
-          className="w-full mt-1 text-sm font-popinsRegular rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50"
+          className="w-full mt-1 text-sm rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50"
         />
       </div>
       <div className="w-full mt-3">
-        <LabelTag name="Password" classes="!text-xs" />
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setpassword(e.target.value)}
             placeholder="Password here.."
-            className="w-full mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50"
+            className="w-full mt-1 text-sm bg-bgColor px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50"
           />
           <div
             title="Show password"
-            className="absolute right-3 top-3 text-stone-950/40 cursor-pointer"
+            className="absolute right-3 top-3 cursor-pointer"
             onClick={togglePasswordVisibility}
           >
             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
           </div>
         </div>
       </div>
-      <div className="flex justify-between mt-3 ">
-        <div className="flex w-[50%]">
-          <input
-            type="checkbox"
-            className="w-4 bg-bgColor rounded-sm cursor-pointer"
-          />
-          <p className="font-HelveticaNeueRegular text-fontColor text-xs pl-3">
-            Remember me
-          </p>
-          {/* <ParagraphTag
-            content={login.remember}
-            classes="text-[#686868] text-xs pl-3 font-popinsRegular"
-          /> */}
-        </div>
-        <Link to={"/forget-password"} className="w-[50%] flex justify-end">
-          {/* <ParagraphTag
-            content={login.forgetPass}
-            classes="text-themeColor text-xs font-popinsMedium cursor-pointer"
-          /> */}
-          <p className="font-HelveticaNeueRegular text-xs cursor-pointer text-linkColor">
-            Forgot Password?
-          </p>
-        </Link>
-      </div>
-      {/* {
-        loader ? <div className="flex justify-center items-center">
-          <MyLoader />
-        </div> : <ButtonTag onSubmit={loginHandler} name={login.SubmitBtn} classes='text-base bg-themeColor hover:bg-themeColor/90 mt-3 text-center  text-white' />
-      } */}
-      <Link to={"/dashboard"}>
-        <button className="text-base bg-btnColor hover:bg-btnColor/90 mt-3 text-center  text-white cursor-pointer font-HelveticaNeueBold rounded-full flex justify-center mx-auto py-2 w-full items-center">
-          <span>Log In</span>
-          {/* yaha loader open krlena jb login ki api hit kroge */}
-          {/* {loader && (
+      <button
+        type="button"
+        className="text-base bg-btnColor hover:bg-btnColor/90 mt-3 flex justify-center items-center text-white rounded-full py-2 w-full"
+        onClick={proceedhandler}
+      >
+        <span>Log In</span>
+        {laoding && (
           <div role="status" className="pl-3">
             <svg
               aria-hidden="true"
-              class="w-7 h-7 text-gray-200 animate-spin dark:text-white fill-themeColor"
+              class="w-6 h-6 text-gray-200 animate-spin dark:text-white fill-gkRedColor"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -90,33 +135,9 @@ const FormSection = () => {
             </svg>
             <span class="sr-only">Loading...</span>
           </div>
-        )} */}
-        </button>
-      </Link>
-      <div className="font-HelveticaNeueRegular text-darkColor/60 text-sm text-center pt-2">
-        <p>
-          Don&apos;t have an account ?{" "}
-          <Link to={"/signup"} className="font-HelveticaNeueMedium text-darkColor  ">
-            Sign Up
-          </Link>
-        </p>
-      </div>
-      {/* <div className="flex items-center my-2">
-        <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
-        <div className="w-[70%] lg:w-[40%] 2xl:w-[30%] flex justify-center">
-          <ParagraphTag
-            content={login.account}
-            classes="text-[#686868] font-popinsRegular text-xs"
-          />
-        </div>
-        <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
-      </div>
-      <Link to={"/signup"}>
-        <ButtonTag
-          name={login.signUpBtn}
-          classes="text-base text-center border-2 border-themeColor text-themeColor mb-8 lg:mb-0"
-        />
-      </Link> */}
+        )}
+      </button>
+      <ToastContainer />
     </form>
   );
 };

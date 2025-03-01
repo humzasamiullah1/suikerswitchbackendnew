@@ -7,7 +7,6 @@ const ButtonTag = (props) => {
     <button
       disabled={disabled}
       onClick={onSubmit}
-      type="submit"
       className={`${classes} cursor-pointer font-popinsMedium rounded-full flex justify-center mx-auto py-2 w-full items-center`}
     >
       {name}

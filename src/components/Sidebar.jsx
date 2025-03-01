@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ImageTag from "../components/reuseable/imageTag";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+import { toast } from "react-toastify";
 import {
   ChevronLeft,
   ChevronRight,
@@ -69,6 +72,19 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
   const location = useLocation();
+
+  const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            toast.success("Logged out successfully!");
+            navigate("/");
+        } catch (error) {
+            toast.error("Logout failed. Please try again.");
+            console.error("Logout Error:", error);
+        }
+    };
 
   // ✅ Corrected Active State Logic
   const isActive = (paths) =>
@@ -181,18 +197,17 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
             </nav>
           </div>
           <div className="p-4 space-y-2 h-[13%] w-[60%] md:w-[40%] lg:w-full mx-auto">
-            <Link
-              to={"/"}
+            <div
               className="flex items-center py-2 px-4 rounded-md text-darkColor hover:bg-gkRedColor hover:text-white transition-colors"
               onClick={() => !isLargeScreen && setIsMobileMenuOpen(false)}
             >
               <LogOut className="h-5 w-5 min-w-[20px]" />
               {isOpen && (
-                <motion.span variants={menuItemVariants} className="pl-3">
+                <motion.span variants={menuItemVariants} className="pl-3" onClick={handleLogout}>
                   LogOut
                 </motion.span>
               )}
-            </Link>
+            </div>
           </div>
         </motion.aside>
       )}
