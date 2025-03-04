@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import ProductCard from "./productCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { getProducts } from "../utils/firebasefunctions";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
@@ -189,6 +190,19 @@ const MainProucts = () => {
     },
   ]);
 
+  const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getProducts();
+      setProduct(data);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} // Pehle invisible aur neeche se aayega
@@ -246,7 +260,7 @@ const MainProucts = () => {
           },
         }}
       >
-        {cardData.map((item, index) => (
+        {product.map((item, index) => (
           <motion.div
             key={index}
             className="w-[49%] md:w-[32%] xl:w-[23%]"

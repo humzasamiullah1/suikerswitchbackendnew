@@ -18,7 +18,6 @@
 }
 
 textarea:focus,
-select:focus,
 input:focus {
   outline: #c4161b solid 2px !important;
   background-color: #f4f4f4 !important;
@@ -28,7 +27,6 @@ input:focus {
 [type="text"]:focus,
 [type="number"]:focus,
 [type="date"]:focus,
-select:focus,
 [type="password"]:focus {
   box-shadow: none !important; /* Removes shadow */
   border-color: transparent !important; /* Resets border color */
@@ -38,8 +36,7 @@ select:focus,
 [type="text"],
 [type="password"],
 [type="number"],
-[type="date"],
-select:focus {
+[type="date"], {
   border: none !important;
 }
 

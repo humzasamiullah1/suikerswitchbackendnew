@@ -16,16 +16,6 @@ const MainAddProucts = () => {
             Product Information
           </p>
         </div>
-        <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end pb-3 lg:pb-0">
-          <div className="flex items-center gap-2 mt-3 md:mt-0">
-            <button className="border text-xs rounded-full px-4 py-2 flex items-center font-HelveticaNeueMedium text-darkColor bg-gray-200 hover:bg-gray-200">
-              Cancel
-            </button>
-            <button className="border text-xs rounded-full px-4 w-full py-2 flex items-center font-HelveticaNeueMedium text-white bg-gkRedColor hover:bg-gkRedColor/90">
-              Proceed
-            </button>
-          </div>
-        </div>
       </div>
       <FormSection/>
     </motion.div>

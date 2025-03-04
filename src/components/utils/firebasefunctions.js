@@ -1,7 +1,7 @@
 import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc, arrayRemove  } from "firebase/firestore"
 import { firestored, app, storage } from "../../firebase/firebaseConfig"
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
 // import moment from 'moment';
 // import DatePicker from "react-horizontal-datepicker";
 
@@ -136,6 +136,33 @@ export const deleteCategoryFromFirebase = async (categoryId) => {
   }
 };
 
+const uploadImageToFirebase = async (file) => {
+  const storageRef = ref(storage, `product_images/${file.name}`);
+  await uploadBytes(storageRef, file);
+  return getDownloadURL(storageRef); // 🔥 YEH FIREBASE LINK DEGA
+};
+
+// ✅ Firestore me Data Store Function
+export const addProductToFirebase = async (productData, images) => {
+  const imageUrls = await Promise.all(images.map((file) => uploadImageToFirebase(file))); // ✅ Sare Firebase URLs milenge
+
+  await addDoc(collection(firestored, "products"), {
+    ...productData,
+    images: imageUrls, // ✅ Firestore me Firebase ke image links store honge
+    createdAt: new Date(),
+  });
+};
+
+export const getProducts = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "products"));
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return data;
+  } catch (error) {
+    console.error("Error fetching supermarkets: ", error);
+    return [];
+  }
+};
 
 
 
