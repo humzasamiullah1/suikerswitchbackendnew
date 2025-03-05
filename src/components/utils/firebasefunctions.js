@@ -1,4 +1,4 @@
-import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc, arrayRemove  } from "firebase/firestore"
+import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc, arrayRemove, serverTimestamp  } from "firebase/firestore"
 import { firestored, app, storage } from "../../firebase/firebaseConfig"
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
@@ -164,6 +164,42 @@ export const getProducts = async () => {
   }
 };
 
+export const uploadImageToBlogFirebase = async (file, folder) => {
+  if (!file) return null;
+  try {
+    const storageRef = ref(storage, `${folder}/${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef); // ✅ Get Firebase Image URL
+  } catch (error) {
+    console.error("Firebase image upload error:", error);
+    return null;
+  }
+};
+
+// 🔹 Save Blog to Firestore
+export const saveBlogToFirestore = async (blogData) => {
+  try {
+    await addDoc(collection(firestored, "blogs"), blogData);
+    return true;
+  } catch (error) {
+    console.error("Error saving blog to Firestore:", error);
+    return false;
+  }
+};
+
+// 🔹 Fetch Blog from Firestore
+export const getBlogFromFirestore = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "blogs"));
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].data(); // ✅ Return first blog post
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching blog from Firestore:", error);
+    return null;
+  }
+};
 
 
 
