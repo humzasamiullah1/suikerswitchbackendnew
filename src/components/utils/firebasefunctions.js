@@ -188,16 +188,14 @@ export const saveBlogToFirestore = async (blogData) => {
 };
 
 // 🔹 Fetch Blog from Firestore
-export const getBlogFromFirestore = async () => {
+export const getBlogs = async () => {
   try {
     const querySnapshot = await getDocs(collection(firestored, "blogs"));
-    if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].data(); // ✅ Return first blog post
-    }
-    return null;
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return data;
   } catch (error) {
-    console.error("Error fetching blog from Firestore:", error);
-    return null;
+    console.error("Error fetching blogs: ", error);
+    return [];
   }
 };
 

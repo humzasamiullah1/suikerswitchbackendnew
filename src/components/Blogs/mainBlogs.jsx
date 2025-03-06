@@ -1,73 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import BlogCard from "./blogCard";
 import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { getBlogs } from "../utils/firebasefunctions";
 
 const MainBlogs = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
   const [isCommentPopup, setIsCommentPopup] = useState(false);
-  const [blogsData, setBlogsData] = useState([
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-  ]);
+  // const [blogsData, setBlogsData] = useState([
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  //   {
+  //     title: "Olivia Martin",
+  //     time: "1m ago",
+  //     description:
+  //       "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  //     like: 24,
+  //     comments: 11,
+  //   },
+  // ]);
+
+  const [blogsData, setBlogsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getBlogs();
+      setBlogsData(data);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
 
   const opeLikePopup = () => {
     setIsLikePopup(true);
@@ -100,7 +114,7 @@ const MainBlogs = () => {
       <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
-            All Products
+            All Blogs
           </p>
           <motion.div
             className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
@@ -163,17 +177,9 @@ const MainBlogs = () => {
           </motion.div>
         ))}
       </div>
-      {isLikePopup && (
-        <LikePopup
-          onClose={closeLikePopup}
-        />
-      )}
+      {isLikePopup && <LikePopup onClose={closeLikePopup} />}
 
-      {isCommentPopup && (
-        <CommentsPopup
-          onClose={closeCommentsPopup}
-        />
-      )}
+      {isCommentPopup && <CommentsPopup onClose={closeCommentsPopup} />}
     </motion.div>
   );
 };
