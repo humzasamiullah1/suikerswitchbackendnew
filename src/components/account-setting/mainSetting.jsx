@@ -18,7 +18,7 @@ const MainSettings = () => {
           Account Setting
           </p>
         </div>
-        <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end pb-3 lg:pb-0">
+        {/* <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end pb-3 lg:pb-0">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
             <button className="border text-xs rounded-full px-4 py-2 flex items-center font-HelveticaNeueMedium text-darkColor bg-gray-200 hover:bg-gray-200">
               Cancel
@@ -27,7 +27,7 @@ const MainSettings = () => {
               Save
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-col lg:flex-row justify-between h-[90%] pt-3">
         <div className="w-full lg:w-[49%]">

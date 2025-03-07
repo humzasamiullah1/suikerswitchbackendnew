@@ -294,6 +294,54 @@ export const fetchRecipeById = async (recipeId) => {
   }
 };
 
+export const fetchUserById = async (id) => {
+  try {
+    console.log(`🔍 Fetching blog with user id: ${id}`);
+
+    const blogsCollection = collection(firestored, "users");
+    const q = query(blogsCollection, where("id", "==", id)); // Filter blogsId
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.log("❌ No such document in Firestore!");
+      return null;
+    }
+
+    let userData = null;
+    querySnapshot.forEach((doc) => {
+      userData = doc.data();
+    });
+
+    console.log("✅ Blog found:", userData);
+    return userData;
+  } catch (error) {
+    console.error("🚨 Error fetching blog:", error);
+    return null;
+  }
+};
+
+export const updateUserProfile = async (userId, updatedData) => {
+  try {
+    const userRef = doc(firestored, "users", userId);
+    await updateDoc(userRef, updatedData);
+    return true;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return false;
+  }
+};
+
+export const uploadUserImage = async (file, userId) => {
+  try {
+    const storageRef = ref(storage, `profilePictures/${userId}/${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
+  }
+};
+
 
 
 

@@ -109,8 +109,10 @@ const FormSection = () => {
                   firstname: firstname,
                   lastname: lastname,
                   email: email,
-                  profilePicture: downloadURL,
-                  usertype: 'Admin'
+                  profilePicture: '',
+                  usertype: 'Admin',
+                  phoneNumber: '',
+                  dob: ''
                 };
                 const response = await saveuserdata(data, user?.uid);
                 if (response === "success") {
