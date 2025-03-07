@@ -1,53 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import RecipiesCard from "./recipiesCard";
 import { motion } from "framer-motion";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+import { getRecipe } from "../utils/firebasefunctions";
 
 const MainRecipies = () => {
   const [search, setSearch] = useState("");
-  const [blogsData, setBlogsData] = useState([
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      name: "Mrs Balbir Singh's | Biryani",
-    },
-  ]);
+
+  const [recipeData, setRecipeData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getRecipe();
+      console.log("hassan", data);
+      setRecipeData(data);
+      setLoading(false);
+      console.log(recipeData);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <motion.div
@@ -105,19 +79,25 @@ const MainRecipies = () => {
       </div>
 
       {/* Blog List Section */}
-      <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
-        {blogsData.map((item, index) => (
-          <motion.div
-            key={index}
-            className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
-          >
-            <RecipiesCard data={item} />
-          </motion.div>
-        ))}
-      </div>
+      {/* {recipeData.length > 0 && ( */}
+        <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+          {recipeData.map((item, index) => (
+            <motion.div
+              key={index}
+              className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.4,
+                ease: "easeOut",
+                delay: index * 0.1,
+              }}
+            >
+              <RecipiesCard data={item} />
+            </motion.div>
+          ))}
+        </div>
+      {/* )} */}
     </motion.div>
   );
 };

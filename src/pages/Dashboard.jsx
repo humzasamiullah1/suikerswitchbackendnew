@@ -65,18 +65,18 @@ function Dashboard() {
           <Route path="/products" element={<Product />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/blogs" element={<Blogs />} />
-          <Route path="/blogs-detail" element={<BlogsDetail />} />
+          <Route path="/blogs-detail/:id" element={<BlogsDetail />} />
           <Route path="/add-blog" element={<AddBlog />} />
           <Route path="/notification" element={<Notification />} />
           <Route path="/recipies" element={<Recipies />} />
           <Route path="/add-recipies" element={<AddRecipes />} />
+          <Route path="/recipes-detail/:id" element={<RecipesDetail />} />
           <Route path="/help-elker" element={<HelpElker />} />
           <Route path="/help-elker-detail" element={<HelpDetail />} />
           <Route path="/supermarkets" element={<Supermarkets />} />
           <Route path="/add-supermarkets" element={<AddSuperMarket />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/account-settings" element={<Settings />} />
-          <Route path="/recipes-detail" element={<RecipesDetail />} />
           <Route path="/add-category" element={<AddCategory />} />
         </Routes>
         <ToastContainer

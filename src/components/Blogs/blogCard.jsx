@@ -31,7 +31,7 @@ const timeAgo = (timestamp) => {
 const BlogCard = ({ data, onLikePopup, onCommentPopup }) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
-      <Link to={"/dashboard/blogs-detail"}>
+      <Link to={`/dashboard/blogs-detail/${data.blogsId}`}>
         <div className="flex justify-between items-center border-b-2 border-darkColor/20 pb-3">
           <div className="w-[60%] flex items-center">
             <ImageTag

@@ -166,14 +166,21 @@ const MainBlogs = () => {
             className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
+            transition={{
+              duration: 0.4,
+              ease: "easeOut",
+              delay: index * 0.1,
+            }}
             viewport={{ once: true }}
           >
-            <BlogCard
-              data={item}
-              onLikePopup={opeLikePopup}
-              onCommentPopup={opeCommentsPopup}
-            />
+            {/* {item.id}
+            <Link to={`/dashboard/blogs-detail/${item.id}`}> */}
+              <BlogCard
+                data={item}
+                onLikePopup={opeLikePopup}
+                onCommentPopup={opeCommentsPopup}
+              />
+            {/* </Link> */}
           </motion.div>
         ))}
       </div>

@@ -199,7 +199,100 @@ export const getBlogs = async () => {
   }
 };
 
+export const fetchBlogById = async (blogId) => {
+  try {
+    console.log(`🔍 Fetching blog with blogsId: ${blogId}`);
 
+    const blogsCollection = collection(firestored, "blogs");
+    const q = query(blogsCollection, where("blogsId", "==", blogId)); // Filter blogsId
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.log("❌ No such document in Firestore!");
+      return null;
+    }
+
+    let blogData = null;
+    querySnapshot.forEach((doc) => {
+      blogData = doc.data();
+    });
+
+    console.log("✅ Blog found:", blogData);
+    return blogData;
+  } catch (error) {
+    console.error("🚨 Error fetching blog:", error);
+    return null;
+  }
+};
+
+
+export const fetchAllBlogs = async () => {
+  const querySnapshot = await getDocs(collection(firestored, "blogs"));
+  querySnapshot.forEach((doc) => {
+    console.log("🔥 Firestore Blog ID:", doc.id); // Sab IDs print hongi
+  });
+};
+
+
+export const uploadImageToRecipeFirebase = async (file, folder) => {
+  if (!file) return null;
+  try {
+    const storageRef = ref(storage, `${folder}/${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef); // ✅ Get Firebase Image URL
+  } catch (error) {
+    console.error("Firebase image upload error:", error);
+    return null;
+  }
+};
+
+export const saveRecipeToFirestore = async (recipeData) => {
+  try {
+    await addDoc(collection(firestored, "recipe"), recipeData);
+    return true;
+  } catch (error) {
+    console.error("Error saving recipe to Firestore:", error);
+    return false;
+  }
+};
+
+export const getRecipe = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "recipe"));
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    console.log('recipe data',data)
+    return data;
+  } catch (error) {
+    console.error("Error fetching recipe: ", error);
+    return [];
+  }
+};
+
+export const fetchRecipeById = async (recipeId) => {
+  try {
+    console.log(`🔍 Fetching blog with recipeId: ${recipeId}`);
+
+    const blogsCollection = collection(firestored, "recipe");
+    const q = query(blogsCollection, where("recipeId", "==", recipeId)); // Filter blogsId
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.log("❌ No such document in Firestore!");
+      return null;
+    }
+
+    let recipeData = null;
+    querySnapshot.forEach((doc) => {
+      recipeData = doc.data();
+    });
+
+    console.log("✅ Blog found:", recipeData);
+    return recipeData;
+  } catch (error) {
+    console.error("🚨 Error fetching blog:", error);
+    return null;
+  }
+};
 
 
 

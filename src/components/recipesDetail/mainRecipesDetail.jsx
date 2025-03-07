@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Menu, CircleArrowDown, Plus, Ellipsis, Send,
+import {
+  Search,
+  Menu,
+  CircleArrowDown,
+  Plus,
+  Ellipsis,
+  Send,
   Paperclip,
-  Reply,ThumbsUp, MessageCircle } from "lucide-react";
+  Reply,
+  ThumbsUp,
+  MessageCircle,
+} from "lucide-react";
 import ImageTag from "../reuseable/imageTag";
 import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
+import { useParams } from "react-router-dom";
+import {
+  fetchRecipeById,
+  fetchAllBlogs,
+} from "../../components/utils/firebasefunctions";
 
 const commentsData = [
   {
@@ -29,22 +43,63 @@ const commentsData = [
 const MainRecipiesDetail = () => {
   const [search, setSearch] = useState("");
   const [comments, setComments] = useState(commentsData);
-   const [isLikePopup, setIsLikePopup] = useState(false);
-    const [isCommentPopup, setIsCommentPopup] = useState(false);
-    const [commentText, setCommentText] = useState("");
-  
-    const handleAddComment = () => {
-      if (commentText.trim() === "") return;
-      const newComment = {
-        id: Date.now(),
-        name: "You",
-        time: "Just now",
-        avatar: "https://via.placeholder.com/40",
-        content: commentText,
-      };
-      setComments([...comments, newComment]);
-      setCommentText("");
+  const [isLikePopup, setIsLikePopup] = useState(false);
+  const [isCommentPopup, setIsCommentPopup] = useState(false);
+  const [commentText, setCommentText] = useState("");
+
+  const { id } = useParams(); // URL se id get krni
+  const [recipe, setRecipe] = useState(null);
+
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      if (!id) return;
+
+      const blogData = await fetchRecipeById(id); // Function call
+      setRecipe(blogData);
+      console.log("hassan", recipe);
     };
+
+    fetchRecipe();
+  }, [id]);
+
+  const handleAddComment = () => {
+    if (commentText.trim() === "") return;
+    const newComment = {
+      id: Date.now(),
+      name: "You",
+      time: "Just now",
+      avatar: "https://via.placeholder.com/40",
+      content: commentText,
+    };
+    setComments([...comments, newComment]);
+    setCommentText("");
+  };
+
+  const timeAgo = (timestamp) => {
+    const now = new Date();
+    const createdAt = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - createdAt) / 1000);
+
+    const intervals = [
+      { label: "year", seconds: 31536000 },
+      { label: "month", seconds: 2592000 },
+      { label: "week", seconds: 604800 },
+      { label: "day", seconds: 86400 },
+      { label: "hour", seconds: 3600 },
+      { label: "minute", seconds: 60 },
+      { label: "second", seconds: 1 },
+    ];
+
+    for (const interval of intervals) {
+      const count = Math.floor(diffInSeconds / interval.seconds);
+      if (count >= 1) {
+        return `${count} ${interval.label}${count !== 1 ? "s" : ""} ago`;
+      }
+    }
+
+    return "Just now";
+  };
+
   return (
     <motion.div
       className="bg-white rounded-[30px] shadow-md px-5 h-full"
@@ -117,10 +172,10 @@ const MainRecipiesDetail = () => {
                 />
                 <div className="pl-3">
                   <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                    Olivia Martin
+                    {recipe?.fullName}
                   </p>
                   <p className="font-HelveticaNeueMedium text-darkColor text-xs">
-                    1m ago
+                    {timeAgo(recipe?.createdAt)}
                   </p>
                 </div>
               </div>
@@ -128,59 +183,35 @@ const MainRecipiesDetail = () => {
                 <Ellipsis size={30} />
               </div>
             </div>
-            <div className="px-2">
-              <ImageTag
-                path="/assets/images/recipes.png"
-                classes="w-full h-60 rounded-2xl mt-6 object-cover"
-                altText="logo"
-              />
-            </div>
-            <div className="pt-6 px-2">
-              <h1 className="text-darkColor font-HelveticaNeueMedium text-lg">
-                Mrs Balbir Singh's | Biryani
-              </h1>
-              <p className="text-darkColor font-HelveticaNeueRegular text-sm pt-2">
-                Mrs Balbir Singh's | Biryani An absolutely irresistible medley
-                of fluffy and fragrant Basmati rice, tender marinated chicken
-                (or lamb, prawns, fish, or vegetables), aromatic and freshly
-                ground spices bursting with flavour... accentuated by
-                caramelised onions... and all enhanced by the slightly roasted
-                and nutty background note of ghee. This is food-heaven.   We
-                have simplified what can otherwise be quite an ambitious affair,
-                without sacrificing any of the complexity of its wonderfully
-                sumptuous flavours. Once you experience it, we're sure it will
-                become a weekly favourite and one of your go-tos for dinner
-                parties. Category: Rice Recipe: 243 Prep Time: 30 mins |
-                Marination 2hrs | Cooking Time: 1hr Serves 4 - 6 depending on
-                whether serving with other sharing dishes.  INGREDIENTS  FOR THE
-                MARINATION: 50g Natural or Greek Yoghurt 1½ tsp Salt 500g
-                Chicken (or lamb, beef, prawns or vegetables) 15g Ginger Paste
-                (or peeled ginger, finely chopped) 22g (12 level measuring
-                tsp) Mrs Balbir Singh’s Biryani Blend
-              </p>
-            </div>
-            <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
-              <div
-                className="flex items-center pr-5 cursor-pointer"
-                onClick={() => {
-                  setIsLikePopup(true);
-                }}
-              >
-                <ThumbsUp size={18} />
-                <p className="pl-2 text-sm">24 Likes</p>
+            <div
+              className="font-HelveticaNeueRegular text-darkColor text-sm pt-4 px-2"
+              dangerouslySetInnerHTML={{ __html: recipe?.content }}
+            ></div>
+            {recipe?.isLike && (
+              <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
+                <div
+                  className="flex items-center pr-5 cursor-pointer"
+                  onClick={() => {
+                    setIsLikePopup(true);
+                  }}
+                >
+                  <ThumbsUp size={18} />
+                  <p className="pl-2 text-sm">24 Likes</p>
+                </div>
+                <div
+                  className="flex items-center pr-5"
+                  onClick={() => {
+                    setIsCommentPopup(true);
+                  }}
+                >
+                  <MessageCircle size={18} />
+                  <p className="pl-2 text-sm">20 Comments</p>
+                </div>
               </div>
-              <div
-                className="flex items-center pr-5"
-                onClick={() => {
-                  setIsCommentPopup(true);
-                }}
-              >
-                <MessageCircle size={18} />
-                <p className="pl-2 text-sm">20 Comments</p>
-              </div>
-            </div>
+            )}
           </div>
         </motion.div>
+        {recipe?.isLike && (
         <div className="p-4">
           <div className="">
             {comments.map((comment) => (
@@ -260,13 +291,16 @@ const MainRecipiesDetail = () => {
             </button>
           </div>
         </div>
+        )}
       </div>
+    
       {isLikePopup && (
         <LikePopup
           onClose={() => {
             setIsLikePopup(false);
           }}
         />
+      
       )}
 
       {isCommentPopup && (
