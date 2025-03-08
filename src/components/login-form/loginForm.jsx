@@ -48,7 +48,7 @@ const FormSection = () => {
           toast.success("login successfully");
           setTimeout(() => {
             navigate("/dashboard");
-        }, 1000); // 2 second delay
+          }, 1000); // 2 second delay
         } else {
           setlaoding(false);
 
@@ -111,7 +111,7 @@ const FormSection = () => {
       </div>
       <button
         type="button"
-        className="text-base bg-btnColor hover:bg-btnColor/90 mt-3 flex justify-center items-center text-white rounded-full py-2 w-full"
+        className="text-base font-HelveticaNeueMedium bg-btnColor hover:bg-btnColor/90 mt-3 flex justify-center items-center text-white rounded-full py-2 w-full"
         onClick={proceedhandler}
       >
         <span>Log In</span>
@@ -137,6 +137,21 @@ const FormSection = () => {
           </div>
         )}
       </button>
+      <div className="flex items-center my-2">
+        <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
+        <div className="w-[70%] lg:w-[40%] 2xl:w-[30%] flex justify-center">
+          <p className="font-HelveticaNeueRegular text-xs">Do you have account?</p>
+        </div>
+        <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
+      </div>
+      <Link to={"/signup"}>
+        <button
+          type="button"
+          className="text-base font-HelveticaNeueMedium border border-btnColor hover:bg-btnColor/90 hover:text-white mt-3 flex justify-center items-center text-btnColor rounded-full py-2 w-full"
+        >
+          Sign Up
+        </button>
+      </Link>
       <ToastContainer />
     </form>
   );
