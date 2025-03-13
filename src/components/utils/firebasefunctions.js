@@ -2,6 +2,7 @@ import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, upd
 import { firestored, app, storage } from "../../firebase/firebaseConfig"
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
+import { get } from "firebase/database";
 // import moment from 'moment';
 // import DatePicker from "react-horizontal-datepicker";
 
@@ -18,6 +19,18 @@ export const saveuserdata = async (data, uid) => {
       return err;
     })
 }
+
+// export const saveuserdata = async (userData, userId) => {
+//   try {
+//     const db = getDatabase();
+//     await set(ref(db, `users/${userId}`), userData);
+//     console.log("User data saved successfully!");
+//     return "success"; // Ensure this string is returned
+//   } catch (error) {
+//     console.error("Error saving user data:", error);
+//     return error.message; // Return error message for debugging
+//   }
+// };
 
 
 export const userlogin = async (email, password) => {
@@ -342,7 +355,23 @@ export const uploadUserImage = async (file, userId) => {
   }
 };
 
-
+// export const getuserinformation = async (collection, uid) => {
+//   try {
+//     const userRef = ref(firestored, `${collection}/${uid}`);
+//     const snapshot = await get(userRef);
+    
+//     if (snapshot.exists()) {
+//       console.log("User exists in Firebase:", snapshot.val());
+//       return snapshot.val();
+//     } else {
+//       console.warn("User not found in Firebase!");
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user data:", error);
+//     return null;
+//   }
+// };
 
 
 

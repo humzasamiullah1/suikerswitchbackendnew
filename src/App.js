@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useNavigate
 } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,9 +12,11 @@ import { auth } from "./firebase/firebaseConfig";
 import {
   onAuthStateChanged,
   signOut,
+  getAuth,
   setPersistence,
   browserLocalPersistence, // ✅ Local Persistence
 } from "firebase/auth";
+// import { useNavigate } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -26,9 +29,11 @@ import { actionType } from "./context/reducer";
 import { getuserinformation } from "./components/utils/firebasefunctions"; // Ensure this function fetches user details
 
 function App() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [{ userDetails }, dispatch] = useStateValue();
+  const [isNewUser, setIsNewUser] = useState(false);
 
   // ✅ Handle Logout
   const handleLogout = async () => {
@@ -44,34 +49,24 @@ function App() {
   };
 
   useEffect(() => {
-    // ✅ Ensure persistent login
-    setPersistence(auth, browserLocalPersistence);
-
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      console.log("Auth State Changed: ", currentUser);
-
-      if (currentUser) {
-        try {
-          const userInfo = await getuserinformation("users", currentUser.uid);
-          if (userInfo?.usertype === "Admin") {
-            dispatch({ type: actionType.SET_USER, payload: userInfo });
-            setUser(currentUser);
-          } else {
-            console.warn("User is not an Admin. Logging out...");
-            await signOut(auth);
-            setUser(null);
-          }
-        } catch (error) {
-          console.error("Error fetching user info:", error);
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        const userInfo = getuserinformation("users", uid);
+        dispatch({ type: actionType.SET_USER, payload: userInfo });
+        setUser(userInfo);
+        if (isNewUser) {
+          setIsNewUser(false);
+          navigate("/"); // Redirect to Login page
         }
       } else {
-        console.log("No user found. Setting user to null.");
+        dispatch({ type: actionType.SET_USER, payload: null });
         setUser(null);
       }
       setLoading(false);
     });
-
-    return () => unsubscribe();
+    
   }, []);
 
   if (loading) {
@@ -84,7 +79,8 @@ function App() {
 
   // 🔒 Protect Private Routes
   const PublicRoute = ({ children }) => {
-    return user ? <Navigate to="/dashboard" replace /> : children;
+    
+      return user && !isNewUser ? <Navigate to="/dashboard" replace /> : children;
   };
 
   const PrivateRoute = ({ children }) => {

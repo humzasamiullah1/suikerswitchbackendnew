@@ -21,7 +21,8 @@ const FormSection = () => {
     setShowPassword(!showPassword);
   };
 
-  const proceedhandler = async () => {
+  const proceedhandler = async (e) => {
+    e.preventDefault();
     if (email === "") {
       toast.warn("Please enter your email");
       return;
@@ -38,7 +39,6 @@ const FormSection = () => {
 
       if (loginResponse?.uid) {
         const userInfo = await getuserinformation("users", loginResponse?.uid);
-
         if (userInfo.usertype === "Admin") {
           dispatch({
             type: actionType.SET_USER,
@@ -73,15 +73,8 @@ const FormSection = () => {
     }
   };
 
-  // 👇 Navigate safely after render cycle
-  // useEffect(() => {
-  //     if (isAdmin === true) {
-  //         navigate("/home");
-  //     }
-  // }, [isAdmin, navigate]);
-
   return (
-    <form>
+    <form onSubmit={proceedhandler}>
       <div className="w-full mt-3">
         <input
           type="text"
@@ -110,9 +103,8 @@ const FormSection = () => {
         </div>
       </div>
       <button
-        type="button"
+        type="submit"
         className="text-base font-HelveticaNeueMedium bg-btnColor hover:bg-btnColor/90 mt-3 flex justify-center items-center text-white rounded-full py-2 w-full"
-        onClick={proceedhandler}
       >
         <span>Log In</span>
         {laoding && (

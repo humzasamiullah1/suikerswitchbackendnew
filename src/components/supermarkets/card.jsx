@@ -17,7 +17,7 @@ const Card = ({ data }) => {
       </p>
       <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-2">
         {/* <p className="">Total Brands</p> */}
-        <p className="">
+        <p className="line-clamp-3">
           {data.description}
         </p>
       </div>

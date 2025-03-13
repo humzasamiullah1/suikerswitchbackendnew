@@ -207,7 +207,7 @@ const MainBlogDetail = () => {
                 altText="logo"
               />
             </div> */}
-            {blog.isLike && (
+            {blog?.isLike && (
               <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
                 <div
                   className="flex items-center pr-5 cursor-pointer"
@@ -231,7 +231,7 @@ const MainBlogDetail = () => {
             )}
           </div>
         </motion.div>
-        {blog.isLike && (
+        {blog?.isLike && (
           <div className="p-4">
             <div className="">
               {comments.map((comment) => (
