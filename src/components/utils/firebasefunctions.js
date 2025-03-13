@@ -1,7 +1,7 @@
 import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc, arrayRemove, serverTimestamp  } from "firebase/firestore"
 import { firestored, app, storage } from "../../firebase/firebaseConfig"
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import { get } from "firebase/database";
 // import moment from 'moment';
 // import DatePicker from "react-horizontal-datepicker";
@@ -51,23 +51,124 @@ export const userlogin = async (email, password) => {
 
 export const uploadFormData = async (formData, imageFiles) => {
   try {
-    // Sare images upload kro aur unke URLs le lo
+    // Sare images upload karo aur unke URLs le lo
     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
     const imageUrls = await Promise.all(imageUploadPromises);
 
-    // Firestore me data save kro
-    const docRef = await addDoc(collection(firestored, "supermarkets"), {
+    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    const docRef = doc(collection(firestored, "supermarkets"));
+    const docId = docRef.id; // Yeh document ki generated ID hai
+
+    // Firestore me data save karo
+    await setDoc(docRef, {
       ...formData,
+      id: docId, // Document ki ID bhi save ho rahi hai
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
     });
 
-    return { success: true, id: docRef.id };
+    return { success: true, id: docId };
   } catch (error) {
     console.error("Error adding document: ", error);
     return { success: false, error: error.message };
   }
 };
+
+export const getSupermarketById = async (id) => {
+  try {
+    const supermarketRef = doc(firestored, "supermarkets", id);
+    const supermarketSnap = await getDoc(supermarketRef);
+    
+    if (supermarketSnap.exists()) {
+      return { id: supermarketSnap.id, ...supermarketSnap.data() };
+    } else {
+      throw new Error("Supermarket not found");
+    }
+  } catch (error) {
+    console.error("Error fetching supermarket:", error);
+    throw error;
+  }
+};
+
+// Function to update a supermarket
+
+export const updateSupermarket = async (id, formData, newImageFiles) => {
+  try {
+    // Fetch existing document data
+    const docRef = doc(firestored, "supermarkets", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Document not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    let imageURLs = data.images || []; // Existing images
+
+    // If a new image is uploaded, replace the old one
+    if (newImageFiles.length > 0) {
+      const oldImageURL = imageURLs[0]; // First image
+
+      // Delete old image if it exists
+      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+        await deleteObject(imageRef);
+      }
+
+      // Upload new image
+      const newImageFile = newImageFiles[0];
+      const storageRef = ref(storage, `supermarkets/${id}/${newImageFile.name}`);
+      await uploadBytes(storageRef, newImageFile);
+      const newImageURL = await getDownloadURL(storageRef);
+
+      imageURLs = [newImageURL]; // Replace with new image URL
+    }
+
+    // Update Firestore document
+    await updateDoc(docRef, {
+      supermarketName: formData.supermarketName,
+      description: formData.description,
+      images: imageURLs,
+    });
+
+    console.log("Supermarket updated successfully");
+  } catch (error) {
+    console.error("Error updating supermarket:", error);
+  }
+};
+
+export const deleteSupermarket = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "supermarkets", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Supermarket not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("Supermarket deleted successfully");
+  } catch (error) {
+    console.error("Error deleting supermarket:", error);
+  }
+};
+
 
 export const uploadImage = async (file) => {
   return new Promise((resolve, reject) => {

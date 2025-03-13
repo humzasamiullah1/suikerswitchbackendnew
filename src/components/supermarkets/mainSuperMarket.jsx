@@ -3,7 +3,7 @@ import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Card from "./card"
-import { getSupermarkets } from "../utils/firebasefunctions"; 
+import { getSupermarkets, deleteSupermarket } from "../utils/firebasefunctions"; 
 
 const MainSuperMarket = () => {
   const [search, setSearch] = useState("");
@@ -172,16 +172,25 @@ const MainSuperMarket = () => {
 
   const [supermarkets, setSupermarkets] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const fetchData = async () => {
+    const data = await getSupermarkets();
+    setSupermarkets(data);
+    setLoading(false);
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getSupermarkets();
-      setSupermarkets(data);
-      setLoading(false);
-    };
+  useEffect(() => { 
 
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this supermarket?");
+    if (confirmDelete) {
+      await deleteSupermarket(id);
+      fetchData();
+    }
+  };
 
   return (
     <motion.div
@@ -250,7 +259,7 @@ const MainSuperMarket = () => {
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <Card data={item} />
+            <Card data={item} onDelete={() => handleDelete(item.id)}/>
           </motion.div>
         ))}
       </motion.div>
