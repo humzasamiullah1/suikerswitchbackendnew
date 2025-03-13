@@ -172,7 +172,7 @@ const MainSuperMarket = () => {
 
   const [supermarkets, setSupermarkets] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const fetchData = async () => {
     const data = await getSupermarkets();
     setSupermarkets(data);
@@ -201,7 +201,7 @@ const MainSuperMarket = () => {
     >
       <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[20%] xl:w-[35%] 2xl:w-[50%]">
-          <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
+          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
             All Supermarkets
           </p>
           <Link to={"/dashboard/add-product"}>
