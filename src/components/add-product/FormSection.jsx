@@ -1,31 +1,48 @@
 import React, { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom"; // ✅ Import useRouter for query params
 import Select from "react-select";
+import { serverTimestamp } from "firebase/firestore";
 import {
   getCategoriesFromFirebase,
   getSupermarkets,
   addProductToFirebase,
+  getProductById, // ✅ New function to get product by ID
+  updateProductToFirebase, // ✅ New function to update product
 } from "../utils/firebasefunctions";
 import { toast } from "react-toastify";
 import { Plus, X } from "lucide-react";
 
 const FormSection = () => {
+  const [searchParams] = useSearchParams();
   const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
   const [categories, setCategories] = useState([]);
   const [supermarkets, setSupermarkets] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSupermarkets, setSelectedSupermarkets] = useState([]);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+
+  const id = searchParams.get("id");
 
   useEffect(() => {
-    fetchCategories();
-    fetchSupermarkets();
-  }, []);
+    if (id) {
+      fetchProductDetails(id); // ✅ Fetch product if editing
+    } else {
+      fetchCategories(null);
+      fetchSupermarkets(null);
+    }
+  }, [id]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = async (product) => {
     try {
       const data = await getCategoriesFromFirebase();
+      if (product) {
+        setSelectedCategories(
+          product.selectedCategories.map((cat) => ({ label: cat, value: cat }))
+        );
+      }
       setCategories(
         data.map((category) => ({ label: category.name, value: category.name }))
       );
@@ -34,9 +51,17 @@ const FormSection = () => {
     }
   };
 
-  const fetchSupermarkets = async () => {
+  const fetchSupermarkets = async (product) => {
     try {
       const data = await getSupermarkets();
+      if (product) {
+        setSelectedSupermarkets(
+          product.selectedSupermarkets.map((sup) => ({
+            label: sup,
+            value: sup,
+          }))
+        );
+      }
       setSupermarkets(
         data.map((sup) => ({
           label: sup.supermarketName,
@@ -48,45 +73,74 @@ const FormSection = () => {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage({ file, preview: URL.createObjectURL(file) });
+  // ✅ Fetch Product Details when editing
+  const fetchProductDetails = async (productId) => {
+    try {
+      const product = await getProductById(productId);
+      if (product) {
+        fetchCategories(product);
+        fetchSupermarkets(product);
+        setProductName(product.productName);
+        setImages(product.images || []);
+      }
+    } catch (error) {
+      toast.error("Error fetching product details");
     }
   };
 
-  const removeImage = () => {
-    setImage(null);
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+
+    setImages([...imageUrls]); // Replace existing image
+    setImageFiles([...files]); // Replace image file
   };
 
+  const removeImage = () => {
+    setImages([]);
+    setImageFiles([]);
+  };
+
+  // ✅ Handle Create or Update Product
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     if (
       !productName ||
-      !productPrice ||
       selectedCategories.length === 0 ||
       selectedSupermarkets.length === 0
     ) {
       toast.error("Please fill all fields");
+      setLoading(false);
       return;
     }
 
     const productData = {
       productName,
-      productPrice,
       selectedCategories: selectedCategories.map((cat) => cat.value),
       selectedSupermarkets: selectedSupermarkets.map((sup) => sup.value),
+      timestamp: serverTimestamp(),
+      images,
     };
 
-    await addProductToFirebase(productData, image ? [image.file] : []);
-    toast.success("Product added successfully!");
-
-    setProductName("");
-    setProductPrice("");
-    setSelectedCategories([]);
-    setSelectedSupermarkets([]);
-    setImage(null);
+    try {
+      if (id) {
+        // ✅ Update existing product
+        await updateProductToFirebase(id, productData, imageFiles);
+        toast.success("Product updated successfully!");
+      } else {
+        // ✅ Add new product
+        await addProductToFirebase(productData, imageFiles);
+        toast.success("Product added successfully!");
+        setProductName("");
+        setSelectedCategories([]);
+        setSelectedSupermarkets([]);
+        setImage(null);
+      }
+    } catch (error) {
+      toast.error("Error processing request");
+    }
     setLoading(false);
   };
 
@@ -97,21 +151,23 @@ const FormSection = () => {
     >
       {/* ✅ Image Upload */}
       <div className="px-2 pt-2">
-        <h2 className="text-lg font-medium pb-2">Image</h2>
+        <h2 className="text-base font-HelveticaNeueMedium pb-2">
+          {id ? "Update Supermarket" : "Upload Logo"}
+        </h2>
         <div className="flex space-x-2">
-          {image ? (
+          {images.length > 0 ? (
             <div className="relative w-20 h-20 rounded-lg overflow-hidden">
               <img
-                src={image.preview}
+                src={images[0]}
                 alt="Uploaded"
                 className="w-full h-full object-cover"
               />
               <button
                 type="button"
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                 onClick={removeImage}
-                className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-md hover:bg-gray-200"
               >
-                <X size={16} className="text-red-500" />
+                <X size={16} />
               </button>
             </div>
           ) : (
@@ -128,33 +184,21 @@ const FormSection = () => {
         </div>
       </div>
 
-      {/* ✅ Product Name & Price */}
-      <div className="flex flex-col md:flex-row justify-between pt-5">
-        <div className="w-full md:w-[49%]">
-          <label className="text-sm">Product Name</label>
-          <input
-            type="text"
-            placeholder="Enter product name"
-            className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-          />
-        </div>
-        <div className="w-full md:w-[49%] pt-4 md:pt-0">
-          <label className="text-sm">Product Price</label>
-          <input
-            type="text"
-            placeholder="Enter product price"
-            className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
-            value={productPrice}
-            onChange={(e) => setProductPrice(e.target.value)}
-          />
-        </div>
+      {/* ✅ Product Name */}
+      <div className="pt-5">
+        <label className="text-sm">Product Name</label>
+        <input
+          type="text"
+          placeholder="Enter product name"
+          className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
+          value={productName}
+          onChange={(e) => setProductName(e.target.value)}
+        />
       </div>
 
+      {/* ✅ Supermarkets & Categories */}
       <div className="flex flex-col md:flex-row justify-between pt-5">
-        {/* ✅ Multi-Select Dropdown - Supermarkets */}
-        <div className="w-full md:w-[49%] pt-4 md:pt-0">
+        <div className="w-full md:w-[49%]">
           <label className="text-sm">Select Supermarkets</label>
           <Select
             isMulti
@@ -164,8 +208,6 @@ const FormSection = () => {
             className="mt-1"
           />
         </div>
-
-        {/* ✅ Multi-Select Dropdown - Categories */}
         <div className="w-full md:w-[49%] pt-4 md:pt-0">
           <label className="text-sm">Select Categories</label>
           <Select
@@ -178,12 +220,22 @@ const FormSection = () => {
         </div>
       </div>
 
+      {/* ✅ Submit Button */}
       <div className="flex items-center justify-center gap-2 mt-7">
-        <button className="border text-xs rounded-full px-8 py-2 flex items-center font-HelveticaNeueMedium text-darkColor bg-gray-200 hover:bg-gray-200">
-          Cancel
-        </button>
-        <button disabled={loading} type="submit" className="border text-xs w-[15%] justify-center rounded-full px-4 py-2 flex items-center font-HelveticaNeueMedium text-white bg-gkRedColor hover:bg-gkRedColor/90">
-          <span>Proceed</span>
+        <Link to="/dashboard/products">
+          <button
+            type="button"
+            className="border text-xs rounded-full px-8 py-2 bg-gray-200 hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </Link>
+        <button
+          disabled={loading}
+          type="submit"
+          className="border text-xs rounded-full px-4 py-2 flex items-center font-HelveticaNeueMedium text-white bg-gkRedColor hover:bg-gkRedColor/90"
+        >
+          {id ? "Update" : "Proceed"}
           {loading && (
             <div role="status" className="pl-3">
               <svg
@@ -204,7 +256,7 @@ const FormSection = () => {
               </svg>
               <span class="sr-only">Loading...</span>
             </div>
-           )}
+          )}
         </button>
       </div>
     </form>

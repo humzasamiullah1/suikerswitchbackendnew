@@ -3,7 +3,7 @@ import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import ProductCard from "./productCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { getProducts } from "../utils/firebasefunctions";
+import { getProducts, deleteProduct } from "../utils/firebasefunctions";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
@@ -193,15 +193,26 @@ const MainProucts = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    const data = await getProducts();
+    setProduct(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getProducts();
-      setProduct(data);
-      setLoading(false);
-    };
 
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this supermarket?"
+    );
+    if (confirmDelete) {
+      await deleteProduct(id);
+      fetchData();
+    }
+  };
 
   return (
     <motion.div
@@ -270,7 +281,7 @@ const MainProucts = () => {
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <ProductCard data={item} />
+            <ProductCard data={item} onDelete={() => handleDelete(item.id)}/>
           </motion.div>
         ))}
       </motion.div>

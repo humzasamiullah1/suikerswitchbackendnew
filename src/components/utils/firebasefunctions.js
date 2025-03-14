@@ -187,16 +187,6 @@ export const uploadImage = async (file) => {
   });
 };
 
-// export const getSupermarkets = async () => {
-//   try {
-//     const querySnapshot = await getDocs(collection(firestored, "supermarkets"));
-//     const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-//     return data;
-//   } catch (error) {
-//     console.error("Error fetching supermarkets: ", error);
-//     return [];
-//   }
-// };
 
 export const getSupermarkets = async () => {
   const supermarketsRef = collection(firestored, "supermarkets");
@@ -270,25 +260,146 @@ const uploadImageToFirebase = async (file) => {
 };
 
 // ✅ Firestore me Data Store Function
-export const addProductToFirebase = async (productData, images) => {
-  const imageUrls = await Promise.all(images.map((file) => uploadImageToFirebase(file))); // ✅ Sare Firebase URLs milenge
+// export const addProductToFirebase = async (productData, images) => {
+//   const imageUrls = await Promise.all(images.map((file) => uploadImageToFirebase(file))); // ✅ Sare Firebase URLs milenge
 
-  await addDoc(collection(firestored, "products"), {
-    ...productData,
-    images: imageUrls, // ✅ Firestore me Firebase ke image links store honge
-    createdAt: new Date(),
-  });
+//   await addDoc(collection(firestored, "products"), {
+//     ...productData,
+//     images: imageUrls, // ✅ Firestore me Firebase ke image links store honge
+//     createdAt: new Date(),
+//   });
+// };
+
+export const getProductById = async (id) => {
+  try {
+    const productRef = doc(firestored, "products", id);
+    const productSnap = await getDoc(productRef);
+    
+    if (productSnap.exists()) {
+      return { id: productSnap.id, ...productSnap.data() };
+    } else {
+      throw new Error("product not found");
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
+export const updateProductToFirebase = async (id, formData, newImageFiles) => {
+  try {
+    // Fetch existing document data
+    const docRef = doc(firestored, "products", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Document not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    let imageURLs = data.images || []; // Existing images
+
+    // If a new image is uploaded, replace the old one
+    if (newImageFiles.length > 0) {
+      const oldImageURL = imageURLs[0]; // First image
+
+      // Delete old image if it exists
+      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+        await deleteObject(imageRef);
+      }
+
+      // Upload new image
+      const newImageFile = newImageFiles[0];
+      const storageRef = ref(storage, `products/${id}/${newImageFile.name}`);
+      await uploadBytes(storageRef, newImageFile);
+      const newImageURL = await getDownloadURL(storageRef);
+
+      imageURLs = [newImageURL]; // Replace with new image URL
+    }
+
+    // Update Firestore document
+    await updateDoc(docRef, {
+      productName: formData.productName,
+      selectedCategories: formData.selectedCategories,
+      selectedSupermarkets: formData.selectedSupermarkets,
+      images: imageURLs,
+    });
+
+    console.log("products updated successfully");
+  } catch (error) {
+    console.error("Error updating products:", error);
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "products", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Supermarket not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("products deleted successfully");
+  } catch (error) {
+    console.error("Error deleting products:", error);
+  }
+};
+
+export const addProductToFirebase = async (productData, imageFiles) => {
+  try {
+    // Sare images upload karo aur unke URLs le lo
+    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    const docRef = doc(collection(firestored, "products"));
+    const docId = docRef.id; // Yeh document ki generated ID hai
+
+    // Firestore me data save karo
+    await setDoc(docRef, {
+      ...productData,
+      id: docId, // Document ki ID bhi save ho rahi hai
+      images: imageUrls, // Firebase se milne wale URLs yahan save honge
+      createdAt: new Date(),
+    });
+
+    return { success: true, id: docId };
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    return { success: false, error: error.message };
+  }
 };
 
 export const getProducts = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(firestored, "products"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    return data;
-  } catch (error) {
-    console.error("Error fetching supermarkets: ", error);
-    return [];
-  }
+  const productsRef = collection(firestored, "products");
+  const q = query(productsRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
+
+  const querySnapshot = await getDocs(q);
+  const products = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return products;
 };
 
 export const uploadImageToBlogFirebase = async (file, folder) => {
