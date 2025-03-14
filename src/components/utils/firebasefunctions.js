@@ -187,15 +187,28 @@ export const uploadImage = async (file) => {
   });
 };
 
+// export const getSupermarkets = async () => {
+//   try {
+//     const querySnapshot = await getDocs(collection(firestored, "supermarkets"));
+//     const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+//     return data;
+//   } catch (error) {
+//     console.error("Error fetching supermarkets: ", error);
+//     return [];
+//   }
+// };
+
 export const getSupermarkets = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(firestored, "supermarkets"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    return data;
-  } catch (error) {
-    console.error("Error fetching supermarkets: ", error);
-    return [];
-  }
+  const supermarketsRef = collection(firestored, "supermarkets");
+  const q = query(supermarketsRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
+
+  const querySnapshot = await getDocs(q);
+  const supermarkets = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return supermarkets;
 };
 
 // ✅ Categories ko Firestore mein bulk add/update karne ka function

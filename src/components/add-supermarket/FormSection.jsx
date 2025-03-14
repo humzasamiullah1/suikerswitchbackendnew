@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import LabelTag from "../reuseable/label";
 import { Plus, X } from "lucide-react";
+import { serverTimestamp } from "firebase/firestore";
 import {
   uploadFormData,
   getSupermarketById,
@@ -57,11 +58,13 @@ const FormSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const timestamp = serverTimestamp(); 
 
     const formData = {
       supermarketName,
       description,
       images,
+      timestamp
     };
 
     try {
