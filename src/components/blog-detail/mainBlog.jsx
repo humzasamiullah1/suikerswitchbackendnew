@@ -176,7 +176,7 @@ const MainBlogDetail = () => {
       {/* Header Section */}
       <div className="flex lg:flex-row border-b border-gray-100 flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
-          <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
+          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
             Blog Detail
           </p>
           <Link to={"/dashboard/add-blog"}>
