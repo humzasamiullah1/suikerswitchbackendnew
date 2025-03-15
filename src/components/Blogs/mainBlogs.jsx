@@ -3,23 +3,40 @@ import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
 import BlogCard from "./blogCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { getBlogs } from "../utils/firebasefunctions";
+import { getBlogs, deleteBlog } from "../utils/firebasefunctions";
+import WarningPopup from "../popup/warning";
+import { toast } from "react-toastify";
 
 const MainBlogs = () => {
   const [search, setSearch] = useState("");
 
   const [blogsData, setBlogsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState("");
+
+  const fetchData = async () => {
+    const data = await getBlogs();
+    setBlogsData(data);
+    console.log(blogsData)
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getBlogs();
-      setBlogsData(data);
-      setLoading(false);
-    };
-
     fetchData();
   }, []);
+
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id);
+    setWarning(true);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteBlog(id);
+    setWarning(false);
+    toast.success("Blog Deleted Successfully");
+    fetchData();
+  };
 
   return (
     <motion.div
@@ -68,10 +85,9 @@ const MainBlogs = () => {
         </div>
       </div>
 
-      {/* Blog List Section */}
-      {/* {recipeData.length > 0 && ( */}
-        <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
-          {blogsData.map((item, index) => (
+      <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+        {blogsData.length > 0 &&
+          blogsData.map((item, index) => (
             <motion.div
               key={index}
               className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
@@ -83,11 +99,21 @@ const MainBlogs = () => {
                 delay: index * 0.1,
               }}
             >
-              <BlogCard data={item} />
+              <BlogCard
+                data={item}
+                onDelete={() => openConfirmPopup(item.id)}
+              />
             </motion.div>
           ))}
-        </div>
-      {/* )} */}
+      </div>
+      {warning && (
+        <WarningPopup
+          name="blog"
+          itemId={onDeleteId}
+          onClose={() => setWarning(false)}
+          onDelete={(id) => handleDelete(id)}
+        />
+      )}
     </motion.div>
   );
 };

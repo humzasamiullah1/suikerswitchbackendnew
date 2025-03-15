@@ -259,17 +259,6 @@ const uploadImageToFirebase = async (file) => {
   return getDownloadURL(storageRef); // 🔥 YEH FIREBASE LINK DEGA
 };
 
-// ✅ Firestore me Data Store Function
-// export const addProductToFirebase = async (productData, images) => {
-//   const imageUrls = await Promise.all(images.map((file) => uploadImageToFirebase(file))); // ✅ Sare Firebase URLs milenge
-
-//   await addDoc(collection(firestored, "products"), {
-//     ...productData,
-//     images: imageUrls, // ✅ Firestore me Firebase ke image links store honge
-//     createdAt: new Date(),
-//   });
-// };
-
 export const getProductById = async (id) => {
   try {
     const productRef = doc(firestored, "products", id);
@@ -414,14 +403,121 @@ export const uploadImageToBlogFirebase = async (file, folder) => {
   }
 };
 
-// 🔹 Save Blog to Firestore
-export const saveBlogToFirestore = async (blogData) => {
+export const saveBlogToFirestore = async (formData, imageFiles) => {
   try {
-    await addDoc(collection(firestored, "blogs"), blogData);
-    return true;
+    // Sare images upload karo aur unke URLs le lo
+    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    const docRef = doc(collection(firestored, "blogs"));
+    const docId = docRef.id; // Yeh document ki generated ID hai
+
+    // Firestore me data save karo
+    await setDoc(docRef, {
+      ...formData,
+      id: docId, // Document ki ID bhi save ho rahi hai
+      images: imageUrls, // Firebase se milne wale URLs yahan save honge
+      createdAt: new Date(),
+    });
+
+    return { success: true, id: docId };
   } catch (error) {
-    console.error("Error saving blog to Firestore:", error);
-    return false;
+    console.error("Error adding document: ", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteBlog = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "blogs", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Supermarket not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("blogs deleted successfully");
+  } catch (error) {
+    console.error("Error deleting blogs:", error);
+  }
+};
+
+export const updateBlogs = async (id, formData, newImageFiles) => {
+  try {
+    // Fetch existing document data
+    const docRef = doc(firestored, "blogs", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Document not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    let imageURLs = data.images || []; // Existing images
+
+    // If a new image is uploaded, replace the old one
+    if (newImageFiles.length > 0) {
+      const oldImageURL = imageURLs[0]; // First image
+
+      // Delete old image if it exists
+      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+        await deleteObject(imageRef);
+      }
+
+      // Upload new image
+      const newImageFile = newImageFiles[0];
+      const storageRef = ref(storage, `supermarkets/${id}/${newImageFile.name}`);
+      await uploadBytes(storageRef, newImageFile);
+      const newImageURL = await getDownloadURL(storageRef);
+
+      imageURLs = [newImageURL]; // Replace with new image URL
+    }
+
+    // Update Firestore document
+    await updateDoc(docRef, {
+      content: formData.content,
+      description: formData.description,
+      images: imageURLs,
+    });
+
+    console.log("Blog updated successfully");
+  } catch (error) {
+    console.error("Error updating supermarket:", error);
+  }
+};
+
+export const getBlogsById = async (id) => {
+  try {
+    const blogstRef = doc(firestored, "blogs", id);
+    const blogsSnap = await getDoc(blogstRef);
+    
+    if (blogsSnap.exists()) {
+      return { id: blogsSnap.id, ...blogsSnap.data() };
+    } else {
+      throw new Error("Blogs not found");
+    }
+  } catch (error) {
+    console.error("Error fetching Blogs:", error);
+    throw error;
   }
 };
 
@@ -436,6 +532,7 @@ export const getBlogs = async () => {
     return [];
   }
 };
+
 
 export const fetchBlogById = async (blogId) => {
   try {
@@ -603,12 +700,22 @@ export const uploadUserImage = async (file, userId) => {
 
 
 
-export const getuserinformation = async (collectionname, document) => {
-  const items = await getDoc(
-    query(doc(firestored, collectionname, document))
-  );
-  return items.data();
-}
+export const getuserinformation = async (collectionname, documentId) => {
+  try {
+    const docRef = doc(firestored, collectionname, documentId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("User Data:", docSnap.data());
+      return docSnap.data();
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching document:", error);
+    return null;
+  }
+};
 
 export const getAllUserItems = async (table, parameter, comparison, value) => {
   const items = await getDocs(

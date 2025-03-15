@@ -50,15 +50,16 @@ function App() {
 
   useEffect(() => {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         const uid = user.uid;
-        const userInfo = getuserinformation("users", uid);
-        dispatch({ type: actionType.SET_USER, payload: userInfo });
-        setUser(userInfo);
-        if (isNewUser) {
-          setIsNewUser(false);
-          navigate("/"); // Redirect to Login page
+        try {
+          const userInfo = await getuserinformation("users", uid);
+          dispatch({ type: actionType.SET_USER, payload: userInfo });
+          setUser(userInfo);
+          console.log("userInfo", userInfo);
+        } catch (error) {
+          console.error("Error fetching user info:", error);
         }
       } else {
         dispatch({ type: actionType.SET_USER, payload: null });
@@ -66,8 +67,8 @@ function App() {
       }
       setLoading(false);
     });
-    
   }, []);
+  
 
   if (loading) {
     return (

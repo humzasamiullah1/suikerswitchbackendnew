@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
-import { v4 as uuidv4 } from "uuid"; // Import UUID for generating unique IDs
 import {
   uploadImageToBlogFirebase,
   saveBlogToFirestore,
+  getBlogsById,
+  updateBlogs
 } from "../utils/firebasefunctions";
+import { useSearchParams } from "react-router-dom";
 import { useStateValue } from "../../context/StateProvider";
+import { serverTimestamp } from "firebase/firestore";
 
 import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
@@ -19,6 +22,32 @@ const RichTextEditor = () => {
   const [loading, setLoading] = useState(false);
   const [loadingRichText, setLoadingRichText] = useState(false);
   const [{ user }] = useStateValue();
+  const [searchParams] = useSearchParams();
+  const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    if (id) {
+      fetchBlogsData(id);
+    }
+  }, [id]);
+
+  const fetchBlogsData = async (id) => {
+    setLoading(true);
+    try {
+      const data = await getBlogsById(id);
+      if (data) {
+        setContent(data.content);
+        setDescription(data.description);
+        setImages(data.images || []);
+      }
+    } catch (error) {
+      console.error("Error fetching supermarket data:", error);
+    }
+    setLoading(false);
+  };
 
   // 🔹 Handle Image Upload in SunEditor
   const handleImageUpload = async (file, info, uploadHandler) => {
@@ -45,66 +74,54 @@ const RichTextEditor = () => {
       setLoadingRichText(false);
     }
   };
+  
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
 
-  // 🔹 Handle Thumbnail Upload
-  const handleThumbnailUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setThumbnail(file);
-      setThumbnailURL(URL.createObjectURL(file)); // Show preview
-    }
+    setImages([...imageUrls]); // Replace existing image
+    setImageFiles([...files]); // Replace image file
   };
 
   const removeImage = () => {
-    setThumbnailURL(null);
+    setImages([]);
+    setImageFiles([]);
   };
 
   // 🔹 Handle Post Submission
   const handlePostClick = async () => {
-    if (!content.trim() || !description.trim() || !thumbnail) {
+    if (!content.trim() || !description.trim()) {
       toast.warning("Please fill all fields before posting!");
       return;
     }
 
     setLoading(true); // Start Loading
 
+    // ✅ Prepare Blog Data
+    const blogData = {
+      content,
+      description,
+      userId: user?.id || "Unknown",
+      userType: user?.usertype || "Guest",
+      createdAt: serverTimestamp(),
+    };
+
     try {
-      // ✅ Generate a Unique ID
-      const blogId = uuidv4(); // Generates a unique ID
+      if (id) {
+        await updateBlogs(id, blogData, imageFiles);
+        toast.success("Blog updated successfully!");
+      } else {
+        // ✅ Save Blog to Firestore
+        const success = await saveBlogToFirestore(blogData, imageFiles);
+        if (!success) throw new Error("🔥 Error saving blog to Firestore!");
 
-      // ✅ Upload Thumbnail to Firebase
-      const thumbnailUrl = await uploadImageToBlogFirebase(
-        thumbnail,
-        "thumbnails"
-      );
-      if (!thumbnailUrl) throw new Error("🚨 Error uploading thumbnail!");
-
-      setThumbnailURL(thumbnailUrl);
-
-      // ✅ Prepare Blog Data
-      const blogData = {
-        blogsId: blogId, // Include Unique ID
-        content,
-        description,
-        thumbnail: thumbnailUrl,
-        userId: user?.id || "Unknown",
-        fullName: `${user?.firstname || "Unknown"} ${
-          user?.lastname || ""
-        }`.trim(),
-        userType: user?.usertype || "Guest",
-        createdAt: new Date().toISOString(),
-      };
-
-      // ✅ Save Blog to Firestore
-      const success = await saveBlogToFirestore(blogData);
-      if (!success) throw new Error("🔥 Error saving blog to Firestore!");
-
-      // alert("🎉 Blog posted successfully!");
-      toast.success("Blog posted successfully!");
-      setContent("");
-      setDescription("");
-      setThumbnail(null);
-      setThumbnailURL("");
+        // alert("🎉 Blog posted successfully!");
+        toast.success("Blog posted successfully!");
+        setContent("");
+        setDescription("");
+        setThumbnail(null);
+        setThumbnailURL("");
+      }
     } catch (error) {
       console.error(error);
       toast.error(error.message);
@@ -118,21 +135,23 @@ const RichTextEditor = () => {
     <div className="bg-white rounded-[30px] shadow-md px-5 mb-5 lg:mb-0 h-full flex flex-col">
       <div className="h-[85%] overflow-y-scroll panelScroll">
         <div className="px-2 pt-7">
-          <h2 className="text-lg font-medium pb-2">Thumbnail Image</h2>
+          <h2 className="text-base font-HelveticaNeueMedium pb-2">
+            {id ? "Update Supermarket" : "Upload Logo"}
+          </h2>
           <div className="flex space-x-2">
-            {thumbnailURL ? (
+            {images.length > 0 ? (
               <div className="relative w-20 h-20 rounded-lg overflow-hidden">
                 <img
-                  src={thumbnailURL}
+                  src={images[0]}
                   alt="Uploaded"
                   className="w-full h-full object-cover"
                 />
                 <button
                   type="button"
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                   onClick={removeImage}
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-md hover:bg-gray-200"
                 >
-                  <X size={16} className="text-red-500" />
+                  <X size={16} />
                 </button>
               </div>
             ) : (
@@ -142,7 +161,7 @@ const RichTextEditor = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleThumbnailUpload}
+                  onChange={handleImageChange}
                 />
               </label>
             )}
@@ -163,7 +182,6 @@ const RichTextEditor = () => {
 
         {/* 🔹 Rich Text Editor */}
         <div className="flex-1 h-full overflow-hidden relative">
-          
           {loadingRichText && (
             <main className="w-full h-screen backdrop-blur-sm bg-black/40 absolute inset-0 z-50 flex items-center justify-center">
               <section className="w-[90%] sm:w-[65%] md:w-[50%] lg:w-[40%] xl:w-[30%] bg-texture myshades rounded-[31px] mx-auto">
