@@ -16,6 +16,7 @@ const MainProucts = () => {
   const [search, setSearch] = useState("");
 
   const [product, setProduct] = useState([]);
+  const [productCache, setProductCache] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("category");
@@ -29,6 +30,7 @@ const MainProucts = () => {
   const fetchData = async () => {
     const data = await getProducts();
     setProduct(data);
+    setProductCache(data);
     setLoading(false);
   };
 
@@ -51,9 +53,9 @@ const MainProucts = () => {
   };
 
   const openConfirmPopup = (id) => {
-    setOnDeleteId(id)
+    setOnDeleteId(id);
     setWarning(true);
-  }
+  };
 
   useEffect(() => {
     fetchCategories();
@@ -64,13 +66,41 @@ const MainProucts = () => {
   const handleDelete = async (id) => {
     await deleteProduct(id);
     setWarning(false);
-    toast.success("Supermarket Delete Successfully");
+    toast.success("Product Delete Successfully");
     fetchData();
   };
 
   const filteredProduct = product.filter((product) =>
     product.productName.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleFilter = () => {
+    let filtered = product;
+    if (selectedCategories.length === 0 && selectedSupermarkets.length === 0) {
+      setProduct(productCache);
+      return;
+    }
+
+    // Filter by Categories
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((item) =>
+        item.selectedCategories.some((category) =>
+          selectedCategories.includes(category)
+        )
+      );
+    }
+
+    // Filter by Supermarkets
+    if (selectedSupermarkets.length > 0) {
+      filtered = filtered.filter((item) =>
+        item.selectedSupermarkets.some((supermarket) =>
+          selectedSupermarkets.includes(supermarket)
+        )
+      );
+    }
+
+    setProduct(filtered);
+  };
 
   return (
     <motion.div
@@ -116,21 +146,21 @@ const MainProucts = () => {
 
               {/* Dropdown */}
               {isOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
+                <div className="absolute right-[-60px] mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
                   {/* Tabs */}
                   <div className="flex border-b">
                     <button
-                      className={`w-1/2 py-2 text-center ${
-                        activeTab === "category" ? "bg-gray-200 font-bold" : ""
+                      className={`w-1/2 py-2 text-sm text-center font-HelveticaNeueMedium ${
+                        activeTab === "category" ? "bg-gray-200" : ""
                       }`}
                       onClick={() => setActiveTab("category")}
                     >
                       Categories
                     </button>
                     <button
-                      className={`w-1/2 py-2 text-center ${
+                      className={`w-1/2 py-2 text-sm text-center font-HelveticaNeueMedium ${
                         activeTab === "supermarket"
-                          ? "bg-gray-200 font-bold"
+                          ? "bg-gray-200"
                           : ""
                       }`}
                       onClick={() => setActiveTab("supermarket")}
@@ -144,7 +174,7 @@ const MainProucts = () => {
                     {activeTab === "category" ? (
                       <ul>
                         {categories.map((category, i) => (
-                          <li key={i} className="flex items-center gap-2 py-1">
+                          <li key={i} className="flex items-center text-[15px] font-HelveticaNeueRegular gap-2 py-1">
                             <input
                               type="checkbox"
                               className="w-4 h-4"
@@ -172,7 +202,7 @@ const MainProucts = () => {
                         {supermarkets.map((supermarket) => (
                           <li
                             key={supermarket.id}
-                            className="flex items-center gap-2 py-1"
+                            className="flex items-center gap-2 text-[15px] font-HelveticaNeueRegular py-1"
                           >
                             <input
                               type="checkbox"
@@ -203,17 +233,19 @@ const MainProucts = () => {
                   {/* Buttons */}
                   <div className="flex justify-between p-3 border-t">
                     <button
-                      className="text-sm text-gray-600 hover:underline"
+                      className="text-sm text-gray-600 font-HelveticaNeueMedium hover:underline"
                       onClick={() => {
                         setSelectedCategories([]);
                         setSelectedSupermarkets([]);
+                        setProduct(productCache);
                       }}
                     >
                       Clear
                     </button>
                     <button
-                      className="bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700"
+                      className="bg-gkRedColor text-white px-4 py-1 rounded-lg text-sm font-HelveticaNeueMedium hover:bg-gkRedColor/90"
                       onClick={() => {
+                        handleFilter();
                         console.log("Selected Categories:", selectedCategories);
                         console.log(
                           "Selected Supermarkets:",
@@ -230,9 +262,11 @@ const MainProucts = () => {
             </div>
 
             {/* Add Product Button */}
-            <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
-              <p className="text-sm pr-3">Add New Product</p>
-            </button>
+            <Link to={"/dashboard/add-product"}>
+              <button className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
+                <p className="text-sm pr-3">Add New Product</p>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -261,7 +295,10 @@ const MainProucts = () => {
               }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <ProductCard data={item} onDelete={() => openConfirmPopup(item.id)} />
+              <ProductCard
+                data={item}
+                onDelete={() => openConfirmPopup(item.id)}
+              />
             </motion.div>
           ))
         ) : (
