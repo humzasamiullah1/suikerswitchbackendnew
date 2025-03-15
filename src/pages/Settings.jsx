@@ -10,7 +10,7 @@ function Settings() {
           subHeading="Explore information and activity about your property"
         />
       </div>
-      <div className="h-[85%] pt-5 lg:pt-0 lg:pb-2 overflow-scroll">
+      <div className="h-[85%] pt-5 lg:pt-0 lg:pb-2 overflow-scroll panelScroll">
         <MainSettings/>
       </div>
     </div>

@@ -121,18 +121,7 @@ const ChangePassword = () => {
           </div>
         </div>
 
-        {/* New Password */}
-        {/* <div className="mb-3">
-          <label className="block text-sm font-medium">New Password</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-            required
-          />
-        </div> */}
-        <div className="w-full mt-1">
+        <div className="w-full mt-3">
           <LabelTag name="New Password" classes="!text-xs" />
           <div className="relative">
             <input
@@ -152,21 +141,7 @@ const ChangePassword = () => {
           </div>
         </div>
 
-        {/* Confirm New Password */}
-        {/* <div className="mb-3">
-          <label className="block text-sm font-medium">
-            Confirm New Password
-          </label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-            required
-          />
-        </div> */}
-
-        <div className="w-full mt-1">
+        <div className="w-full mt-3">
           <LabelTag name="Confirm New Password" classes="!text-xs" />
           <div className="relative">
             <input
@@ -189,7 +164,7 @@ const ChangePassword = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full mt-4 py-2 rounded-full font-HelveticaNeueMedium flex justify-center items-center bg-gkRedColor text-white hover:bg-gkRedColor/90"
+          className="w-full mt-7 py-2 rounded-full font-HelveticaNeueMedium flex justify-center items-center bg-gkRedColor text-white hover:bg-gkRedColor/90"
         >
           <span>Update Password</span>
           {loading && (
@@ -215,7 +190,7 @@ const ChangePassword = () => {
           )}
         </button>
       </form>
-      <div className="border-2 border-gray-100 rounded-xl px-3 mt-5">
+      {/* <div className="border-2 border-gray-100 rounded-xl px-3 mt-5">
         <div className="pt-3">
           <h1 className="font-HelveticaNeueMedium text-darkColor pb-2 text-base border-b-2 border-gray-100">
             Notifications
@@ -287,7 +262,7 @@ const ChangePassword = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

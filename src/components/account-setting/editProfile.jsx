@@ -112,7 +112,7 @@ const EditProfile = () => {
           </div>
         </div>
 
-        <div className="w-full mt-3">
+        <div className="w-full mt-3 px-2">
           <LabelTag name="First Name" classes="!text-xs" />
           <input
             type="text"
@@ -124,7 +124,7 @@ const EditProfile = () => {
           />
         </div>
 
-        <div className="w-full pt-1">
+        <div className="w-full pt-1 px-2">
           <LabelTag name="Last Name" classes="!text-xs" />
           <input
             type="text"
@@ -136,7 +136,7 @@ const EditProfile = () => {
           />
         </div>
 
-        <div className="w-full pt-1">
+        <div className="w-full pt-1 px-2">
           <LabelTag name="Date of Birth" classes="!text-xs" />
           <input
             type="date"
@@ -147,7 +147,7 @@ const EditProfile = () => {
           />
         </div>
 
-        <div className="w-full pt-1">
+        <div className="w-full pt-1 px-2">
           <LabelTag name="Phone Number" classes="!text-xs" />
           <input
             type="text"
@@ -159,10 +159,10 @@ const EditProfile = () => {
           />
         </div>
 
-        <div className="w-full pt-1">
+        <div className="w-full pt-1 px-2">
           <LabelTag name="Email" classes="!text-xs" />
           <input
-            type="email"
+            type="text"
             name="email"
             value={userData.email}
             onChange={handleInputChange}
