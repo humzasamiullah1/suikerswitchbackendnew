@@ -1,6 +1,6 @@
 import React from "react";
-import ImageTag from "../../components/reuseable/imageTag";
-import { Ellipsis, ThumbsUp, MessageCircle } from "lucide-react";
+import ImageTag from "../reuseable/imageTag";
+import { Ellipsis } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const timeAgo = (timestamp) => {
@@ -28,68 +28,47 @@ const timeAgo = (timestamp) => {
   return "Just now";
 };
 
-const BlogCard = ({ data, onLikePopup, onCommentPopup }) => {
+const BlogCard = ({ data, onLikePopup }) => {
+  const imageUrl = data.thumbnail?.startsWith("http")
+    ? data.thumbnail
+    : "/assets/images/abc.png";
   return (
-    <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
+    <div className="rounded-xl w-full px-4 py-3 mt-3">
+      
       <Link to={`/dashboard/blogs-detail/${data.blogsId}`}>
-        <div className="flex justify-between items-center border-b-2 border-darkColor/20 pb-3">
-          <div className="w-[60%] flex items-center">
-            <ImageTag
-              path="/assets/images/blog.png"
-              classes="size-10"
-              altText="logo"
-            />
-            <div className="pl-3">
-              <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                {data.fullName}
-              </p>
-              <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
-                {timeAgo(data.createdAt)}
-              </p>
+        <div
+          className="bg-cover bg-no-repeat p-4 rounded-xl"
+          style={{
+            backgroundImage: `url("${imageUrl}")`,
+          }}
+        >
+          <div className="flex justify-between items-center border-b-2 border-darkColor/20 pb-3">
+            <div className="w-[60%] flex items-center">
+              <ImageTag
+                path="/assets/images/blog.png"
+                classes="size-10"
+                altText="logo"
+              />
+              <div className="pl-3">
+                <p className="font-HelveticaNeueMedium text-white text-base">
+                  {data.fullName}
+                </p>
+                <p className="font-HelveticaNeueMedium text-white text-xs">
+                  {timeAgo(data.createdAt)}
+                </p>
+              </div>
+            </div>
+            <div className="w-[40%] flex justify-end text-darkColor">
+              <Ellipsis size={30} className="text-white" />
             </div>
           </div>
-          <div className="w-[40%] flex justify-end text-darkColor">
-            <Ellipsis size={30} />
+          <div className="pt-28">
+            <h1 className="font-HelveticaNeueMedium text-2xl text-white">
+              {data.description}
+            </h1>
           </div>
         </div>
-        <p className="font-HelveticaNeueRegular text-darkColor text-sm py-4">
-          {data.description}
-        </p>
-        <ImageTag
-          path={data.thumbnail}
-          classes="w-full h-60 rounded-2xl object-cover"
-          altText="logo"
-        />
       </Link>
-      { data.IsLike &&
-        <div className="flex pt-10">
-        <div className="w-[20%] flex text-darkColor">
-          <ThumbsUp size={20} />
-          <MessageCircle size={20} className="ml-6" />
-        </div>
-        <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex justify-end">
-          <div
-            className="flex items-center pr-5 cursor-pointer"
-            onClick={onLikePopup}
-          >
-            <ThumbsUp size={18} />
-            <p className="pl-2 text-sm">{data.like} Likes</p>
-          </div>
-          <div className="flex items-center pr-5 cursor-pointer" onClick={onCommentPopup}>
-            <MessageCircle size={18} />
-            <p className="pl-2 text-sm">{data.comments} Comments</p>
-          </div>
-        </div>
-        <div>
-          <ImageTag
-            path="/assets/images/userprofile.png"
-            classes="size-8 rounded-full object-cover"
-            altText="logo"
-          />
-        </div>
-      </div>
-      }
-      
     </div>
   );
 };
