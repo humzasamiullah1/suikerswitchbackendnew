@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
 import { useParams } from "react-router-dom";
 import {
-  fetchBlogById,
-  fetchAllBlogs,
+  getBlogsById,
+  fetchUserById,
+  deleteBlog,
 } from "../../components/utils/firebasefunctions";
 import {
-  Search,
-  Menu,
   CircleArrowDown,
   Plus,
   Ellipsis,
@@ -18,8 +17,13 @@ import {
   Send,
   Paperclip,
   Reply,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import ImageTag from "../reuseable/imageTag";
+import { Link, useNavigate } from "react-router-dom";
+import WarningPopup from "../popup/warning";
+import { toast } from "react-toastify";
 
 const commentsData = [
   {
@@ -41,26 +45,72 @@ const commentsData = [
 ];
 
 const MainBlogDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams(); // URL se id get krni
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [blog, setBlog] = useState(null);
+  const [loading, setIsLoading] = useState(false);
+  const [userData, setUserData] = useState({
+    firstname: "",
+    lastname: "",
+    dob: "",
+    phoneNumber: "",
+    email: "",
+    profilePicture: "",
+  });
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+  const fetchBlog = async () => {
+    if (!id) return;
 
+    const blogData = await getBlogsById(id); // Function call
+    setBlog(blogData);
+    fetchUserData(blogData.userId);
+  };
   useEffect(() => {
-    const fetchBlog = async () => {
-      if (!id) return;
-
-      const blogData = await fetchBlogById(id); // Function call
-      setBlog(blogData);
-      console.log("hassan", blog);
-    };
-
     fetchBlog();
   }, [id]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const fetchUserData = async (userId) => {
+    if (!userId) return;
+
+    const userData = await fetchUserById(userId);
+    console.log("rehan", userData);
+
+    if (userData) {
+      setUserData({
+        firstname: userData.firstname || "",
+        lastname: userData.lastname || "",
+        dob: userData.dob || "",
+        phoneNumber: userData.phoneNumber || "",
+        email: userData.email || "",
+        profilePicture: userData.profilePicture || "",
+      });
+      setIsLoading(true);
+    }
+  };
 
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
   const [isCommentPopup, setIsCommentPopup] = useState(false);
   const [comments, setComments] = useState(commentsData);
   const [commentText, setCommentText] = useState("");
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState("");
 
   const handleAddComment = () => {
     if (commentText.trim() === "") return;
@@ -76,8 +126,10 @@ const MainBlogDetail = () => {
   };
 
   const timeAgo = (timestamp) => {
+    if (!timestamp || !timestamp.seconds) return "Invalid date";
+
+    const createdAt = new Date(timestamp.seconds * 1000); // Convert Firebase Timestamp to JavaScript Date
     const now = new Date();
-    const createdAt = new Date(timestamp);
     const diffInSeconds = Math.floor((now - createdAt) / 1000);
 
     const intervals = [
@@ -100,6 +152,20 @@ const MainBlogDetail = () => {
     return "Just now";
   };
 
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id);
+    setWarning(true);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteBlog(id);
+    setWarning(false);
+    toast.success("Blog Deleted Successfully");
+    setTimeout(() => {
+      navigate("/dashboard/blogs");
+    }, 1000);
+  };
+
   return (
     <motion.div
       className="bg-white rounded-[30px] shadow-md px-5 h-full"
@@ -113,42 +179,28 @@ const MainBlogDetail = () => {
           <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
             Blog Detail
           </p>
-          <motion.div
-            className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Plus size={20} />
-          </motion.div>
+          <Link to={"/dashboard/add-blog"}>
+            <motion.div
+              className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Plus size={20} />
+            </motion.div>
+          </Link>
         </div>
         <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
-            </div>
-            <motion.button
-              className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <p className="text-sm pr-3">Filters</p>
-              <Menu className="h-4 w-4" />
-            </motion.button>
-            <motion.button
-              className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <p className="text-sm pr-3">Add New Blog</p>
-              <CircleArrowDown className="h-4 w-4" />
-            </motion.button>
+            <Link to={"/dashboard/add-blog"}>
+              <motion.button
+                className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <p className="text-sm pr-3">Add New Blog</p>
+                <CircleArrowDown className="h-4 w-4" />
+              </motion.button>
+            </Link>
           </div>
         </div>
       </div>
@@ -165,48 +217,63 @@ const MainBlogDetail = () => {
           <div className=" mt-2">
             <div className="flex justify-between items-center border-b border-darkColor/20 py-3 px-2">
               <div className="w-[60%] flex items-center">
-                <ImageTag
-                  path="/assets/images/blog.png"
-                  classes="size-10"
-                  altText="logo"
-                />
-                <div className="pl-3">
-                  <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                    {blog?.fullName}
-                  </p>
-                  <p className="font-HelveticaNeueMedium text-darkColor text-xs">
-                    {timeAgo(blog?.createdAt)}
-                  </p>
-                </div>
+                {loading && (
+                  <>
+                    <ImageTag
+                      path={
+                        userData.profilePicture !== ""
+                          ? userData.profilePicture
+                          : "/assets/images/default-image.png"
+                      }
+                      classes="size-10 rounded-full object-cover"
+                      altText="logo"
+                    />
+                    <div className="pl-3">
+                      <p className="font-HelveticaNeueMedium text-darkColor text-base">
+                        {userData.firstname} {userData.lastname}
+                      </p>
+                      <p className="font-HelveticaNeueMedium text-darkColor text-xs">
+                        {timeAgo(blog?.createdAt)}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="w-[40%] flex justify-end text-darkColor">
-                <Ellipsis size={30} />
+              <div
+                className="w-[40%] flex justify-end text-darkColor relative"
+                ref={dropdownRef}
+              >
+                <Ellipsis
+                  size={30}
+                  className="cursor-pointer"
+                  onClick={toggleMenu}
+                />
+                {isOpen && (
+                  <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
+                    <ul className="py-2 pl-4 w-full">
+                      <Link to={`/dashboard/add-blog?id=${blog.id}`}>
+                        <li className=" text-blue-500 border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
+                          <Pencil size={18} />
+                          <span className="pl-3">Edit</span>
+                        </li>
+                      </Link>
+                      <li
+                        className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                        onClick={() => openConfirmPopup(blog.id)}
+                      >
+                        <Trash2 size={18} />
+                        <span className="pl-3">Delete</span>
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
             <div
               className="font-HelveticaNeueRegular text-darkColor text-sm pt-4 px-2"
               dangerouslySetInnerHTML={{ __html: blog?.content }}
-            >
-              {/* <p>
-                How Ketchup Revolutionized How Food Is Grown, Processed and
-                Regulated | Smithsonian and typesetting industry. Lorem Ipsum
-                has been the industry's standard dummy text ever since the
-                1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book.
-              </p>
-              <p className="pt-3">
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book.
-              </p> */}
-            </div>
-            {/* <div className="px-2">
-              <ImageTag
-                path="/assets/images/recipes.png"
-                classes="w-full h-60 rounded-2xl mt-6 object-cover"
-                altText="logo"
-              />
-            </div> */}
+            ></div>
+
             {blog?.isLike && (
               <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
                 <div
@@ -313,6 +380,15 @@ const MainBlogDetail = () => {
           </div>
         )}
       </div>
+
+      {warning && (
+        <WarningPopup
+          name="blog"
+          itemId={onDeleteId}
+          onClose={() => setWarning(false)}
+          onDelete={(id) => handleDelete(id)}
+        />
+      )}
 
       {isLikePopup && (
         <LikePopup

@@ -18,7 +18,7 @@ const MainBlogs = () => {
   const fetchData = async () => {
     const data = await getBlogs();
     setBlogsData(data);
-    console.log(blogsData)
+    console.log(blogsData);
     setLoading(false);
   };
 
@@ -51,13 +51,15 @@ const MainBlogs = () => {
           <p className="font-HelveticaNeueMedium text-darkColor text-lg">
             All Blogs
           </p>
-          <motion.div
-            className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Plus size={20} />
-          </motion.div>
+          <Link to={"/dashboard/add-blog"}>
+            <motion.div
+              className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Plus size={20} />
+            </motion.div>
+          </Link>
         </div>
         <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
