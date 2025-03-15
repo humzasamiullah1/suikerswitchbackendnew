@@ -9,6 +9,8 @@ import {
   getSupermarkets,
   getCategoriesFromFirebase,
 } from "../utils/firebasefunctions";
+import WarningPopup from "../popup/warning";
+import { toast } from "react-toastify";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
@@ -21,6 +23,8 @@ const MainProucts = () => {
   const [selectedSupermarkets, setSelectedSupermarkets] = useState([]);
   const [categories, setCategories] = useState([]);
   const [supermarkets, setSupermarkets] = useState([]);
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState("");
 
   const fetchData = async () => {
     const data = await getProducts();
@@ -46,6 +50,11 @@ const MainProucts = () => {
     }
   };
 
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id)
+    setWarning(true);
+  }
+
   useEffect(() => {
     fetchCategories();
     fetchSupermarkets();
@@ -53,13 +62,10 @@ const MainProucts = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this supermarket?"
-    );
-    if (confirmDelete) {
-      await deleteProduct(id);
-      fetchData();
-    }
+    await deleteProduct(id);
+    setWarning(false);
+    toast.success("Supermarket Delete Successfully");
+    fetchData();
   };
 
   const filteredProduct = product.filter((product) =>
@@ -255,7 +261,7 @@ const MainProucts = () => {
               }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <ProductCard data={item} onDelete={() => handleDelete(item.id)} />
+              <ProductCard data={item} onDelete={() => openConfirmPopup(item.id)} />
             </motion.div>
           ))
         ) : (
@@ -264,6 +270,14 @@ const MainProucts = () => {
           </p>
         )}
       </motion.div>
+      {warning && (
+        <WarningPopup
+          name="product"
+          itemId={onDeleteId}
+          onClose={() => setWarning(false)}
+          onDelete={(id) => handleDelete(id)}
+        />
+      )}
     </motion.div>
   );
 };

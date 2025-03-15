@@ -4,11 +4,15 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Card from "./card";
 import { getSupermarkets, deleteSupermarket } from "../utils/firebasefunctions";
+import WarningPopup from "../popup/warning"
+import { toast } from "react-toastify";
 
 const MainSuperMarket = () => {
   const [search, setSearch] = useState("");
   const [supermarkets, setSupermarkets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState('');
 
   const fetchData = async () => {
     const data = await getSupermarkets();
@@ -20,20 +24,30 @@ const MainSuperMarket = () => {
     fetchData();
   }, []);
 
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id)
+    setWarning(true);
+  }
+
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this supermarket?"
-    );
-    if (confirmDelete) {
+    // const confirmDelete = window.confirm(
+    //   "Are you sure you want to delete this supermarket?"
+    // );
+    // if (confirmDelete) {
       await deleteSupermarket(id);
+      setWarning(false);
+      toast.success('Supermarket Delete Successfully')
       fetchData();
-    }
+    // }
   };
 
   // 🔹 Filter supermarkets based on search value
-  const filteredSupermarkets = supermarkets.filter((supermarket) =>
-    supermarket.supermarketName.toLowerCase().includes(search.toLowerCase()) ||
-    supermarket.description.toLowerCase().includes(search.toLowerCase())
+  const filteredSupermarkets = supermarkets.filter(
+    (supermarket) =>
+      supermarket.supermarketName
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      supermarket.description.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -100,13 +114,18 @@ const MainSuperMarket = () => {
               }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <Card data={item} onDelete={() => handleDelete(item.id)} />
+              {/* handleDelete(item.id) */}
+              <Card data={item} onDelete={() => openConfirmPopup(item.id)} />
             </motion.div>
           ))
         ) : (
-          <p className="text-center text-gray-500 w-full mt-10">No data found</p>
+          <p className="text-center text-gray-500 w-full mt-10">
+            No data found
+          </p>
         )}
       </motion.div>
+      { warning &&
+        <WarningPopup name='supermarket' itemId={onDeleteId} onClose={() => setWarning(false) } onDelete={(id) => handleDelete(id)}/>}
     </motion.div>
   );
 };
