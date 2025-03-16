@@ -5,24 +5,28 @@ import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { getRecipe } from "../utils/firebasefunctions";
+import { getRecipe, deleteRecipe } from "../utils/firebasefunctions";
+import WarningPopup from "../../components/popup/warning"
+import { toast } from "react-toastify";
 
 const MainRecipies = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
   const [isCommentPopup, setIsCommentPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState("");
 
   const [recipeData, setRecipeData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+  const fetchData = async () => {
+    const data = await getRecipe();
+    console.log("hassan", data);
+    setRecipeData(data);
+    setLoading(false);
+    console.log(recipeData);
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getRecipe();
-      console.log("hassan", data);
-      setRecipeData(data);
-      setLoading(false);
-      console.log(recipeData);
-    };
+   
 
     fetchData();
   }, []);
@@ -46,6 +50,24 @@ const MainRecipies = () => {
     setIsCommentPopup(false);
     document.body.style.overflow = "auto"; // Page scroll wapas enable
   };
+
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id);
+    setWarning(true);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteRecipe(id);
+    setWarning(false);
+    toast.success("Blog Deleted Successfully");
+    fetchData();
+  };
+
+  const filteredRecipe = recipeData.filter(
+    (recipe) =>
+      recipe.description.toLowerCase().includes(search.toLowerCase()) ||
+      recipe.content.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <motion.div
@@ -96,30 +118,45 @@ const MainRecipies = () => {
 
       {/* Blog List Section */}
       <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
-        {recipeData.map((item, index) => (
-          <motion.div
-            key={index}
-            className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.4,
-              ease: "easeOut",
-              delay: index * 0.1,
-            }}
-            viewport={{ once: true }}
-          >
-            {/* {item.id}
+        {filteredRecipe.length > 0 ? (
+          filteredRecipe.map((item, index) => (
+            <motion.div
+              key={index}
+              className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.4,
+                ease: "easeOut",
+                delay: index * 0.1,
+              }}
+              viewport={{ once: true }}
+            >
+              {/* {item.id}
             <Link to={`/dashboard/blogs-detail/${item.id}`}> */}
               <RecipiesCard
                 data={item}
                 onLikePopup={opeLikePopup}
                 onCommentPopup={opeCommentsPopup}
+                onDelete={() => openConfirmPopup(item.id)}
               />
-            {/* </Link> */}
-          </motion.div>
-        ))}
+              {/* </Link> */}
+            </motion.div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500 w-full mt-10">
+            No data found
+          </p>
+        )}
       </div>
+      {warning && (
+        <WarningPopup
+          name="recipe"
+          itemId={onDeleteId}
+          onClose={() => setWarning(false)}
+          onDelete={(id) => handleDelete(id)}
+        />
+      )}
       {isLikePopup && <LikePopup onClose={closeLikePopup} />}
 
       {isCommentPopup && <CommentsPopup onClose={closeCommentsPopup} />}

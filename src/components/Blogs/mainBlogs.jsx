@@ -38,6 +38,12 @@ const MainBlogs = () => {
     fetchData();
   };
 
+  const filteredBlog = blogsData.filter(
+    (blog) =>
+      blog.description.toLowerCase().includes(search.toLowerCase()) ||
+      blog.content.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <motion.div
       className="bg-white rounded-[30px] shadow-md px-5 h-full"
@@ -88,8 +94,8 @@ const MainBlogs = () => {
       </div>
 
       <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
-        {blogsData.length > 0 &&
-          blogsData.map((item, index) => (
+        {filteredBlog.length > 0 ? (
+          filteredBlog.map((item, index) => (
             <motion.div
               key={index}
               className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
@@ -106,7 +112,12 @@ const MainBlogs = () => {
                 onDelete={() => openConfirmPopup(item.id)}
               />
             </motion.div>
-          ))}
+          ))
+        ) : (
+          <p className="text-center text-gray-500 w-full mt-10">
+            No data found
+          </p>
+        )}
       </div>
       {warning && (
         <WarningPopup

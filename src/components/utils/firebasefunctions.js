@@ -652,6 +652,37 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
   }
 };
 
+export const deleteRecipe = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "recipe", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Recipe not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("Recipe deleted successfully");
+  } catch (error) {
+    console.error("Error deleting Recipe:", error);
+  }
+};
+
 export const getRecipe = async () => {
   try {
     const querySnapshot = await getDocs(collection(firestored, "recipe"));
