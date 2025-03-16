@@ -1,141 +1,156 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { v4 as uuidv4 } from "uuid"; // Import UUID for generating unique IDs
 import {
   uploadImageToRecipeFirebase,
   saveRecipeToFirestore,
+  getRecipeById,
+  updateRecipe,
 } from "../utils/firebasefunctions";
 import { useStateValue } from "../../context/StateProvider";
+import { useSearchParams } from "react-router-dom";
 
 import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
+import { serverTimestamp } from "firebase/firestore";
 
 const RichTextEditor = () => {
-
+  const [searchParams] = useSearchParams();
+  const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
   const [content, setContent] = useState("");
-    const [description, setDescription] = useState("");
-    const [thumbnail, setThumbnail] = useState(null);
-    const [thumbnailURL, setThumbnailURL] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [loadingRichText, setLoadingRichText] = useState(false);
-    const [{ user }] = useStateValue();
-  
-    // 🔹 Handle Image Upload in SunEditor
-    const handleImageUpload = async (file, info, uploadHandler) => {
-      setLoadingRichText(true);
-      try {
-        const imageUrl = await uploadImageToRecipeFirebase(file, "recipeImages");
-        if (imageUrl) {
-          uploadHandler({
-            result: [{ url: imageUrl, name: file.name }],
-          });
-  
-          // ✅ Remove base64 image & insert Firebase URL
-          setContent((prevContent) =>
-            prevContent.replace(
-              /<img[^>]+src=["'](data:image\/[^"']+)["']/g,
-              `<img src="${imageUrl}"`
-            )
-          );
-          setLoadingRichText(false);
-        }
-      } catch (error) {
-        console.error("Image upload failed:", error);
-        uploadHandler({ errorMessage: "Image upload failed!" });
+  const [description, setDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailURL, setThumbnailURL] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loadingRichText, setLoadingRichText] = useState(false);
+  const [{ user }] = useStateValue();
+
+  const id = searchParams.get("id");
+  // 🔹 Handle Image Upload in SunEditor
+  const handleImageUpload = async (file, info, uploadHandler) => {
+    setLoadingRichText(true);
+    try {
+      const imageUrl = await uploadImageToRecipeFirebase(file, "recipeImages");
+      if (imageUrl) {
+        uploadHandler({
+          result: [{ url: imageUrl, name: file.name }],
+        });
+
+        // ✅ Remove base64 image & insert Firebase URL
+        setContent((prevContent) =>
+          prevContent.replace(
+            /<img[^>]+src=["'](data:image\/[^"']+)["']/g,
+            `<img src="${imageUrl}"`
+          )
+        );
         setLoadingRichText(false);
       }
-    };
-  
-    // 🔹 Handle Thumbnail Upload
-    const handleThumbnailUpload = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        setThumbnail(file);
-        setThumbnailURL(URL.createObjectURL(file)); // Show preview
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      uploadHandler({ errorMessage: "Image upload failed!" });
+      setLoadingRichText(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchRecipeData(id);
+    }
+  }, [id]);
+
+  const fetchRecipeData = async (id) => {
+    setLoading(true);
+    try {
+      const data = await getRecipeById(id);
+      if (data) {
+        setContent(data.content);
+        setDescription(data.description);
+        setImages(data.images || []);
       }
+    } catch (error) {
+      console.error("Error fetching supermarket data:", error);
+    }
+    setLoading(false);
+  };
+
+  // 🔹 Handle Thumbnail Upload
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+
+    setImages([...imageUrls]); // Replace existing image
+    setImageFiles([...files]); // Replace image file
+  };
+
+  const removeImage = () => {
+    setImages([]);
+    setImageFiles([]);
+  };
+
+  // 🔹 Handle Post Submission
+  const handlePostClick = async () => {
+    if (!content.trim() || !description.trim()) {
+      toast.warning("Please fill all fields before posting!");
+      return;
+    }
+
+    setLoading(true); // Start Loading
+    const recipeData = {
+      content,
+      description,
+      userId: user?.id || "Unknown",
+      userType: user?.usertype || "Guest",
+      createdAt: serverTimestamp(),
     };
-  
-    const removeImage = () => {
-      setThumbnailURL(null);
-    };
-  
-    // 🔹 Handle Post Submission
-    const handlePostClick = async () => {
-      if (!content.trim() || !description.trim() || !thumbnail) {
-        toast.warning("Please fill all fields before posting!");
-        return;
-      }
-  
-      setLoading(true); // Start Loading
-  
-      try {
-        // ✅ Generate a Unique ID
-        const blogId = uuidv4(); // Generates a unique ID
-  
-        // ✅ Upload Thumbnail to Firebase
-        const thumbnailUrl = await uploadImageToRecipeFirebase(
-          thumbnail,
-          "thumbnails"
-        );
-        if (!thumbnailUrl) throw new Error("🚨 Error uploading thumbnail!");
-  
-        setThumbnailURL(thumbnailUrl);
-  
-        // ✅ Prepare Blog Data
-        const recipeData = {
-          recipeId: blogId, // Include Unique ID
-          content,
-          description,
-          thumbnail: thumbnailUrl,
-          userId: user?.id || "Unknown",
-          fullName: `${user?.firstname || "Unknown"} ${
-            user?.lastname || ""
-          }`.trim(),
-          userType: user?.usertype || "Guest",
-          createdAt: new Date().toISOString(),
-        };
-  
+
+    try {
+      if (id) {
+        await updateRecipe(id, recipeData, imageFiles);
+        toast.success("Recipe updated successfully!");
+      } else {
         // ✅ Save Blog to Firestore
-        const success = await saveRecipeToFirestore(recipeData);
-        if (!success) throw new Error("🔥 Error saving blog to Firestore!");
-  
+        const success = await saveRecipeToFirestore(recipeData, imageFiles);
+        if (!success) throw new Error("🔥 Error saving Recipe to Firestore!");
+
         // alert("🎉 Blog posted successfully!");
         toast.success("Recipe posted successfully!");
         setContent("");
         setDescription("");
         setThumbnail(null);
         setThumbnailURL("");
-      } catch (error) {
-        console.error(error);
-        toast.error(error.message);
-        // alert(error.message);
-      } finally {
-        setLoading(false); // Stop Loading
       }
-    };
-  
-
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+      // alert(error.message);
+    } finally {
+      setLoading(false); // Stop Loading
+    }
+  };
 
   return (
     <div className="bg-white rounded-[30px] shadow-md px-5 mb-5 lg:mb-0 h-full flex flex-col">
       <div className="h-[85%] overflow-y-scroll panelScroll">
         <div className="px-2 pt-7">
-          <h2 className="text-lg font-medium pb-2">Thumbnail Image</h2>
+          <h2 className="text-base font-HelveticaNeueMedium pb-2">
+            {id ? "Update Recipe" : "Upload Logo"}
+          </h2>
           <div className="flex space-x-2">
-            {thumbnailURL ? (
+            {images.length > 0 ? (
               <div className="relative w-20 h-20 rounded-lg overflow-hidden">
                 <img
-                  src={thumbnailURL}
+                  src={images[0]}
                   alt="Uploaded"
                   className="w-full h-full object-cover"
                 />
                 <button
                   type="button"
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                   onClick={removeImage}
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-md hover:bg-gray-200"
                 >
-                  <X size={16} className="text-red-500" />
+                  <X size={16} />
                 </button>
               </div>
             ) : (
@@ -145,18 +160,18 @@ const RichTextEditor = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleThumbnailUpload}
+                  onChange={handleImageChange}
                 />
               </label>
             )}
           </div>
         </div>
-        <div className="w-full my-3">
-          <label className="text-sm">Description</label>
+        <div className="w-full my-3 px-3">
+          <label className="text-sm">Short Description</label>
           <div className="">
             <input
               type="text"
-              placeholder="Enter blog description..."
+              placeholder="Enter description..."
               className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -166,7 +181,6 @@ const RichTextEditor = () => {
 
         {/* 🔹 Rich Text Editor */}
         <div className="flex-1 h-full overflow-hidden relative">
-          
           {loadingRichText && (
             <main className="w-full h-screen backdrop-blur-sm bg-black/40 absolute inset-0 z-50 flex items-center justify-center">
               <section className="w-[90%] sm:w-[65%] md:w-[50%] lg:w-[40%] xl:w-[30%] bg-texture myshades rounded-[31px] mx-auto">
@@ -243,7 +257,7 @@ const RichTextEditor = () => {
             className="w-[120px] py-2 rounded-full font-HelveticaNeueMedium flex justify-center items-center bg-gkRedColor text-white hover:bg-gkRedColor/90"
             disabled={loading}
           >
-            <span>Post</span>
+            <span> {id ? 'Update' : 'Post'}</span>
             {loading && (
               <div role="status" className="pl-3">
                 <svg

@@ -581,13 +581,74 @@ export const uploadImageToRecipeFirebase = async (file, folder) => {
   }
 };
 
-export const saveRecipeToFirestore = async (recipeData) => {
+export const saveRecipeToFirestore = async (formData, imageFiles) => {
   try {
-    await addDoc(collection(firestored, "recipe"), recipeData);
-    return true;
+    // Sare images upload karo aur unke URLs le lo
+    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    const docRef = doc(collection(firestored, "recipe"));
+    const docId = docRef.id; // Yeh document ki generated ID hai
+
+    // Firestore me data save karo
+    await setDoc(docRef, {
+      ...formData,
+      id: docId, // Document ki ID bhi save ho rahi hai
+      images: imageUrls, // Firebase se milne wale URLs yahan save honge
+      createdAt: new Date(),
+    });
+
+    return { success: true, id: docId };
   } catch (error) {
-    console.error("Error saving recipe to Firestore:", error);
-    return false;
+    console.error("Error adding document: ", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const updateRecipe = async (id, formData, newImageFiles) => {
+  try {
+    // Fetch existing document data
+    const docRef = doc(firestored, "recipe", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Document not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    let imageURLs = data.images || []; // Existing images
+
+    // If a new image is uploaded, replace the old one
+    if (newImageFiles.length > 0) {
+      const oldImageURL = imageURLs[0]; // First image
+
+      // Delete old image if it exists
+      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+        await deleteObject(imageRef);
+      }
+
+      // Upload new image
+      const newImageFile = newImageFiles[0];
+      const storageRef = ref(storage, `supermarkets/${id}/${newImageFile.name}`);
+      await uploadBytes(storageRef, newImageFile);
+      const newImageURL = await getDownloadURL(storageRef);
+
+      imageURLs = [newImageURL]; // Replace with new image URL
+    }
+
+    // Update Firestore document
+    await updateDoc(docRef, {
+      content: formData.content,
+      description: formData.description,
+      images: imageURLs,
+    });
+
+    console.log("recipe updated successfully");
+  } catch (error) {
+    console.error("Error updating recipe:", error);
   }
 };
 
@@ -600,6 +661,22 @@ export const getRecipe = async () => {
   } catch (error) {
     console.error("Error fetching recipe: ", error);
     return [];
+  }
+};
+
+export const getRecipeById = async (id) => {
+  try {
+    const recipetRef = doc(firestored, "recipe", id);
+    const recipeSnap = await getDoc(recipetRef);
+    
+    if (recipeSnap.exists()) {
+      return { id: recipeSnap.id, ...recipeSnap.data() };
+    } else {
+      throw new Error("recipe not found");
+    }
+  } catch (error) {
+    console.error("Error fetching recipe:", error);
+    throw error;
   }
 };
 

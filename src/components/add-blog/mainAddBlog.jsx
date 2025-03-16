@@ -136,7 +136,7 @@ const RichTextEditor = () => {
       <div className="h-[85%] overflow-y-scroll panelScroll">
         <div className="px-2 pt-7">
           <h2 className="text-base font-HelveticaNeueMedium pb-2">
-            {id ? "Update Supermarket" : "Upload Logo"}
+            {id ? "Update Blog" : "Upload Logo"}
           </h2>
           <div className="flex space-x-2">
             {images.length > 0 ? (
@@ -168,11 +168,11 @@ const RichTextEditor = () => {
           </div>
         </div>
         <div className="w-full my-3">
-          <label className="text-sm">Description</label>
+          <label className="text-sm">Title</label>
           <div className="">
             <input
               type="text"
-              placeholder="Enter blog description..."
+              placeholder="Enter Title..."
               className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -258,7 +258,7 @@ const RichTextEditor = () => {
             className="w-[120px] py-2 rounded-full font-HelveticaNeueMedium flex justify-center items-center bg-gkRedColor text-white hover:bg-gkRedColor/90"
             disabled={loading}
           >
-            <span>Post</span>
+            <span> {id ? 'Update' : 'Post'}</span>
             {loading && (
               <div role="status" className="pl-3">
                 <svg
