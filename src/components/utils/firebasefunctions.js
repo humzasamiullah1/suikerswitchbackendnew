@@ -521,6 +521,53 @@ export const getBlogsById = async (id) => {
   }
 };
 
+export const getHelpById = async (id) => {
+  try {
+    const helpElkerRef = doc(firestored, "helpElker", id);
+    const helpElkerSnap = await getDoc(helpElkerRef);
+    
+    if (helpElkerSnap.exists()) {
+      return { id: helpElkerSnap.id, ...helpElkerSnap.data() };
+    } else {
+      throw new Error("helpElker not found");
+    }
+  } catch (error) {
+    console.error("Error fetching helpElker:", error);
+    throw error;
+  }
+};
+
+export const deleteHelp = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "helpElker", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Supermarket not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("helpElker deleted successfully");
+  } catch (error) {
+    console.error("Error deleting helpElker:", error);
+  }
+};
+
 // 🔹 Fetch Blog from Firestore
 export const getBlogs = async () => {
   try {
@@ -793,6 +840,18 @@ export const getUser = async () => {
     return data;
   } catch (error) {
     console.error("Error fetching users: ", error);
+    return [];
+  }
+};
+
+export const getHelpElker = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "helpElker"));
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    console.log('helpElker data',data)
+    return data;
+  } catch (error) {
+    console.error("Error fetching helpElker: ", error);
     return [];
   }
 };

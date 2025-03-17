@@ -51,7 +51,6 @@ const users = [
 export default function ResponsiveTable({data}) {
   const [search, setSearch] = useState("");
 
-  console.log(data)
   const filteredUser = data.filter(
     (user) =>
       user.email.toLowerCase().includes(search.toLowerCase()) ||

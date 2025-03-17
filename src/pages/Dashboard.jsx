@@ -72,7 +72,7 @@ function Dashboard() {
           <Route path="/add-recipies" element={<AddRecipes />} />
           <Route path="/recipes-detail/:id" element={<RecipesDetail />} />
           <Route path="/help-elker" element={<HelpElker />} />
-          <Route path="/help-elker-detail" element={<HelpDetail />} />
+          <Route path="/help-elker-detail/:id" element={<HelpDetail />} />
           <Route path="/supermarkets" element={<Supermarkets />} />
           <Route path="/add-supermarkets" element={<AddSuperMarket />} />
           <Route path="/chat" element={<Chat />} />

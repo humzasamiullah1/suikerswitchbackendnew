@@ -1,15 +1,20 @@
-import React, { useState } from "react";
-import { Search, Menu, Plus } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Menu } from "lucide-react";
 import HelpCard from "./helpCard";
 import RequestCard from "./requestCard";
 import LikePopup from "../popup/like";
 import { motion, AnimatePresence } from "framer-motion";
 import CommentsPopup from "../../components/popup/comments";
+import { getHelpElker, deleteHelp } from "../utils/firebasefunctions";
+import { toast } from "react-toastify";
+import WarningPopup from "../popup/warning"
 
 const MainHelp = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
-   const [isCommentPopup, setIsCommentPopup] = useState(false);
+  const [isCommentPopup, setIsCommentPopup] = useState(false);
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState("");
   const [blogsData, setBlogsData] = useState([
     {
       title: "Olivia Martin",
@@ -119,6 +124,37 @@ const MainHelp = () => {
     },
   ]);
 
+  const [helpConfirmData, setHelpConfirmData] = useState([]);
+  const [helpPendingData, setHelpPendingData] = useState([]);
+
+  const fetchData = async () => {
+    const data = await getHelpElker();
+    const filterPending = data.filter(
+      (status) => status.status.toLowerCase() === "pending"
+    );
+    const filterConfirm = data.filter(
+      (status) => status.status.toLowerCase() === "confirmed"
+    );
+    setHelpPendingData(filterPending);
+    setHelpConfirmData(filterConfirm);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id);
+    setWarning(true);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteHelp(id);
+    setWarning(false);
+    toast.success("Help and elker Deleted Successfully");
+    fetchData();
+  };
+
   const opeLikePopup = () => {
     setIsLikePopup(true);
     document.body.style.overflow = "hidden"; // Page scroll band
@@ -148,6 +184,18 @@ const MainHelp = () => {
     },
   };
 
+  const filteredHelpConfirm = helpConfirmData.filter(
+    (help) =>
+      help.description.toLowerCase().includes(search.toLowerCase()) ||
+      help.content.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const filteredHelpPending = helpPendingData.filter(
+    (help) =>
+      help.description.toLowerCase().includes(search.toLowerCase()) ||
+      help.content.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <AnimatePresence>
       <motion.div
@@ -157,18 +205,24 @@ const MainHelp = () => {
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
       >
         <div className="flex space-x-4">
-          {requestData.map((item, index) => (
-            <motion.div
-              key={index}
-              className="w-[70%] sm:w-[50%] md:w-[30%] flex-shrink-0"
-              initial="hidden"
-              whileInView="visible"
-              variants={pageVariants}
-              viewport={{ once: true }}
-            >
-              <RequestCard data={item} />
-            </motion.div>
-          ))}
+          {filteredHelpPending.length > 0 ? (
+            filteredHelpPending.map((item, index) => (
+              <motion.div
+                key={index}
+                className="w-[70%] sm:w-[50%] md:w-[30%] flex-shrink-0"
+                initial="hidden"
+                whileInView="visible"
+                variants={pageVariants}
+                viewport={{ once: true }}
+              >
+                <RequestCard data={item} />
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 w-full mt-10">
+              No data found
+            </p>
+          )}
         </div>
       </motion.div>
 
@@ -186,48 +240,47 @@ const MainHelp = () => {
             </p>
           </div>
           <div className="flex items-center lg:w-[70%] xl:w-[40%] justify-end">
-            <div className="flex items-center gap-2 mt-3 md:mt-0">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
-              </div>
-              <motion.button
-                className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <p className="text-sm pr-3">Filters</p>
-                <Menu className="h-4 w-4" />
-              </motion.button>
+            {/* <div className="flex items-center gap-2 mt-3 md:mt-0"> */}
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search"
+                className="border w-full bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
             </div>
+            {/* </div> */}
           </div>
         </div>
 
-        {/* Blog List Section */}
+        {/* help List Section */}
         <div className="lg:h-[88%] w-full flex lg:flex-row flex-col justify-between">
           <div className="w-full lg:w-[73%] lg:overflow-y-scroll panelScroll h-full">
-            {blogsData.map((item, index) => (
-              <motion.div
-                key={index}
-                className="w-full"
-                initial="hidden"
-                whileInView="visible"
-                variants={pageVariants}
-                viewport={{ once: true }}
-              >
-                <HelpCard
-                  data={item}
-                  onLikePopup={opeLikePopup}
-                  onCommentsClick={opeCommentsPopup}
-                />
-              </motion.div>
-            ))}
+            {filteredHelpConfirm.length > 0 ? (
+              filteredHelpConfirm.map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="w-full"
+                  initial="hidden"
+                  whileInView="visible"
+                  variants={pageVariants}
+                  viewport={{ once: true }}
+                >
+                  <HelpCard
+                    data={item}
+                    onLikePopup={opeLikePopup}
+                    onCommentsClick={opeCommentsPopup}
+                    onDelete={() => openConfirmPopup(item.id)}
+                  />
+                </motion.div>
+              ))
+            ) : (
+              <p className="text-center text-gray-500 w-full mt-10">
+                No data found
+              </p>
+            )}
           </div>
           <motion.div
             className="w-full lg:w-[25%] mt-5 lg:mt-0 h-full hidden lg:block lg:overflow-y-scroll panelScroll bg-white border border-gray-100 rounded-xl"
@@ -235,30 +288,36 @@ const MainHelp = () => {
             animate="visible"
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
           >
-            {requestData.map((item, index) => (
-              <motion.div
-                key={index}
-                className="w-[95%] mx-auto"
-                initial="hidden"
-                whileInView="visible"
-                variants={pageVariants}
-                viewport={{ once: true }}
-              >
-                <RequestCard data={item} />
-              </motion.div>
-            ))}
+            {filteredHelpPending.length > 0 ? (
+              filteredHelpPending.map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="w-[95%] mx-auto"
+                  initial="hidden"
+                  whileInView="visible"
+                  variants={pageVariants}
+                  viewport={{ once: true }}
+                >
+                  <RequestCard data={item} />
+                </motion.div>
+              ))
+            ) : (
+              <p className="text-center text-gray-500 w-full mt-10">
+                No data found
+              </p>
+            )}
           </motion.div>
         </div>
-        {isLikePopup && (
-          <LikePopup
-            onClose={closeLikePopup}
+        {warning && (
+          <WarningPopup
+            name="Help and elker"
+            itemId={onDeleteId}
+            onClose={() => setWarning(false)}
+            onDelete={(id) => handleDelete(id)}
           />
         )}
-        {isCommentPopup && (
-          <CommentsPopup
-            onClose={closeCommentsPopup}
-          />
-        )}
+        {isLikePopup && <LikePopup onClose={closeLikePopup} />}
+        {isCommentPopup && <CommentsPopup onClose={closeCommentsPopup} />}
       </motion.div>
     </AnimatePresence>
   );
