@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ImageTag from "../reuseable/imageTag";
 
+
 const UserCounter = ({ countData }) => {
   const [count, setCount] = useState(0);
   const totalUsers = countData.value;
+  
 
   useEffect(() => {
     let start = 0;
@@ -33,11 +35,7 @@ const UserCounter = ({ countData }) => {
         transition={{ duration: 0.5 }}
       >
         <div className="flex items-center">
-          <ImageTag
-            path={countData.image}
-            classes="size-12"
-            altText="logo"
-          />
+          <ImageTag path={countData.image} classes="size-12" altText="logo" />
           <h2 className="text-base font-HelveticaNeueMedium pl-3">
             {countData.name}
           </h2>
@@ -46,7 +44,7 @@ const UserCounter = ({ countData }) => {
           className="text-3xl pt-3 font-HelveticaNeueMedium text-darkColor"
           key={count}
           initial={{}}
-          animate={{ }}
+          animate={{}}
           transition={{ duration: 0.3 }}
         >
           {count.toLocaleString()}

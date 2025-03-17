@@ -48,8 +48,17 @@ const users = [
   },
 ];
 
-export default function ResponsiveTable() {
+export default function ResponsiveTable({data}) {
   const [search, setSearch] = useState("");
+
+  console.log(data)
+  const filteredUser = data.filter(
+    (user) =>
+      user.email.toLowerCase().includes(search.toLowerCase()) ||
+      user.firstname.toLowerCase().includes(search.toLowerCase()) ||
+      user.lastname.toLowerCase().includes(search.toLowerCase()) ||
+      user.phonenumber.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="h-full bg-white rounded-[35px] shadow-md py-5 lg:py-0">
@@ -67,10 +76,6 @@ export default function ResponsiveTable() {
             />
             <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
           </div>
-          <button className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-200">
-            <p className="text-sm pr-3">Filters</p>
-            <Menu className="h-4 w-4" />
-          </button>
         </div>
       </div>
 
@@ -92,7 +97,8 @@ export default function ResponsiveTable() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+          {filteredUser.length > 0 ? (
+            filteredUser.map((user,i) => (
               <motion.tr
                 key={user.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -100,22 +106,30 @@ export default function ResponsiveTable() {
                 transition={{ duration: 0.3, delay: user.id * 0.1 }}
                 className="hover:bg-gray-50 rounded-full cursor-pointer shadow-md font-HelveticaNeueMedium text-darkColor"
               >
-                <td className="p-4">{user.id}</td>
+                <td className="p-4">{i+1}</td>
                 <td className="p-4">
                   <div className="flex items-center">
-                    <ImageTag
-                      path="/assets/images/userprofile.png"
-                      classes="size-10 rounded-full"
+                    {/* {data.length > 0 && */}
+                      <ImageTag
+                      path={
+                        user.profilepicture !== ""
+                          ? user.profilepicture
+                          : "/assets/images/default-image.png"
+                      }
+                      classes="size-10 rounded-full object-cover"
                       altText="logo"
                     />
+                    {/* } */}
+                    
                     <span className="pl-2">
-                      {user.name}
+                      {user.firstname} {user.lastname}
                     </span>
                   </div>
                 </td>
                 <td className="p-4 truncate max-w-[150px]">{user.email}</td>
-                <td className="p-4">{user.contact}</td>
-                <td
+                <td className="p-4">{user.phonenumber}</td>
+                <td className="text-[#68DE50] p-4 font-semibold">Active</td>
+                {/* <td
                   className={`p-4 font-semibold ${
                     user.status === "Cancelled"
                       ? "text-[#FF3115]"
@@ -125,9 +139,14 @@ export default function ResponsiveTable() {
                   }`}
                 >
                   {user.status}
-                </td>
+                </td> */}
               </motion.tr>
-            ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-500 w-full mt-10">
+              No data found
+            </p>
+          )}
           </tbody>
         </motion.table>
       </div>

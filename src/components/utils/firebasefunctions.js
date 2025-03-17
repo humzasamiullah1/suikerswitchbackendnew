@@ -785,6 +785,18 @@ export const uploadUserImage = async (file, userId) => {
   }
 };
 
+export const getUser = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(firestored, "users"));
+    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    console.log('users data',data)
+    return data;
+  } catch (error) {
+    console.error("Error fetching users: ", error);
+    return [];
+  }
+};
+
 // export const getuserinformation = async (collection, uid) => {
 //   try {
 //     const userRef = ref(firestored, `${collection}/${uid}`);
