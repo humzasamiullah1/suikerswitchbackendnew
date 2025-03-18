@@ -16,6 +16,7 @@ const FormSection = () => {
   const [supermarketName, setSupermarketName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isCheckName, setIsCheckName] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -57,6 +58,11 @@ const FormSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(supermarketName === ''){
+      toast.warn("SuperMarket Name is required");
+      setIsCheckName(true);
+      return;
+    }
     setLoading(true);
     const timestamp = serverTimestamp(); 
 
@@ -139,7 +145,7 @@ const FormSection = () => {
             value={supermarketName}
             onChange={(e) => setSupermarketName(e.target.value)}
             placeholder="Write Supermarket Name"
-            className="w-full mt-1 text-sm font-popinsRegular rounded-md bg-bgColor px-3 py-[10px] text-darkColor placeholder:text-zinc-700/50"
+            className={`w-full mt-1 text-sm font-popinsRegular rounded-md bg-bgColor px-3 py-[10px] text-darkColor placeholder:text-zinc-700/50 ${isCheckName ? 'border-2 border-red-600' : ''}`}
           />
         </div>
       </div>

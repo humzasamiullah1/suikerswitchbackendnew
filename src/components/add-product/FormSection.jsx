@@ -21,6 +21,9 @@ const FormSection = () => {
   const [selectedSupermarkets, setSelectedSupermarkets] = useState([]);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isCheckName, setIsCheckName] = useState(false);
+  const [isChecCat, setIsCheckCat] = useState(false);
+  const [isChecSuperMarket, setIsCheckSuperMarket] = useState(false);
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
 
@@ -104,17 +107,28 @@ const FormSection = () => {
   // ✅ Handle Create or Update Product
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    if (
-      !productName ||
-      selectedCategories.length === 0 ||
-      selectedSupermarkets.length === 0
-    ) {
-      toast.error("Please fill all fields");
-      setLoading(false);
+    if(productName === ''){
+      toast.error("Product Name is required");
+      setIsCheckName(true)
+      return;
+    } else if (selectedCategories.length === 0) {
+      toast.error("Categories is required");
+      setIsCheckCat(true)
+      // setIsCheckName(false)
+      return;
+    } else if (selectedSupermarkets.length === 0){
+      toast.error("Supermarkets is required");
+      setIsCheckSuperMarket(true)
+      // setIsCheckCat(false)
+      // setIsCheckName(false)
       return;
     }
+    
+    setIsCheckName(false)
+    setIsCheckCat(false)
+    setIsCheckSuperMarket(false)
+    setLoading(true);
 
     const productData = {
       productName,
@@ -190,7 +204,7 @@ const FormSection = () => {
         <input
           type="text"
           placeholder="Enter product name"
-          className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
+          className={`w-full ${isCheckName ? 'border-2 border-red-600' : ''} mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
         />
@@ -205,7 +219,7 @@ const FormSection = () => {
             options={supermarkets}
             value={selectedSupermarkets}
             onChange={setSelectedSupermarkets}
-            className="mt-1"
+            className={`mt-1 ${isChecSuperMarket ? 'border-2 border-red-600' : ''}`}
           />
         </div>
         <div className="w-full md:w-[49%] pt-4 md:pt-0">
@@ -215,7 +229,7 @@ const FormSection = () => {
             options={categories}
             value={selectedCategories}
             onChange={setSelectedCategories}
-            className="mt-1 w-full"
+            className={`mt-1 w-full ${isChecCat ? 'border-2 border-red-600' : ''}`}
           />
         </div>
       </div>

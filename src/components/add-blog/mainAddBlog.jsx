@@ -20,6 +20,7 @@ const RichTextEditor = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailURL, setThumbnailURL] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isCheckTitle, setIsCheckTitle] = useState(false);
   const [loadingRichText, setLoadingRichText] = useState(false);
   const [{ user }] = useStateValue();
   const [searchParams] = useSearchParams();
@@ -90,11 +91,16 @@ const RichTextEditor = () => {
 
   // 🔹 Handle Post Submission
   const handlePostClick = async () => {
-    if (!content.trim() || !description.trim()) {
-      toast.warning("Please fill all fields before posting!");
+    if (!description.trim()) {
+      toast.warning("Short decription is Required");
+      setIsCheckTitle(true)
+      return;
+    } else if(!content.trim()) {
+      toast.warning("Please fill text editor");
       return;
     }
 
+    setIsCheckTitle(false)
     setLoading(true); // Start Loading
 
     // ✅ Prepare Blog Data
@@ -167,13 +173,13 @@ const RichTextEditor = () => {
             )}
           </div>
         </div>
-        <div className="w-full my-3">
+        <div className="w-full my-3 px-3">
           <label className="text-sm">Title</label>
           <div className="">
             <input
               type="text"
               placeholder="Enter Title..."
-              className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
+              className={`w-full ${isCheckTitle ? 'border-2 border-red-600' : ''} mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />

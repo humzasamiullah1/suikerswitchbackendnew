@@ -25,6 +25,7 @@ const RichTextEditor = () => {
   const [thumbnailURL, setThumbnailURL] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingRichText, setLoadingRichText] = useState(false);
+  const [isCheckTitle, setIsCheckTitle] = useState(false);
   const [{ user }] = useStateValue();
 
   const id = searchParams.get("id");
@@ -91,11 +92,16 @@ const RichTextEditor = () => {
 
   // 🔹 Handle Post Submission
   const handlePostClick = async () => {
-    if (!content.trim() || !description.trim()) {
-      toast.warning("Please fill all fields before posting!");
+    if (!description.trim()) {
+      toast.warning("Title is Required");
+      setIsCheckTitle(true)
+      return;
+    } else if(!content.trim()) {
+      toast.warning("Please fill text editor");
       return;
     }
 
+    setIsCheckTitle(false)
     setLoading(true); // Start Loading
     const recipeData = {
       content,
@@ -172,7 +178,7 @@ const RichTextEditor = () => {
             <input
               type="text"
               placeholder="Enter description..."
-              className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
+              className={`w-full mt-1 ${isCheckTitle ? 'border-2 border-red-600' : ''} text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />

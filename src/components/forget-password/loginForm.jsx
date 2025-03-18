@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import LabelTag from "../reuseable/label";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { app } from "../../firebase/firebaseConfig"; // Import Firebase configuration
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const FormSection = () => {
   const [email, setEmail] = useState("");
@@ -85,6 +85,7 @@ const FormSection = () => {
           <Link to={"/"}>Back to sign in</Link>
         </p>
       </div>
+      <ToastContainer />
     </form>
   );
 };
