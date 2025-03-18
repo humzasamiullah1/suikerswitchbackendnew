@@ -24,6 +24,12 @@ const FormSection = () => {
   const [lastName, setLastName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isCheckFirstName, setIsCheckFirstName] = useState(false);
+  const [isCheckLastName, setIsCheckLastName] = useState(false);
+  const [isCheckEmail, setIsCheckEmail] = useState(false);
+  const [isCheckPassword, setIsCheckPassword] = useState(false);
+  const [isCheckConfirmPassword, setIsCheckConfirmPassword] = useState(false);
+  const [isCheckMatch, setIsCheckMatch] = useState(false);
   const [{}, dispatch] = useStateValue();
 
   const togglePasswordVisibility = () => {
@@ -102,25 +108,37 @@ const FormSection = () => {
 
   const signupHandler = async (e) => {
     e.preventDefault();
-    if (firstName === "") {
+    if (email === "") {
+      toast.warn("Please enter your email address");
+      setIsCheckEmail(true)
+      return;
+    } else if (firstName === "") {
       toast.warn("Please enter your first name");
+      setIsCheckFirstName(true)
       return;
     } else if (lastName === "") {
       toast.warn("Please enter your last name");
-      return;
-    } else if (email === "") {
-      toast.warn("Please enter your email address");
+      setIsCheckLastName(true)
       return;
     } else if (password === "") {
       toast.warn("Please enter your password");
+      setIsCheckPassword(true)
       return;
     } else if (confirmPassword === "") {
       toast.warn("Please enter your password");
+      setIsCheckConfirmPassword(true)
       return;
     } else if (password !== confirmPassword) {
       toast.warn("Passwords do not match");
+      setIsCheckMatch(true)
       return;
     } else {
+      setIsCheckFirstName(false)
+      setIsCheckLastName(false)
+      setIsCheckEmail(false)
+      setIsCheckPassword(false)
+      setIsCheckConfirmPassword(false)
+      setIsCheckMatch(false)
       setLoading(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
@@ -167,7 +185,7 @@ const FormSection = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email.."
-          className="w-full font-popinsRegular mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50"
+          className={`${isCheckEmail ? 'border-2 border-red-600' : ''} w-full font-popinsRegular mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50`}
         />
       </div>
       <div className="flex flex-col lg:flex-row justify-between mt-4">
@@ -178,7 +196,7 @@ const FormSection = () => {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="Enter your first name.."
-            className="w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50 font-popinsRegular"
+            className={`w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50 font-popinsRegular ${isCheckFirstName ? 'border-2 border-red-600' : ''}`}
           />
         </div>
         <div className="w-full lg:w-[49%] mt-4 lg:mt-0">
@@ -188,7 +206,7 @@ const FormSection = () => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder="Enter your last name.."
-            className="w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50 font-popinsRegular"
+            className={`w-full mt-1 ${isCheckLastName ? 'border-2 border-red-600' : ''} bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50 font-popinsRegular`}
           />
         </div>
       </div>
@@ -201,7 +219,7 @@ const FormSection = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create password.."
-              className="w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor"
+              className={`${isCheckPassword ? 'border-2 border-red-600' : ''}w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor`}
             />
             <div
               className="absolute right-3 top-3 text-stone-950/40 cursor-pointer"
@@ -219,7 +237,7 @@ const FormSection = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm password.."
-              className="w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor"
+              className={`${isCheckMatch || isCheckMatch ? 'border-2 border-red-600' : ''}w-full mt-1 bg-bgColor px-3 py-2 text-sm rounded-full text-darkColor`}
             />
             <div
               className="absolute right-3 top-3 text-stone-950/40 cursor-pointer"
