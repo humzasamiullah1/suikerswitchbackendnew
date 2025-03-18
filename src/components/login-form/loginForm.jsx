@@ -11,8 +11,11 @@ const FormSection = () => {
   const auth = getAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [laoding, setlaoding] = useState(false);
+  const [isCheckEmail, setIsCheckEmail] = useState(false);
+  const [isCheckPassword, setIsCheckPassword] = useState(false);
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
+
   // const [isAdmin, setIsAdmin] = useState(null); // 👈 Flag for admin check
   const navigate = useNavigate();
   const [{}, dispatch] = useStateValue();
@@ -25,13 +28,17 @@ const FormSection = () => {
     e.preventDefault();
     if (email === "") {
       toast.warn("Please enter your email");
+      setIsCheckEmail(true)
       return;
     }
     if (password === "") {
       toast.warn("Please enter your password");
+      setIsCheckPassword(true);
       return;
     }
 
+    setIsCheckEmail(false)
+    setIsCheckPassword(false);
     setlaoding(true);
 
     try {
@@ -81,7 +88,7 @@ const FormSection = () => {
           value={email}
           onChange={(e) => setemail(e.target.value)}
           placeholder="Enter your email.."
-          className="w-full mt-1 text-sm rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50"
+          className={`w-full mt-1 ${isCheckEmail ? 'border-2 border-red-600': ''} text-sm rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50`}
         />
       </div>
       <div className="w-full mt-3">
@@ -91,7 +98,7 @@ const FormSection = () => {
             value={password}
             onChange={(e) => setpassword(e.target.value)}
             placeholder="Password here.."
-            className="w-full mt-1 text-sm bg-bgColor px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50"
+            className={`w-full ${isCheckPassword ? 'border-2 border-red-600': ''} mt-1 text-sm bg-bgColor px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50`}
           />
           <div
             title="Show password"
@@ -101,6 +108,18 @@ const FormSection = () => {
             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
           </div>
         </div>
+      </div>
+      <div className="flex justify-between mt-3 ">
+        <div className="flex w-[50%]">
+          <input
+            type="checkbox"
+            className="w-4 bg-bgColor rounded-sm cursor-pointer"
+          />
+          <p className="font-HelveticaNeueMedium text-darkColor text-xs pl-3">Remember me</p>
+        </div>
+        <Link to={"/forget-password"} className="w-[50%] flex justify-end">
+          <p className="text-btnColor">Forget Password</p>
+        </Link>
       </div>
       <button
         type="submit"

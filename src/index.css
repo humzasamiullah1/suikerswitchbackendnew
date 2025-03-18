@@ -26,6 +26,7 @@ input:focus {
 
 [type="text"]:focus,
 [type="number"]:focus,
+[type="email"]:focus,
 [type="date"]:focus,
 [type="password"]:focus {
   box-shadow: none !important; /* Removes shadow */
@@ -36,6 +37,7 @@ input:focus {
 [type="text"],
 [type="password"],
 [type="number"],
+[type="email"],
 [type="date"], {
   border: none !important;
 }

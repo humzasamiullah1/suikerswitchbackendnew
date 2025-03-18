@@ -1,32 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import LabelTag from "../reuseable/label";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { app } from "../../firebase/firebaseConfig"; // Import Firebase configuration
+import { toast } from "react-toastify";
 
 const FormSection = () => {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [laoding, setlaoding] = useState(false);
+  const [isCheckEmail, setIsCheckEmail] = useState(false);
+
+  const auth = getAuth(app);
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+
+    if (!email) {
+      toast.warn("Please enter your email.");
+      setIsCheckEmail(true);
+      return;
+    }
+    setIsCheckEmail(false);
+    setlaoding(true)
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent! Check your inbox.");
+      setlaoding(false)
+    } catch (err) {
+      toast.error("Failed to send reset email. Please check your email address.");
+      setlaoding(false)
+    }
+  };
+
   return (
-    <form>
-      <div class="w-full mt-3">
+    <form onSubmit={handleResetPassword}>
+      <div className="w-full mt-3">
         <LabelTag name="Email" classes="!text-xs" />
         <input
-          type="text"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email.."
-          className="w-full mt-1 text-sm font-popinsRegular rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50"
+          className={`w-full ${isCheckEmail ? 'border-2 border-red-600': ''} mt-1 text-sm font-popinsRegular rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50`}
         />
       </div>
-      {/* {
-        loader ? <div className="flex justify-center items-center">
-          <MyLoader />
-        </div> : <ButtonTag onSubmit={loginHandler} name={login.SubmitBtn} classes='text-base bg-themeColor hover:bg-themeColor/90 mt-3 text-center  text-white' />
-      } */}
-      <Link to={"/dashboard"}>
-        <button className="text-base bg-btnColor hover:bg-btnColor/90 mt-4 text-center  text-white cursor-pointer font-HelveticaNeueBold rounded-full flex justify-center mx-auto py-2 w-full items-center">
-          <span>Send</span>
-          {/* yaha loader open krlena jb login ki api hit kroge */}
-          {/* {loader && (
+      <button
+        type="submit"
+        className="text-base bg-btnColor hover:bg-btnColor/90 mt-4 text-center text-white cursor-pointer font-HelveticaNeueBold rounded-full flex justify-center mx-auto py-2 w-full items-center"
+      >
+        <span>Send</span>
+        {laoding && (
           <div role="status" className="pl-3">
             <svg
               aria-hidden="true"
-              class="w-7 h-7 text-gray-200 animate-spin dark:text-white fill-themeColor"
+              class="w-6 h-6 text-gray-200 animate-spin dark:text-white fill-gkRedColor"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -42,32 +74,17 @@ const FormSection = () => {
             </svg>
             <span class="sr-only">Loading...</span>
           </div>
-        )} */}
-        </button>
-      </Link>
+        )}
+      </button>
+      
+      {message && <p className="text-green-600 text-sm text-center mt-2">{message}</p>}
+      {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
+
       <div className="font-HelveticaNeueRegular text-darkColor/60 text-sm text-center pt-2">
         <p>
-          <Link to={"/"}>
-            Back to sign in
-          </Link>
+          <Link to={"/"}>Back to sign in</Link>
         </p>
       </div>
-      {/* <div className="flex items-center my-2">
-        <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
-        <div className="w-[70%] lg:w-[40%] 2xl:w-[30%] flex justify-center">
-          <ParagraphTag
-            content={login.account}
-            classes="text-[#686868] font-popinsRegular text-xs"
-          />
-        </div>
-        <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
-      </div>
-      <Link to={"/signup"}>
-        <ButtonTag
-          name={login.signUpBtn}
-          classes="text-base text-center border-2 border-themeColor text-themeColor mb-8 lg:mb-0"
-        />
-      </Link> */}
     </form>
   );
 };

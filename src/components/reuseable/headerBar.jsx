@@ -2,17 +2,20 @@ import React from "react";
 import { Search, Bell, MessageCircleMore } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { useStateValue } from "../../context/StateProvider";
 
 const HeaderBar = (props) => {
   const { heading, subHeading } = props;
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
+  const [{ user }] = useStateValue();
+  console.log('hassan',user)
 
   return (
     <div className="flex w-full lg:flex-row flex-col">
       <div className="lg:w-[50%] w-full">
         <h1 className="font-HelveticaNeueMedium font-bold text-darkColor text-xl">
-          {heading}
+          {user.firstname} {user.lastname}
         </h1>
         <p className="font-HelveticaNeueRegular text-darkColor text-sm">
           {subHeading}
