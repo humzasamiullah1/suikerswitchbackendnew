@@ -699,6 +699,28 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
   }
 };
 
+export const AcceptHelpElker = async (id, formData) => {
+  try {
+    // Fetch existing document data
+    const docRef = doc(firestored, "helpElker", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Document not found");
+      return;
+    }
+
+    // Update Firestore document
+    await updateDoc(docRef, {
+      ...formData
+    });
+
+    console.log("helpElker updated successfully");
+  } catch (error) {
+    console.error("Error updating helpElker:", error);
+  }
+};
+
 export const deleteRecipe = async (id) => {
   try {
     // Pehle document fetch kren

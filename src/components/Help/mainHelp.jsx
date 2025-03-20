@@ -5,9 +5,10 @@ import RequestCard from "./requestCard";
 import LikePopup from "../popup/like";
 import { motion, AnimatePresence } from "framer-motion";
 import CommentsPopup from "../../components/popup/comments";
-import { getHelpElker, deleteHelp } from "../utils/firebasefunctions";
+import { getHelpElker, deleteHelp, AcceptHelpElker } from "../utils/firebasefunctions";
 import { toast } from "react-toastify";
-import WarningPopup from "../popup/warning"
+import WarningPopup from "../popup/warning";
+import { serverTimestamp } from "firebase/firestore";
 
 const MainHelp = () => {
   const [search, setSearch] = useState("");
@@ -196,6 +197,50 @@ const MainHelp = () => {
       help.content.toLowerCase().includes(search.toLowerCase())
   );
 
+  const updateStatus = async (id,filterData, status) => {
+    try {
+      await AcceptHelpElker(id, filterData);
+      if(status === 'confirm'){
+        toast.success("Help Elker Accepted successfully!");
+      } else {
+        toast.success("Help Elker Rejected successfully!");
+      }
+      fetchData()
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+      // alert(error.message);
+    } finally {
+      // setLoading(false); // Stop Loading
+    }
+  }
+
+  const handleAccept = (id) => {
+    const filterData = filteredHelpPending.find((x) => x.id === id);
+    const data = {
+      content : filterData.content,
+      description: filterData.description,
+      images: filterData.images,
+      status: 'confirmed',
+      userId: filterData?.userId,
+      createAt: serverTimestamp(),
+    };
+    updateStatus(filterData.id,data, 'confirm')
+  };
+
+  const handleReject = (id) => {
+    const filterData = filteredHelpPending.find((x) => x.id === id);
+    const data = {
+      content : filterData.content,
+      description: filterData.description,
+      images: filterData.images,
+      status: 'reject',
+      userId: filterData?.userId,
+      createAt: serverTimestamp(),
+    };
+    updateStatus(filterData.id,data,'reject')
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -298,7 +343,11 @@ const MainHelp = () => {
                   variants={pageVariants}
                   viewport={{ once: true }}
                 >
-                  <RequestCard data={item} />
+                  <RequestCard
+                    data={item}
+                    onAccept={(id) => handleAccept(id)}
+                    onReject={(id)=> handleReject(id)}
+                  />
                 </motion.div>
               ))
             ) : (

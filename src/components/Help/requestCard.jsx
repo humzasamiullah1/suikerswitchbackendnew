@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ImageTag from "../reuseable/imageTag";
 import { fetchUserById } from "../utils/firebasefunctions";
 
-const RequestCard = ({ data }) => {
+const RequestCard = ({ data, onAccept, onReject }) => {
   const [loading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({
     firstname: "",
@@ -57,12 +57,12 @@ const RequestCard = ({ data }) => {
       </p>
       <div className="flex justify-between pt-4">
         <div className="w-[48%]">
-          <button className="text-white w-full py-2 font-HelveticaNeueMedium bg-[#62BD4F] text-sm rounded-full">
+          <button onClick={()=> onAccept(data.id)} className="text-white w-full py-2 font-HelveticaNeueMedium bg-[#62BD4F] text-sm rounded-full">
             Accept
           </button>
         </div>
         <div className="w-[48%]">
-          <button className="text-white w-full py-2 font-HelveticaNeueMedium bg-gkRedColor text-sm rounded-full">
+          <button onClick={()=> onReject(data.id)} className="text-white w-full py-2 font-HelveticaNeueMedium bg-gkRedColor text-sm rounded-full">
             Reject
           </button>
         </div>
