@@ -5,11 +5,12 @@ import { useLocation } from "react-router-dom";
 import { useStateValue } from "../../context/StateProvider";
 
 const HeaderBar = (props) => {
-  const { heading, subHeading } = props;
+  const { heading, subHeading, handleSearch } = props;
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
   const [{ user }] = useStateValue();
   console.log('hassan',user)
+
 
   return (
     <div className="flex w-full lg:flex-row flex-col">
@@ -27,6 +28,7 @@ const HeaderBar = (props) => {
             type="text"
             placeholder="Search"
             className="w-full font-HelveticaNeueRegular mt-1 bg-white py-3 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50"
+            onClick={()=> handleSearch(true)}
           />
           <div className="absolute top-[5px] right-0 bg-gkRedColor rounded-full size-10 flex justify-center items-center">
             <Search color="#FFFF" size={18} />
