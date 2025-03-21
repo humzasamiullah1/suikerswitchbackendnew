@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { getProducts, getSupermarkets, getRecipe } from "../utils/firebasefunctions";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,31 +6,41 @@ import ProductCard from "../Products/productCard";
 import Card from "../supermarkets/card";
 import RecipiesCard from "../Recipies/recipiesCard"
 
-const MainSearch = () => {
+const MainSearch = ({ onEmptyBlur }) => {
   const [products, setProducts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [supermarkets, setSupermarkets] = useState([]);
   const [recipeData, setRecipeData] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [filteredSupermarkets, setFilteredSupermarkets] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const inputRef = useRef(null);
 
   const fetchData = async () => {
     const data = await getProducts();
     setProducts(data);
+    setFilteredProducts(data)
   };
 
   const fetchSuperMarketData = async () => {
     const data = await getSupermarkets();
     setSupermarkets(data);
+    setFilteredSupermarkets(data);
   };
 
   const fetchRecipeData = async () => {
     const data = await getRecipe();
     setRecipeData(data);
+    setFilteredRecipes(data);
   };
 
   useEffect(() => {
     fetchData();
     fetchSuperMarketData();
     fetchRecipeData();
+    inputRef.current.focus()
   }, []);
 
   // Number of items to display per slide
@@ -48,14 +58,41 @@ const MainSearch = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (!value.trim()) {
+      setFilteredProducts(products);
+      setFilteredSupermarkets(supermarkets);
+      setFilteredRecipes(recipeData);
+      return;
+    }
+
+    const lowerValue = value.toLowerCase();
+    setFilteredProducts(products.filter(p => p.productName.toLowerCase().includes(lowerValue)));
+    setFilteredSupermarkets(supermarkets.filter(s => s.supermarketName.toLowerCase().includes(lowerValue)));
+    setFilteredRecipes(recipeData.filter(r => r.description.toLowerCase().includes(lowerValue)));
+  };
+
+  const handleBlur = () => {
+    if (!searchTerm.trim()) {
+      onEmptyBlur(false);
+    }
+  };
+
   return (
     <div>
       {/* Search Input */}
       <div className="relative mx-auto mt-20 w-[69%] sm:w-[82%] md:w-[84%] lg:w-[69%] xl:w-[78%] 2xl:w-[79%]">
         <input
           type="text"
+          ref={inputRef}
           placeholder="Search"
           className="w-full font-HelveticaNeueRegular mt-1 bg-white py-3 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50"
+          value={searchTerm}
+          onChange={handleSearch}
+          onBlur={handleBlur}
         />
         <div className="absolute top-[5px] right-0 bg-gkRedColor rounded-full size-10 flex justify-center items-center">
           <Search color="#FFFF" size={18} />
@@ -68,7 +105,7 @@ const MainSearch = () => {
           Products
         </p>
 
-        {products.length > 0 ? (
+        {filteredProducts.length > 0 ? (
           <div className="relative w-full overflow-hidden">
             {/* Navigation Buttons */}
             <button
@@ -82,7 +119,7 @@ const MainSearch = () => {
             <button
               className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
               onClick={handleNext}
-              disabled={currentIndex + itemsPerSlide >= products.length}
+              disabled={currentIndex + itemsPerSlide >= filteredProducts.length}
             >
               <ChevronRight size={24} />
             </button>
@@ -90,7 +127,7 @@ const MainSearch = () => {
             {/* Carousel Content */}
             <div className="flex w-full overflow-hidden justify-center items-center">
               <AnimatePresence>
-                {products
+                {filteredProducts
                   .slice(currentIndex, currentIndex + itemsPerSlide)
                   .map((item, index) => (
                     <motion.div
@@ -120,7 +157,7 @@ const MainSearch = () => {
           SuperMarket
         </p>
 
-        {supermarkets.length > 0 ? (
+        {filteredSupermarkets.length > 0 ? (
           <div className="relative w-full overflow-hidden">
             {/* Navigation Buttons */}
             <button
@@ -134,7 +171,7 @@ const MainSearch = () => {
             <button
               className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
               onClick={handleNext}
-              disabled={currentIndex + itemsPerSlide >= supermarkets.length}
+              disabled={currentIndex + itemsPerSlide >= filteredSupermarkets.length}
             >
               <ChevronRight size={24} />
             </button>
@@ -142,7 +179,7 @@ const MainSearch = () => {
             {/* Carousel Content */}
             <div className="flex w-full overflow-hidden justify-center items-center">
               <AnimatePresence>
-                {supermarkets
+                {filteredSupermarkets
                   .slice(currentIndex, currentIndex + itemsPerSlide)
                   .map((item, index) => (
                     <motion.div
@@ -172,7 +209,7 @@ const MainSearch = () => {
           Recipe
         </p>
 
-        {recipeData.length > 0 ? (
+        {filteredRecipes.length > 0 ? (
           <div className="relative w-full overflow-hidden">
             {/* Navigation Buttons */}
             <button
@@ -186,7 +223,7 @@ const MainSearch = () => {
             <button
               className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
               onClick={handleNext}
-              disabled={currentIndex + itemsPerSlide >= recipeData.length}
+              disabled={currentIndex + itemsPerSlide >= filteredRecipes.length}
             >
               <ChevronRight size={24} />
             </button>
@@ -194,7 +231,7 @@ const MainSearch = () => {
             {/* Carousel Content */}
             <div className="flex w-full overflow-hidden justify-center items-center">
               <AnimatePresence>
-                {recipeData
+                {filteredRecipes
                   .slice(currentIndex, currentIndex + itemsPerSlide)
                   .map((item, index) => (
                     <motion.div

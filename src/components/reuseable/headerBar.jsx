@@ -9,7 +9,6 @@ const HeaderBar = (props) => {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
   const [{ user }] = useStateValue();
-  console.log('hassan',user)
 
 
   return (
