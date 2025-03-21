@@ -32,8 +32,29 @@ const timeAgo = (timestamp) => {
   return "Just now";
 };
 
+const HighlightedText = ({ text, searchTerm }) => {
+  if (!searchTerm) return <>{text}</>;
 
-const BlogCard = ({ data, onDelete, onLikePopup }) => {
+  const regex = new RegExp(`(${searchTerm})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.toLowerCase() === searchTerm.toLowerCase() ? (
+          <span key={index} style={{ backgroundColor: "yellow" }}>
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
+
+const BlogCard = ({ data, onDelete, onLikePopup, highlightSearchTerm }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [loading, setIsLoading] = useState(false);
@@ -146,7 +167,7 @@ const BlogCard = ({ data, onDelete, onLikePopup }) => {
         <Link to={`/dashboard/blogs-detail/${data.id}`}>
           <div className="pt-28">
             <h1 className="font-HelveticaNeueMedium text-2xl text-white">
-              {data.description}
+              <HighlightedText text={data.description} searchTerm={highlightSearchTerm} />
             </h1>
           </div>
         </Link>

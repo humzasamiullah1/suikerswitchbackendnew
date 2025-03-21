@@ -1,19 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { getProducts, getSupermarkets, getRecipe } from "../utils/firebasefunctions";
+import {
+  getProducts,
+  getSupermarkets,
+  getRecipe,
+  getBlogs,
+} from "../utils/firebasefunctions";
 import { motion, AnimatePresence } from "framer-motion";
 import ProductCard from "../Products/productCard";
 import Card from "../supermarkets/card";
-import RecipiesCard from "../Recipies/recipiesCard"
+import RecipiesCard from "../Recipies/recipiesCard";
+import BlogCard from "../Blogs/blogCard";
 
 const MainSearch = ({ onEmptyBlur }) => {
   const [products, setProducts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [supermarkets, setSupermarkets] = useState([]);
   const [recipeData, setRecipeData] = useState([]);
+  const [blogsData, setBlogsData] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [filteredSupermarkets, setFilteredSupermarkets] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const inputRef = useRef(null);
@@ -21,7 +29,13 @@ const MainSearch = ({ onEmptyBlur }) => {
   const fetchData = async () => {
     const data = await getProducts();
     setProducts(data);
-    setFilteredProducts(data)
+    setFilteredProducts(data);
+  };
+
+  const fetchBlogData = async () => {
+    const data = await getBlogs();
+    setBlogsData(data);
+    setFilteredBlogs(data);
   };
 
   const fetchSuperMarketData = async () => {
@@ -40,7 +54,8 @@ const MainSearch = ({ onEmptyBlur }) => {
     fetchData();
     fetchSuperMarketData();
     fetchRecipeData();
-    inputRef.current.focus()
+    fetchBlogData();
+    inputRef.current.focus();
   }, []);
 
   // Number of items to display per slide
@@ -66,13 +81,35 @@ const MainSearch = ({ onEmptyBlur }) => {
       setFilteredProducts(products);
       setFilteredSupermarkets(supermarkets);
       setFilteredRecipes(recipeData);
+      setFilteredBlogs(blogsData);
       return;
     }
 
     const lowerValue = value.toLowerCase();
-    setFilteredProducts(products.filter(p => p.productName.toLowerCase().includes(lowerValue)));
-    setFilteredSupermarkets(supermarkets.filter(s => s.supermarketName.toLowerCase().includes(lowerValue)));
-    setFilteredRecipes(recipeData.filter(r => r.description.toLowerCase().includes(lowerValue)));
+    setFilteredProducts(
+      products.filter((p) => p.productName.toLowerCase().includes(lowerValue))
+    );
+    setFilteredBlogs(
+      blogsData.filter(
+        (b) =>
+          b.description.toLowerCase().includes(lowerValue) ||
+          b.content.toLowerCase().includes(lowerValue)
+      )
+    );
+    setFilteredSupermarkets(
+      supermarkets.filter(
+        (s) =>
+          s.supermarketName.toLowerCase().includes(lowerValue) ||
+          s.description.toLowerCase().includes(lowerValue)
+      )
+    );
+    setFilteredRecipes(
+      recipeData.filter(
+        (r) =>
+          r.description.toLowerCase().includes(lowerValue) ||
+          r.content.toLowerCase().includes(lowerValue)
+      )
+    );
   };
 
   const handleBlur = () => {
@@ -98,160 +135,209 @@ const MainSearch = ({ onEmptyBlur }) => {
           <Search color="#FFFF" size={18} />
         </div>
       </div>
+      <div className="mt-12 w-full">
+        {/* Products Section */}
+        {filteredProducts.length > 0 && (
+          <div>
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+              Products
+            </p>
 
-      {/* Products Section */}
-      <div>
-        <p className="font-HelveticaNeueMedium text-darkColor text-lg">
-          Products
-        </p>
+            <div className="relative w-full overflow-hidden">
+              {/* Navigation Buttons */}
+              <button
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft size={24} />
+              </button>
 
-        {filteredProducts.length > 0 ? (
-          <div className="relative w-full overflow-hidden">
-            {/* Navigation Buttons */}
-            <button
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
-            >
-              <ChevronLeft size={24} />
-            </button>
+              <button
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handleNext}
+                disabled={
+                  currentIndex + itemsPerSlide >= filteredProducts.length
+                }
+              >
+                <ChevronRight size={24} />
+              </button>
 
-            <button
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-              onClick={handleNext}
-              disabled={currentIndex + itemsPerSlide >= filteredProducts.length}
-            >
-              <ChevronRight size={24} />
-            </button>
-
-            {/* Carousel Content */}
-            <div className="flex w-full overflow-hidden justify-center items-center">
-              <AnimatePresence>
-                {filteredProducts
-                  .slice(currentIndex, currentIndex + itemsPerSlide)
-                  .map((item, index) => (
-                    <motion.div
-                      key={index}
-                      className="w-[23%] mx-2"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <ProductCard data={item} />
-                    </motion.div>
-                  ))}
-              </AnimatePresence>
+              {/* Carousel Content */}
+              <div className="flex w-full overflow-hidden justify-center items-center">
+                <AnimatePresence>
+                  {filteredProducts
+                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .map((item, index) => (
+                      <motion.div
+                        key={index}
+                        className="w-full lg:w-[23%] mx-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <ProductCard
+                          data={item}
+                          highlightSearchTerm={searchTerm}
+                        />
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
-        ) : (
-          <p className="text-center text-gray-500 w-full mt-10">
-            No data found
-          </p>
         )}
-      </div>
 
-      {/* Super market Section */}
-      <div>
-        <p className="font-HelveticaNeueMedium text-darkColor text-lg mt-5">
-          SuperMarket
-        </p>
+        {/* Super market Section */}
+        {filteredSupermarkets.length > 0 && (
+          <div>
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg mt-5">
+              SuperMarket
+            </p>
 
-        {filteredSupermarkets.length > 0 ? (
-          <div className="relative w-full overflow-hidden">
-            {/* Navigation Buttons */}
-            <button
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
-            >
-              <ChevronLeft size={24} />
-            </button>
+            <div className="relative w-full overflow-hidden">
+              {/* Navigation Buttons */}
+              <button
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft size={24} />
+              </button>
 
-            <button
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-              onClick={handleNext}
-              disabled={currentIndex + itemsPerSlide >= filteredSupermarkets.length}
-            >
-              <ChevronRight size={24} />
-            </button>
+              <button
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handleNext}
+                disabled={
+                  currentIndex + itemsPerSlide >= filteredSupermarkets.length
+                }
+              >
+                <ChevronRight size={24} />
+              </button>
 
-            {/* Carousel Content */}
-            <div className="flex w-full overflow-hidden justify-center items-center">
-              <AnimatePresence>
-                {filteredSupermarkets
-                  .slice(currentIndex, currentIndex + itemsPerSlide)
-                  .map((item, index) => (
-                    <motion.div
-                      key={index}
-                      className="w-[23%] mx-2"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <Card data={item} />
-                    </motion.div>
-                  ))}
-              </AnimatePresence>
+              {/* Carousel Content */}
+              <div className="flex w-full overflow-hidden justify-center items-center">
+                <AnimatePresence>
+                  {filteredSupermarkets
+                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .map((item, index) => (
+                      <motion.div
+                        key={index}
+                        className="w-[23%] mx-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Card data={item} highlightSearchTerm={searchTerm} />
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
-        ) : (
-          <p className="text-center text-gray-500 w-full mt-10">
-            No data found
-          </p>
         )}
-      </div>
 
-      {/* Recipe Section */}
-      <div>
-        <p className="font-HelveticaNeueMedium text-darkColor text-lg mt-5">
-          Recipe
-        </p>
+        {/* Recipe Section */}
+        {filteredRecipes.length > 0 && (
+          <div>
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg mt-5">
+              Recipe
+            </p>
 
-        {filteredRecipes.length > 0 ? (
-          <div className="relative w-full overflow-hidden">
-            {/* Navigation Buttons */}
-            <button
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
-            >
-              <ChevronLeft size={24} />
-            </button>
+            <div className="relative w-full overflow-hidden">
+              {/* Navigation Buttons */}
+              <button
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft size={24} />
+              </button>
 
-            <button
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-              onClick={handleNext}
-              disabled={currentIndex + itemsPerSlide >= filteredRecipes.length}
-            >
-              <ChevronRight size={24} />
-            </button>
+              <button
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handleNext}
+                disabled={
+                  currentIndex + itemsPerSlide >= filteredRecipes.length
+                }
+              >
+                <ChevronRight size={24} />
+              </button>
 
-            {/* Carousel Content */}
-            <div className="flex w-full overflow-hidden justify-center items-center">
-              <AnimatePresence>
-                {filteredRecipes
-                  .slice(currentIndex, currentIndex + itemsPerSlide)
-                  .map((item, index) => (
-                    <motion.div
-                      key={index}
-                      className="w-[33%] mx-2"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <RecipiesCard data={item} />
-                    </motion.div>
-                  ))}
-              </AnimatePresence>
+              {/* Carousel Content */}
+              <div className="flex w-full overflow-hidden justify-center items-center">
+                <AnimatePresence>
+                  {filteredRecipes
+                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .map((item, index) => (
+                      <motion.div
+                        key={index}
+                        className="w-[33%] mx-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <RecipiesCard data={item} />
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
-        ) : (
-          <p className="text-center text-gray-500 w-full mt-10">
-            No data found
-          </p>
+        )}
+
+        {/* Recipe Section */}
+        {filteredBlogs.length > 0 && (
+          <div>
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg mt-5">
+              Blogs
+            </p>
+
+            <div className="relative w-full overflow-hidden">
+              {/* Navigation Buttons */}
+              <button
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <button
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                onClick={handleNext}
+                disabled={currentIndex + itemsPerSlide >= filteredBlogs.length}
+              >
+                <ChevronRight size={24} />
+              </button>
+
+              {/* Carousel Content */}
+              <div className="flex w-full overflow-hidden justify-center items-center">
+                <AnimatePresence>
+                  {filteredBlogs
+                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .map((item, index) => (
+                      <motion.div
+                        key={index}
+                        className="w-[33%] mx-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <BlogCard
+                          data={item}
+                          highlightSearchTerm={searchTerm}
+                        />
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

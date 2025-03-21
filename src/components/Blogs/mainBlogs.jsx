@@ -18,7 +18,6 @@ const MainBlogs = () => {
   const fetchData = async () => {
     const data = await getBlogs();
     setBlogsData(data);
-    console.log(blogsData);
     setLoading(false);
   };
 

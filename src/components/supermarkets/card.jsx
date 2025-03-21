@@ -3,28 +3,47 @@ import ImageTag from "../../components/reuseable/imageTag";
 import { Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const Card = ({ data, onDelete }) => {
+const HighlightedText = ({ text, searchTerm }) => {
+  if (!searchTerm) return <>{text}</>;
+
+  const regex = new RegExp(`(${searchTerm})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.toLowerCase() === searchTerm.toLowerCase() ? (
+          <span key={index} style={{ backgroundColor: "yellow" }}>
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
+const Card = ({ data, onDelete, highlightSearchTerm }) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3 relative">
-      <div className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]" onClick={onDelete}>
-        <Trash2 className="text-white" size={18}/>
+      <div
+        className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]"
+        onClick={onDelete}
+      >
+        <Trash2 className="text-white" size={18} />
       </div>
       <div className="flex justify-center">
         <ImageTag path={data.images} classes="size-32" altText="logo" />
       </div>
       <p className="text-darkColor font-HelveticaNeueMedium text-sm pt-2">
-        {data.supermarketName}
+        <HighlightedText text={data.supermarketName} searchTerm={highlightSearchTerm} />
       </p>
       <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-2">
-        {/* <p className="">Total Brands</p> */}
-        <p className="line-clamp-3">{data.description}</p>
-      </div>
-      {/* <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-1">
-        <p className="">Ratings</p>
-        <p className="">
-          {data.ratings}
+        <p className="line-clamp-3">
+          <HighlightedText text={data.description} searchTerm={highlightSearchTerm} />
         </p>
-      </div> */}
+      </div>
       <Link to={`/dashboard/add-supermarkets?id=${data.id}`}>
         <button className="bg-gkRedColor py-2 mt-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
           <Pencil size={15} />

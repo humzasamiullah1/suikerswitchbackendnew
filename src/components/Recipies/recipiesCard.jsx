@@ -37,7 +37,28 @@ const timeAgo = (timestamp) => {
   return "Just now";
 };
 
-const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup }) => {
+const HighlightedText = ({ text, searchTerm }) => {
+  if (!searchTerm) return <>{text}</>;
+
+  const regex = new RegExp(`(${searchTerm})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.toLowerCase() === searchTerm.toLowerCase() ? (
+          <span key={index} style={{ backgroundColor: "yellow" }}>
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
+const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup, highlightSearchTerm }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [loading, setIsLoading] = useState(false);
@@ -141,7 +162,7 @@ const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup }) => {
       </div>
       <Link to={`/dashboard/recipes-detail/${data.id}`}>
         <p className="font-HelveticaNeueRegular text-darkColor text-sm py-4">
-          {data.description}
+          <HighlightedText text={data.description} searchTerm={highlightSearchTerm} />
         </p>
         <ImageTag
           path={data.images}

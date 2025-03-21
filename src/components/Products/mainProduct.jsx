@@ -273,7 +273,7 @@ const MainProucts = () => {
 
       {/* Cards Section with Staggered Animation */}
       <motion.div
-        className="flex flex-wrap gap-3 lg:h-[88%] lg:overflow-y-scroll panelScroll pb-3"
+        className="flex flex-wrap gap-1 lg:gap-3 lg:h-[88%] lg:overflow-y-scroll panelScroll pb-3"
         initial="hidden"
         animate="visible"
         variants={{

@@ -3,7 +3,28 @@ import ImageTag from "../../components/reuseable/imageTag";
 import { Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const ProductCard = ({ data, onDelete }) => {
+const HighlightedText = ({ text, searchTerm }) => {
+  if (!searchTerm) return <>{text}</>;
+
+  const regex = new RegExp(`(${searchTerm})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.toLowerCase() === searchTerm.toLowerCase() ? (
+          <span key={index} style={{ backgroundColor: "yellow" }}>
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
+const ProductCard = ({ data, onDelete, highlightSearchTerm }) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3 relative">
       <div className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]" onClick={onDelete}>
@@ -22,13 +43,13 @@ const ProductCard = ({ data, onDelete }) => {
         ))}
       </div>
       <p className="text-darkColor font-HelveticaNeueMedium text-base pt-2">
-        {data.productName}
+         <HighlightedText text={data.productName} searchTerm={highlightSearchTerm} />
       </p>
-      <div className="flex justify-between">
-        <div className="w-[35%]">
+      <div className="flex justify-between flex-wrap text-xs lg:text-sm">
+        <div className="w-[40%] lg:w-[35%]">
           <p>Category:</p>
         </div>
-        <div className="w-[73%] flex">
+        <div className="w-[57%] lg:w-[73%] flex flex-wrap whitespace-nowrap">
           {data.selectedCategories.map((item, index) => (
             <p>{item},</p>
           ))}
