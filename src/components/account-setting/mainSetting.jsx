@@ -21,7 +21,7 @@ const MainSettings = () => {
         </div>
       </div>
       <div className="flex flex-col justify-between h-[90%]  pt-3">
-        <div className="w-[70%] mx-auto mt-10 bg-white  shadow-lg rounded-lg">
+        <div className="w-full mt-10 bg-white  shadow-lg rounded-lg">
           {/* Tab Headers with Indicator */}
           <div className="relative flex">
             <button
@@ -53,7 +53,7 @@ const MainSettings = () => {
             />
           </div>
         </div>
-        <div className="p-5 w-[70%] mx-auto h-full overflow-scroll panelScroll">
+        <div className="p-5 w-full h-full overflow-scroll panelScroll">
           {activeTab === "user" && (
             <div className="animate-fadeIn">
               <EditProfile />

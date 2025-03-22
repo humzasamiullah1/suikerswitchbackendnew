@@ -6,6 +6,7 @@ import Card from "./card";
 import { getSupermarkets, deleteSupermarket } from "../utils/firebasefunctions";
 import WarningPopup from "../popup/warning"
 import { toast } from "react-toastify";
+import NoData from '../reuseable/noData'
 
 const MainSuperMarket = () => {
   const [search, setSearch] = useState("");
@@ -68,13 +69,13 @@ const MainSuperMarket = () => {
             </div>
           </Link>
         </div>
-        <div className="flex items-center lg:w-[80%] xl:w-[75%] 2xl:w-[60%] justify-end">
-          <div className="flex items-center gap-2 mt-3 md:mt-0">
-            <div className="relative">
+        <div className="flex items-center w-full lg:w-[80%] xl:w-[75%] 2xl:w-[60%] justify-end">
+          <div className="flex items-center gap-2 mt-3 md:mt-0 w-full lg:w-auto">
+            <div className="relative w-full lg:w-auto">
               <input
                 type="text"
                 placeholder="Search by name or desc"
-                className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-4 pr-8 focus:outline-none text-sm"
+                className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-4 pr-8 focus:outline-none text-sm w-full lg:w-auto"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -119,9 +120,9 @@ const MainSuperMarket = () => {
             </motion.div>
           ))
         ) : (
-          <p className="text-center text-gray-500 w-full mt-10">
-            No data found
-          </p>
+          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+            <NoData/>
+          </div>
         )}
       </motion.div>
       { warning &&

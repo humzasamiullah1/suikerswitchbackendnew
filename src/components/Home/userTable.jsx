@@ -1,54 +1,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Search, Menu } from "lucide-react";
+import { Search } from "lucide-react";
 import ImageTag from "../../components/reuseable/imageTag";
+import NoData from "../reuseable/noData"
 
-const users = [
-  {
-    id: 1,
-    name: "Olivia Martin",
-    email: "emma.davis@example.com",
-    contact: "+1 (555) 234-5678",
-    status: "Cancelled",
-  },
-  {
-    id: 2,
-    name: "Olivia Martin",
-    email: "emma.davis@example.com",
-    contact: "+1 (555) 234-5678",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Olivia Martin",
-    email: "emma.davis@example.com",
-    contact: "+1 (555) 234-5678",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Olivia Martin",
-    email: "emma.davis@example.com",
-    contact: "+1 (555) 234-5678",
-    status: "Renewal",
-  },
-  {
-    id: 5,
-    name: "Olivia Martin",
-    email: "emma.davis@example.com",
-    contact: "+1 (555) 234-5678",
-    status: "Active",
-  },
-  {
-    id: 6,
-    name: "Olivia Martin",
-    email: "emma.davis@example.com",
-    contact: "+1 (555) 234-5678",
-    status: "Renewal",
-  },
-];
-
-export default function ResponsiveTable({data}) {
+export default function ResponsiveTable({ data }) {
   const [search, setSearch] = useState("");
 
   const filteredUser = data.filter(
@@ -86,72 +42,66 @@ export default function ResponsiveTable({data}) {
           transition={{ duration: 0.5 }}
           className="w-full min-w-[600px] border-collapse"
         >
-          <thead>
-            <tr className=" shadow-md rounded-full text-sm md:text-base text-left font-HelveticaNeueMedium text-darkColor">
-              <th className="p-4 w-12">#</th>
-              <th className="p-4 w-1/4">Name</th>
-              <th className="p-4 w-1/4">Email</th>
-              <th className="p-4 w-1/4">Contact Number</th>
-              <th className="p-4 w-1/4">Subscriptions</th>
-            </tr>
-          </thead>
-          <tbody>
           {filteredUser.length > 0 ? (
-            filteredUser.map((user,i) => (
-              <motion.tr
-                key={user.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: user.id * 0.1 }}
-                className="hover:bg-gray-50 rounded-full cursor-pointer shadow-md font-HelveticaNeueMedium text-darkColor"
-              >
-                <td className="p-4">{i+1}</td>
-                <td className="p-4">
-                  <div className="flex items-center">
-                    {/* {data.length > 0 && */}
-                      <ImageTag
-                      path={
-                        user.profilepicture !== ""
-                          ? user.profilepicture
-                          : "/assets/images/default-image.png"
-                      }
-                      classes="size-10 rounded-full object-cover"
-                      altText="logo"
-                    />
-                    {/* } */}
-                    
-                    <span className="pl-2">
-                      {user.firstname} {user.lastname}
-                    </span>
-                  </div>
-                </td>
-                <td className="p-4 truncate max-w-[150px]">{user.email}</td>
-                <td className="p-4">{user.phonenumber}</td>
-                <td className="text-[#68DE50] p-4 font-semibold">Active</td>
-                {/* <td
-                  className={`p-4 font-semibold ${
-                    user.status === "Cancelled"
-                      ? "text-[#FF3115]"
-                      : user.status === "Active"
-                      ? "text-[#68DE50]"
-                      : "text-[#FFEF5B]"
-                  }`}
-                >
-                  {user.status}
-                </td> */}
-              </motion.tr>
-            ))
+            <>
+              <thead>
+                <tr className=" shadow-md rounded-full text-sm md:text-base text-left font-HelveticaNeueMedium text-darkColor">
+                  <th className="p-4 w-12">#</th>
+                  <th className="p-4 w-1/4">Name</th>
+                  <th className="p-4 w-1/4">Email</th>
+                  <th className="p-4 w-1/4">Contact Number</th>
+                  <th className="p-4 w-1/4">Subscriptions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUser.map((user, i) => (
+                  <motion.tr
+                    key={user.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: user.id * 0.1 }}
+                    className="hover:bg-gray-50 rounded-full cursor-pointer shadow-md font-HelveticaNeueMedium text-darkColor"
+                  >
+                    <td className="p-4">{i + 1}</td>
+                    <td className="p-4">
+                      <div className="flex items-center">
+                        {/* {data.length > 0 && */}
+                        <ImageTag
+                          path={
+                            user.profilepicture !== ""
+                              ? user.profilepicture
+                              : "/assets/images/default-image.png"
+                          }
+                          classes="size-10 rounded-full object-cover"
+                          altText="logo"
+                        />
+                        {/* } */}
+
+                        <span className="pl-2">
+                          {user.firstname} {user.lastname}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="p-4 truncate max-w-[150px]">{user.email}</td>
+                    <td className="p-4">{user.phonenumber}</td>
+                    <td className="text-[#68DE50] p-4 font-semibold">{user.status}</td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </>
           ) : (
-            <p className="text-center text-gray-500 w-full mt-10">
-              No data found
-            </p>
+            <div className="w-full flex justify-center">
+              
+              <NoData/>
+            </div>
           )}
-          </tbody>
         </motion.table>
       </div>
-      <div className="h-[10%] flex justify-center items-center">
-        <p className="font-HelveticaNeueMedium text-darkColor/70 text-base cursor-pointer">View All</p>
-      </div>
+      {/* <div className="h-[10%] flex justify-center items-center">
+        <p className="font-HelveticaNeueMedium text-darkColor/70 text-base cursor-pointer">
+          View All
+        </p>
+      </div> */}
     </div>
   );
 }

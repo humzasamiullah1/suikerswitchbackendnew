@@ -110,14 +110,14 @@ const FormSection = () => {
         </div>
       </div>
       <div className="flex justify-between mt-3 ">
-        <div className="flex w-[50%]">
+        {/* <div className="flex w-[50%]">
           <input
             type="checkbox"
             className="w-4 bg-bgColor rounded-sm cursor-pointer"
           />
           <p className="font-HelveticaNeueMedium text-darkColor text-xs pl-3">Remember me</p>
-        </div>
-        <Link to={"/forget-password"} className="w-[50%] flex justify-end">
+        </div> */}
+        <Link to={"/forget-password"} className="w-full flex justify-end">
           <p className="text-btnColor">Forget Password</p>
         </Link>
       </div>

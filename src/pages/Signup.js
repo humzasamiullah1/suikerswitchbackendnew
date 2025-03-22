@@ -25,8 +25,7 @@ function Signup() {
                 Sign Up
               </h1>
               <p className="text-fontColor text-xs pt-1 font-HelveticaNeueRegular">
-                Welcome back! , Please put your login credentials below to start
-                using the dashboard.
+                Welcome back! , New here? Create an account now to start using the dashboard!
               </p>
               <FormSection/>
             </div>

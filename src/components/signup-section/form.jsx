@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import LabelTag from "../reuseable/label";
 import { EyeOff, Eye } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signOut,
 } from "firebase/auth";
 import { saveuserdata } from "../utils/firebasefunctions";
 import { toast, ToastContainer } from "react-toastify";
 import { useStateValue } from "../../context/StateProvider";
-// import { createUserWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
 
 const auth = getAuth();
 
@@ -278,6 +276,14 @@ const FormSection = () => {
           </div>
         )}
       </button>
+      <Link to={"/"}>
+        <button
+          type="button"
+          className="text-base font-HelveticaNeueMedium border border-btnColor hover:bg-btnColor/90 hover:text-white mt-3 flex justify-center items-center text-btnColor rounded-full py-2 w-full"
+        >
+          Sign In
+        </button>
+      </Link>
       <ToastContainer />
     </form>
   );
