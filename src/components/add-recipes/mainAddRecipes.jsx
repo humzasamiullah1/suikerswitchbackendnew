@@ -130,6 +130,8 @@ const RichTextEditor = () => {
         setDescription("");
         setThumbnail(null);
         setThumbnailURL("");
+        setImages([]);
+        setImageFiles([]);
       }
     } catch (error) {
       console.error(error);
@@ -258,7 +260,7 @@ const RichTextEditor = () => {
       {/* 🔹 Buttons */}
       <div className="h-[15%] flex items-center justify-center">
         {/* <div className="flex justify-end"> */}
-        <Link to="/dashboard/blogs">
+        <Link to="/dashboard/recipies">
           <button
             className="w-[120px] py-2 font-HelveticaNeueMedium rounded-full bg-gray-200 text-darkColor mr-2"
             disabled={loading}
