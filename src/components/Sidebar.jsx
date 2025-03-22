@@ -206,7 +206,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
           </div>
           <div className="p-4 space-y-2 h-[13%] w-[60%] md:w-[40%] lg:w-full mx-auto">
             <div
-              className="flex items-center py-2 px-4 rounded-md text-darkColor hover:bg-gkRedColor hover:text-white transition-colors"
+              className="flex cursor-pointer items-center py-2 px-4 rounded-md text-darkColor hover:bg-gkRedColor hover:text-white transition-colors"
               onClick={() => !isLargeScreen && setIsMobileMenuOpen(false)}
             >
               <LogOut className="h-5 w-5 min-w-[20px]" />

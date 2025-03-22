@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import FormSection from "./FormSection"
+import FormSection from "./FormSection";
+import BreadCrumbs from "../reuseable/breadCrumbs"
 
 const MainAddSupermarket = () => {
   return (
@@ -11,9 +12,14 @@ const MainAddSupermarket = () => {
       className="bg-white rounded-[30px] shadow-md px-5 h-full mb-5 lg:mb-0"
     >
       <div className="flex lg:flex-row flex-col border-b-2 border-gray-100 justify-between items-center pt-2 lg:h-[12%]">
-        <div className="flex justify-center lg:justify-start w-full items-center lg:w-[30%] xl:w-[50%]">
-          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
-            Product Information
+        <div className="flex flex-col justify-center w-full lg:w-[30%] xl:w-[50%]">
+          <BreadCrumbs
+            link={"/dashboard/supermarkets"}
+            firstLink="SuperMarkets"
+            secondLink="SuperMarket Information"
+          />
+          <p className="font-HelveticaNeueMedium text-darkColor text-lg pt-1">
+            SuperMarket Information
           </p>
         </div>
         {/* <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end pb-3 lg:pb-0">
@@ -27,7 +33,7 @@ const MainAddSupermarket = () => {
           </div>
         </div> */}
       </div>
-      <FormSection/>
+      <FormSection />
     </motion.div>
   );
 };

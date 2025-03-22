@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
+import BreadCrumbs from "../reuseable/breadCrumbs"
 import { useParams } from "react-router-dom";
 import {
   getBlogsById,
@@ -176,9 +177,17 @@ const MainBlogDetail = () => {
       {/* Header Section */}
       <div className="flex lg:flex-row border-b border-gray-100 flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
-          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+          <div>
+            <BreadCrumbs
+              link={"/dashboard/blogs"}
+              firstLink="Blogs"
+              secondLink="Blog Detail"
+            />
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg">
             Blog Detail
           </p>
+          </div>
+          
           <Link to={"/dashboard/add-blog"}>
             <motion.div
               className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
