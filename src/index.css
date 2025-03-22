@@ -22,6 +22,10 @@ input:focus {
   outline: #c4161b solid 2px !important;
   background-color: #f4f4f4 !important;
   color: #1a1a1a !important;
+  border-color: transparent !important; 
+  --tw-ring-color: #c4161b !important;
+  border: none !important;
+  box-shadow: none !important;  
 }
 
 [type="text"]:focus,

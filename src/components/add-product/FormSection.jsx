@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom"; // ✅ Import useRouter for query params
+import { Link, useSearchParams, useNavigate } from "react-router-dom"; // ✅ Import useRouter for query params
 import Select from "react-select";
 import { serverTimestamp } from "firebase/firestore";
 import {
@@ -26,6 +26,7 @@ const FormSection = () => {
   const [isChecSuperMarket, setIsCheckSuperMarket] = useState(false);
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  const navigate = useNavigate();
 
   const id = searchParams.get("id");
 
@@ -108,26 +109,26 @@ const FormSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(productName === ''){
+    if (productName === "") {
       toast.error("Product Name is required");
-      setIsCheckName(true)
+      setIsCheckName(true);
       return;
     } else if (selectedCategories.length === 0) {
       toast.error("Categories is required");
-      setIsCheckCat(true)
+      setIsCheckCat(true);
       // setIsCheckName(false)
       return;
-    } else if (selectedSupermarkets.length === 0){
+    } else if (selectedSupermarkets.length === 0) {
       toast.error("Supermarkets is required");
-      setIsCheckSuperMarket(true)
+      setIsCheckSuperMarket(true);
       // setIsCheckCat(false)
       // setIsCheckName(false)
       return;
     }
-    
-    setIsCheckName(false)
-    setIsCheckCat(false)
-    setIsCheckSuperMarket(false)
+
+    setIsCheckName(false);
+    setIsCheckCat(false);
+    setIsCheckSuperMarket(false);
     setLoading(true);
 
     const productData = {
@@ -143,6 +144,9 @@ const FormSection = () => {
         // ✅ Update existing product
         await updateProductToFirebase(id, productData, imageFiles);
         toast.success("Product updated successfully!");
+        setTimeout(() => {
+          navigate("/dashboard/products");
+        }, 1000);
       } else {
         // ✅ Add new product
         await addProductToFirebase(productData, imageFiles);
@@ -151,6 +155,8 @@ const FormSection = () => {
         setSelectedCategories([]);
         setSelectedSupermarkets([]);
         setImage(null);
+        setImages([]);
+        setImageFiles([]);
       }
     } catch (error) {
       toast.error("Error processing request");
@@ -204,7 +210,9 @@ const FormSection = () => {
         <input
           type="text"
           placeholder="Enter product name"
-          className={`w-full ${isCheckName ? 'border-2 border-red-600' : ''} mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
+          className={`w-full ${
+            isCheckName ? "border-2 border-red-600" : ""
+          } mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
         />
@@ -219,7 +227,9 @@ const FormSection = () => {
             options={supermarkets}
             value={selectedSupermarkets}
             onChange={setSelectedSupermarkets}
-            className={`mt-1 ${isChecSuperMarket ? 'border-2 border-red-600' : ''}`}
+            className={`mt-1 ${
+              isChecSuperMarket ? "border-2 border-red-600" : ""
+            }`}
           />
         </div>
         <div className="w-full md:w-[49%] pt-4 md:pt-0">
@@ -229,7 +239,9 @@ const FormSection = () => {
             options={categories}
             value={selectedCategories}
             onChange={setSelectedCategories}
-            className={`mt-1 w-full ${isChecCat ? 'border-2 border-red-600' : ''}`}
+            className={`mt-1 w-full ${
+              isChecCat ? "border-2 border-red-600" : ""
+            }`}
           />
         </div>
       </div>

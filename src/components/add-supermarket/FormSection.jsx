@@ -77,6 +77,9 @@ const FormSection = () => {
       if (id) {
         await updateSupermarket(id, formData, imageFiles);
         toast.success("Supermarket updated successfully!");
+        setTimeout(() => {
+          navigate("/dashboard/supermarkets");
+        }, 1000);
       } else {
         await uploadFormData(formData, imageFiles);
         toast.success("Supermarket added successfully!");
@@ -85,8 +88,6 @@ const FormSection = () => {
         setImages([]);
         setImageFiles([]);
       }
-
-      // navigate("/dashboard/supermarkets");
     } catch (error) {
       toast.error("Error: " + error.message);
     }
@@ -157,7 +158,7 @@ const FormSection = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Write Supermarket Description"
-          className="w-full h-40 mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50"
+          className="w-full h-40 mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50 !focus:outline-none"
         />
       </div>
 
