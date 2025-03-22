@@ -29,7 +29,7 @@ const HeaderBar = (props) => {
             className="w-full font-HelveticaNeueRegular mt-1 bg-white py-3 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50"
             onClick={()=> handleSearch(true)}
           />
-          <div className="absolute top-[5px] right-0 bg-gkRedColor rounded-full size-10 flex justify-center items-center">
+          <div className="absolute top-[8.5px] right-[4px] bg-gkRedColor rounded-full size-9 flex justify-center items-center">
             <Search color="#FFFF" size={18} />
           </div>
         </div>

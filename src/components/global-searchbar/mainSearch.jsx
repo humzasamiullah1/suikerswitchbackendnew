@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, CircleX } from "lucide-react";
 import {
   getProducts,
   getSupermarkets,
@@ -15,6 +15,9 @@ import BlogCard from "../Blogs/blogCard";
 const MainSearch = ({ onEmptyBlur }) => {
   const [products, setProducts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentSuperIndex, setCurrentSuperIndex] = useState(0);
+  const [currentRecipeIndex, setCurrentRecipeIndex] = useState(0);
+  const [currentBlogIndex, setCurrentBlogIndex] = useState(0);
   const [supermarkets, setSupermarkets] = useState([]);
   const [recipeData, setRecipeData] = useState([]);
   const [blogsData, setBlogsData] = useState([]);
@@ -73,6 +76,48 @@ const MainSearch = ({ onEmptyBlur }) => {
     }
   };
 
+  const itemsSuperPerSlide = 4;
+
+  const handleSuperNext = () => {
+    if (currentSuperIndex + itemsSuperPerSlide < supermarkets.length) {
+      setCurrentSuperIndex(currentSuperIndex + itemsSuperPerSlide);
+    }
+  };
+
+  const handleSuperPrev = () => {
+    if (currentSuperIndex - itemsSuperPerSlide >= 0) {
+      setCurrentSuperIndex(currentSuperIndex - itemsSuperPerSlide);
+    }
+  };
+
+  const itemsRecipePerSlide = 4;
+
+  const handleRecipeNext = () => {
+    if (currentRecipeIndex + itemsRecipePerSlide < recipeData.length) {
+      setCurrentRecipeIndex(currentRecipeIndex + itemsRecipePerSlide);
+    }
+  };
+
+  const handleRecipePrev = () => {
+    if (currentRecipeIndex - itemsRecipePerSlide >= 0) {
+      setCurrentRecipeIndex(currentRecipeIndex - itemsRecipePerSlide);
+    }
+  };
+
+  const itemsBlogPerSlide = 4;
+
+  const handleBlogeNext = () => {
+    if (currentBlogIndex + itemsBlogPerSlide < blogsData.length) {
+      setCurrentBlogIndex(currentBlogIndex + itemsBlogPerSlide);
+    }
+  };
+
+  const handleBlogPrev = () => {
+    if (currentBlogIndex - itemsBlogPerSlide >= 0) {
+      setCurrentBlogIndex(currentBlogIndex - itemsBlogPerSlide);
+    }
+  };
+
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -112,16 +157,17 @@ const MainSearch = ({ onEmptyBlur }) => {
     );
   };
 
-  const handleBlur = () => {
-    if (!searchTerm.trim()) {
-      onEmptyBlur(false);
-    }
+  const handleClose = () => {
+    onEmptyBlur(false);
   };
 
   return (
     <div>
+      <div className="flex w-full justify-end pt-7">
+        <CircleX className="cursor-pointer" onClick={handleClose}/>
+      </div>
       {/* Search Input */}
-      <div className="relative mx-auto mt-20 w-[69%] sm:w-[82%] md:w-[84%] lg:w-[69%] xl:w-[78%] 2xl:w-[79%]">
+      <div className="relative mx-auto mt-16 w-[69%] sm:w-[82%] md:w-[84%] lg:w-[69%] xl:w-[78%] 2xl:w-[79%]">
         <input
           type="text"
           ref={inputRef}
@@ -129,9 +175,8 @@ const MainSearch = ({ onEmptyBlur }) => {
           className="w-full font-HelveticaNeueRegular mt-1 bg-white py-3 text-sm rounded-full text-darkColor placeholder:text-zinc-700/50"
           value={searchTerm}
           onChange={handleSearch}
-          onBlur={handleBlur}
         />
-        <div className="absolute top-[5px] right-0 bg-gkRedColor rounded-full size-10 flex justify-center items-center">
+        <div className="absolute top-[6px] right-[3px] bg-gkRedColor rounded-full size-10 flex justify-center items-center">
           <Search color="#FFFF" size={18} />
         </div>
       </div>
@@ -146,7 +191,7 @@ const MainSearch = ({ onEmptyBlur }) => {
             <div className="relative w-full overflow-hidden">
               {/* Navigation Buttons */}
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                className={`absolute left-0 top-1/2 transform -translate-y-1/2 ${currentIndex === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} bg-gray-300 p-2 rounded-full z-10`}
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
               >
@@ -154,7 +199,7 @@ const MainSearch = ({ onEmptyBlur }) => {
               </button>
 
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+                className={`absolute right-0 top-1/2 transform -translate-y-1/2 ${currentIndex + itemsPerSlide >= filteredProducts.length ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} bg-gray-300 p-2 rounded-full z-10`}
                 onClick={handleNext}
                 disabled={
                   currentIndex + itemsPerSlide >= filteredProducts.length
@@ -199,18 +244,18 @@ const MainSearch = ({ onEmptyBlur }) => {
             <div className="relative w-full overflow-hidden">
               {/* Navigation Buttons */}
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
+                className={`absolute left-0 top-1/2 transform -translate-y-1/2 ${currentSuperIndex === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} p-2 rounded-full z-10`}
+                onClick={handleSuperPrev}
+                disabled={currentSuperIndex === 0}
               >
                 <ChevronLeft size={24} />
               </button>
 
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-                onClick={handleNext}
+                className={`absolute right-0 top-1/2 transform -translate-y-1/2 ${currentSuperIndex + itemsSuperPerSlide >= filteredSupermarkets.length ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} p-2 rounded-full z-10`}
+                onClick={handleSuperNext}
                 disabled={
-                  currentIndex + itemsPerSlide >= filteredSupermarkets.length
+                  currentSuperIndex + itemsSuperPerSlide >= filteredSupermarkets.length
                 }
               >
                 <ChevronRight size={24} />
@@ -220,7 +265,7 @@ const MainSearch = ({ onEmptyBlur }) => {
               <div className="flex w-full overflow-hidden justify-center items-center">
                 <AnimatePresence>
                   {filteredSupermarkets
-                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .slice(currentSuperIndex, currentSuperIndex + itemsSuperPerSlide)
                     .map((item, index) => (
                       <motion.div
                         key={index}
@@ -249,18 +294,18 @@ const MainSearch = ({ onEmptyBlur }) => {
             <div className="relative w-full overflow-hidden">
               {/* Navigation Buttons */}
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
+                className={`absolute left-0 top-1/2 transform -translate-y-1/2 ${currentRecipeIndex === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} p-2 rounded-full z-10`}
+                onClick={handleRecipePrev}
+                disabled={currentRecipeIndex === 0}
               >
                 <ChevronLeft size={24} />
               </button>
 
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-                onClick={handleNext}
+                className={`absolute right-0 top-1/2 transform -translate-y-1/2 ${currentRecipeIndex + itemsRecipePerSlide >= filteredRecipes.length ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} p-2 rounded-full z-10`}
+                onClick={handleRecipeNext}
                 disabled={
-                  currentIndex + itemsPerSlide >= filteredRecipes.length
+                  currentRecipeIndex + itemsRecipePerSlide >= filteredRecipes.length
                 }
               >
                 <ChevronRight size={24} />
@@ -270,7 +315,7 @@ const MainSearch = ({ onEmptyBlur }) => {
               <div className="flex w-full overflow-hidden justify-center items-center">
                 <AnimatePresence>
                   {filteredRecipes
-                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .slice(currentRecipeIndex, currentRecipeIndex + itemsRecipePerSlide)
                     .map((item, index) => (
                       <motion.div
                         key={index}
@@ -299,17 +344,17 @@ const MainSearch = ({ onEmptyBlur }) => {
             <div className="relative w-full overflow-hidden">
               {/* Navigation Buttons */}
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
+                className={`absolute left-0 top-1/2 transform -translate-y-1/2 ${currentBlogIndex === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'}  p-2 rounded-full z-10`}
+                onClick={handleBlogPrev}
+                disabled={currentBlogIndex === 0}
               >
                 <ChevronLeft size={24} />
               </button>
 
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-                onClick={handleNext}
-                disabled={currentIndex + itemsPerSlide >= filteredBlogs.length}
+                className={`absolute right-0 top-1/2 transform -translate-y-1/2 ${currentBlogIndex + itemsBlogPerSlide >= filteredBlogs.length ? 'bg-gray-200 cursor-not-allowed' : 'bg-gray-300 cursor-pointer'} p-2 rounded-full z-10`}
+                onClick={handleBlogeNext}
+                disabled={currentBlogIndex + itemsBlogPerSlide >= filteredBlogs.length}
               >
                 <ChevronRight size={24} />
               </button>
@@ -318,7 +363,7 @@ const MainSearch = ({ onEmptyBlur }) => {
               <div className="flex w-full overflow-hidden justify-center items-center">
                 <AnimatePresence>
                   {filteredBlogs
-                    .slice(currentIndex, currentIndex + itemsPerSlide)
+                    .slice(currentBlogIndex, currentBlogIndex + itemsBlogPerSlide)
                     .map((item, index) => (
                       <motion.div
                         key={index}

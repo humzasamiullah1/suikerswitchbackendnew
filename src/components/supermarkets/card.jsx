@@ -36,28 +36,37 @@ const Card = ({ data, onDelete, highlightSearchTerm, isShow = false }) => {
         </div>
       )}
       <div className="h-[90%]">
-      <div className="flex justify-center">
-        <ImageTag path={data.images} classes="size-32" altText="logo" />
-      </div>
-      <p className="text-darkColor font-HelveticaNeueMedium text-sm pt-2">
-        <HighlightedText
-          text={data.supermarketName}
-          searchTerm={highlightSearchTerm}
-        />
-      </p>
-      <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-2">
-        <p className="line-clamp-3">
+        <div className="flex justify-center">
+          <ImageTag path={data.images} classes="size-32" altText="logo" />
+        </div>
+        <p className="text-darkColor font-HelveticaNeueMedium text-sm pt-2">
           <HighlightedText
-            text={data.description}
+            text={data.supermarketName}
             searchTerm={highlightSearchTerm}
           />
         </p>
+        <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-2">
+          <p className="line-clamp-3">
+            <HighlightedText
+              text={data.description}
+              searchTerm={highlightSearchTerm}
+            />
+          </p>
+        </div>
       </div>
-      </div>
-      <Link to={`/dashboard/add-supermarkets?id=${data.id}`} className="h-[10%] flex items-center">
+      <Link
+        to={`/dashboard/add-supermarkets?id=${data.id}`}
+        className="h-[10%] flex items-center"
+      >
         <button className="bg-gkRedColor py-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
-          <Pencil size={15} />
-          <span className="pl-2">Edit SuperMarket</span>
+          {isShow ? (
+            <>
+              <Pencil size={15} />
+              <span className="pl-2">Edit SuperMarket</span>
+            </>
+          ) : (
+            <span className="pl-2">Show SuperMarket</span>
+          )}
         </button>
       </Link>
     </div>

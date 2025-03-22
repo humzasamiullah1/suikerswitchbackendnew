@@ -24,7 +24,12 @@ const HighlightedText = ({ text, searchTerm }) => {
   );
 };
 
-const ProductCard = ({ data, onDelete, highlightSearchTerm, isShow = false }) => {
+const ProductCard = ({
+  data,
+  onDelete,
+  highlightSearchTerm,
+  isShow = false,
+}) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3 relative">
       {isShow && (
@@ -65,8 +70,14 @@ const ProductCard = ({ data, onDelete, highlightSearchTerm, isShow = false }) =>
       </div>
       <Link to={`/dashboard/add-product?id=${data.id}`}>
         <button className="bg-gkRedColor py-2 mt-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
-          <Pencil size={15} />
-          <span className="pl-2">Edit Product</span>
+          {isShow ? (
+            <>
+              <Pencil size={15} />
+              <span className="pl-2">Edit Product</span>
+            </>
+          ) : (
+            <span className="pl-2">Show Product</span>
+          )}
         </button>
       </Link>
     </div>
