@@ -114,7 +114,7 @@ const BlogCard = ({
       <div
         className="bg-cover bg-no-repeat p-4 rounded-xl"
         style={{
-          backgroundImage: `url("${data.images}")`,
+          backgroundImage: `url("${data.images.length > 0 ? data.images: "/assets/images/blog-default.png"} ")`,
         }}
       >
         <div className="flex justify-between items-center border-b-2 border-darkColor/20 pb-3">
