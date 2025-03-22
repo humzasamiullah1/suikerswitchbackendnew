@@ -298,6 +298,7 @@ const MainProucts = () => {
               <ProductCard
                 data={item}
                 onDelete={() => openConfirmPopup(item.id)}
+                isShow={true}
               />
             </motion.div>
           ))

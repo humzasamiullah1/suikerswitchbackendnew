@@ -108,6 +108,7 @@ const MainBlogs = () => {
             >
               <BlogCard
                 data={item}
+                isShow={true}
                 onDelete={() => openConfirmPopup(item.id)}
               />
             </motion.div>

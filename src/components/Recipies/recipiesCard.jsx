@@ -58,7 +58,14 @@ const HighlightedText = ({ text, searchTerm }) => {
   );
 };
 
-const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup, highlightSearchTerm }) => {
+const RecipiesCard = ({
+  data,
+  onDelete,
+  onLikePopup,
+  onCommentPopup,
+  highlightSearchTerm,
+  isShow = false,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [loading, setIsLoading] = useState(false);
@@ -125,7 +132,7 @@ const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup, highlightSe
               />
               <div className="pl-3">
                 <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                {userData.firstname} {userData.lastname}
+                  {userData.firstname} {userData.lastname}
                 </p>
                 <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
                   {timeAgo(data.createdAt)}
@@ -148,13 +155,15 @@ const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup, highlightSe
                     <span className="pl-3">Edit</span>
                   </li>
                 </Link>
-                <li
-                  className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
-                  onClick={onDelete}
-                >
-                  <Trash2 size={18} />
-                  <span className="pl-3">Delete</span>
-                </li>
+                {isShow && (
+                  <li
+                    className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                    onClick={onDelete}
+                  >
+                    <Trash2 size={18} />
+                    <span className="pl-3">Delete</span>
+                  </li>
+                )}
               </ul>
             </div>
           )}
@@ -162,7 +171,10 @@ const RecipiesCard = ({ data, onDelete, onLikePopup, onCommentPopup, highlightSe
       </div>
       <Link to={`/dashboard/recipes-detail/${data.id}`}>
         <p className="font-HelveticaNeueRegular text-darkColor text-sm py-4">
-          <HighlightedText text={data.description} searchTerm={highlightSearchTerm} />
+          <HighlightedText
+            text={data.description}
+            searchTerm={highlightSearchTerm}
+          />
         </p>
         <ImageTag
           path={data.images}

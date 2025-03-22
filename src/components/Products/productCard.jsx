@@ -24,12 +24,17 @@ const HighlightedText = ({ text, searchTerm }) => {
   );
 };
 
-const ProductCard = ({ data, onDelete, highlightSearchTerm }) => {
+const ProductCard = ({ data, onDelete, highlightSearchTerm, isShow = false }) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3 relative">
-      <div className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]" onClick={onDelete}>
-        <Trash2 className="text-white" size={18}/>
-      </div>
+      {isShow && (
+        <div
+          className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]"
+          onClick={onDelete}
+        >
+          <Trash2 className="text-white" size={18} />
+        </div>
+      )}
       <div className="flex justify-center">
         <ImageTag path={data.images} classes="size-32" altText="logo" />
       </div>
@@ -43,7 +48,10 @@ const ProductCard = ({ data, onDelete, highlightSearchTerm }) => {
         ))}
       </div>
       <p className="text-darkColor font-HelveticaNeueMedium text-base pt-2">
-         <HighlightedText text={data.productName} searchTerm={highlightSearchTerm} />
+        <HighlightedText
+          text={data.productName}
+          searchTerm={highlightSearchTerm}
+        />
       </p>
       <div className="flex justify-between flex-wrap text-xs lg:text-sm">
         <div className="w-[40%] lg:w-[35%]">

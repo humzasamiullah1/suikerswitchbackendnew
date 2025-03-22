@@ -136,6 +136,7 @@ const MainRecipies = () => {
             <Link to={`/dashboard/blogs-detail/${item.id}`}> */}
               <RecipiesCard
                 data={item}
+                isShow={true}
                 onLikePopup={opeLikePopup}
                 onCommentPopup={opeCommentsPopup}
                 onDelete={() => openConfirmPopup(item.id)}

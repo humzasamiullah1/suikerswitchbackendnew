@@ -115,7 +115,7 @@ const MainSuperMarket = () => {
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
               {/* handleDelete(item.id) */}
-              <Card data={item} onDelete={() => openConfirmPopup(item.id)} />
+              <Card data={item} isShow={true} onDelete={() => openConfirmPopup(item.id)} />
             </motion.div>
           ))
         ) : (

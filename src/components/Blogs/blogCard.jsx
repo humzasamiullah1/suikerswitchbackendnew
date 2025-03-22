@@ -4,7 +4,6 @@ import { Ellipsis, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { fetchUserById } from "../utils/firebasefunctions";
 
-
 const timeAgo = (timestamp) => {
   if (!timestamp || !timestamp.seconds) return "Invalid date";
 
@@ -53,8 +52,13 @@ const HighlightedText = ({ text, searchTerm }) => {
   );
 };
 
-
-const BlogCard = ({ data, onDelete, onLikePopup, highlightSearchTerm }) => {
+const BlogCard = ({
+  data,
+  onDelete,
+  onLikePopup,
+  highlightSearchTerm,
+  isShow = false,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [loading, setIsLoading] = useState(false);
@@ -155,10 +159,15 @@ const BlogCard = ({ data, onDelete, onLikePopup, highlightSearchTerm }) => {
                       <span className="pl-3">Edit</span>
                     </li>
                   </Link>
-                  <li className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium" onClick={onDelete}>
-                    <Trash2 size={18} />
-                    <span className="pl-3">Delete</span>
-                  </li>
+                  {isShow && (
+                    <li
+                      className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                      onClick={onDelete}
+                    >
+                      <Trash2 size={18} />
+                      <span className="pl-3">Delete</span>
+                    </li>
+                  )}
                 </ul>
               </div>
             )}
@@ -167,7 +176,10 @@ const BlogCard = ({ data, onDelete, onLikePopup, highlightSearchTerm }) => {
         <Link to={`/dashboard/blogs-detail/${data.id}`}>
           <div className="pt-28">
             <h1 className="font-HelveticaNeueMedium text-2xl text-white">
-              <HighlightedText text={data.description} searchTerm={highlightSearchTerm} />
+              <HighlightedText
+                text={data.description}
+                searchTerm={highlightSearchTerm}
+              />
             </h1>
           </div>
         </Link>
