@@ -29,6 +29,7 @@ const ProductCard = ({
   onDelete,
   highlightSearchTerm,
   isShow = false,
+  hidebutton
 }) => {
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3 relative">
@@ -41,10 +42,10 @@ const ProductCard = ({
         </div>
       )}
       <div className="flex justify-center">
-        <ImageTag path={data.images} classes="size-32" altText="logo" />
+        <ImageTag path={data?.images} classes="size-32" altText="logo" />
       </div>
       <div className="flex flex-wrap">
-        {data.selectedSupermarkets.map((item, index) => (
+        {data?.selectedSupermarkets.map((item, index) => (
           <div className="bg-gray-200 rounded-full px-2 flex justify-center py-1 mt-3 mr-2">
             <p className="text-xs font-HelveticaNeueRegular text-darkColor">
               {item}
@@ -54,21 +55,22 @@ const ProductCard = ({
       </div>
       <p className="text-darkColor font-HelveticaNeueMedium text-base pt-2">
         <HighlightedText
-          text={data.productName}
+          text={data?.productName}
           searchTerm={highlightSearchTerm}
         />
       </p>
       <div className="flex justify-between flex-wrap text-xs lg:text-sm">
         <div className="w-[40%] lg:w-[35%]">
-          <p>Category:</p>
+          <p>Categories:</p>
         </div>
         <div className="w-[57%] lg:w-[73%] flex flex-wrap whitespace-nowrap">
-          {data.selectedCategories.map((item, index) => (
-            <p>{item},</p>
+          {data?.selectedCategories?.map((item, index) => (
+            <p className=" text-gray-400 text-xs">{item}</p>
           ))}
         </div>
       </div>
-      <Link to={`/dashboard/add-product?id=${data.id}`}>
+      {!hidebutton &&
+      <Link to={`/dashboard/add-product?id=${data?.id}`}>
         <button className="bg-gkRedColor py-2 mt-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
           {isShow ? (
             <>
@@ -80,6 +82,8 @@ const ProductCard = ({
           )}
         </button>
       </Link>
+}
+
     </div>
   );
 };

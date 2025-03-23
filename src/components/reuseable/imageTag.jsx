@@ -5,20 +5,22 @@ const ImageTag = (props) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const handleImageLoad = () => {
+    console.log("hi")
     setIsLoaded(true);
   };
 
   const handleImageError = () => {
+console.log("hello")
     setIsLoaded(false);
   };
 
   return (
     <img
-      src={isLoaded && path.length > 0 ? path : "/assets/images/default-image.png" }
+      src={ path }
       className={`${classes}`}
       alt={altText}
-      onLoad={handleImageLoad}
-      onError={handleImageError}
+      // onLoad={handleImageLoad}
+      // onError={handleImageError}
     />
   );
 };

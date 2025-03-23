@@ -78,7 +78,7 @@ export const getSupermarketById = async (id) => {
   try {
     const supermarketRef = doc(firestored, "supermarkets", id);
     const supermarketSnap = await getDoc(supermarketRef);
-    
+
     if (supermarketSnap.exists()) {
       return { id: supermarketSnap.id, ...supermarketSnap.data() };
     } else {
@@ -263,7 +263,7 @@ export const getProductById = async (id) => {
   try {
     const productRef = doc(firestored, "products", id);
     const productSnap = await getDoc(productRef);
-    
+
     if (productSnap.exists()) {
       return { id: productSnap.id, ...productSnap.data() };
     } else {
@@ -366,7 +366,7 @@ export const addProductToFirebase = async (productData, imageFiles) => {
     // Firestore me data save karo
     await setDoc(docRef, {
       ...productData,
-      id: docId, // Document ki ID bhi save ho rahi hai
+      id: docId,
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
     });
@@ -509,7 +509,7 @@ export const getBlogsById = async (id) => {
   try {
     const blogstRef = doc(firestored, "blogs", id);
     const blogsSnap = await getDoc(blogstRef);
-    
+
     if (blogsSnap.exists()) {
       return { id: blogsSnap.id, ...blogsSnap.data() };
     } else {
@@ -525,7 +525,7 @@ export const getHelpById = async (id) => {
   try {
     const helpElkerRef = doc(firestored, "helpElker", id);
     const helpElkerSnap = await getDoc(helpElkerRef);
-    
+
     if (helpElkerSnap.exists()) {
       return { id: helpElkerSnap.id, ...helpElkerSnap.data() };
     } else {
@@ -768,7 +768,7 @@ export const getRecipeById = async (id) => {
   try {
     const recipetRef = doc(firestored, "recipe", id);
     const recipeSnap = await getDoc(recipetRef);
-    
+
     if (recipeSnap.exists()) {
       return { id: recipeSnap.id, ...recipeSnap.data() };
     } else {
@@ -882,7 +882,7 @@ export const getHelpElker = async () => {
 //   try {
 //     const userRef = ref(firestored, `${collection}/${uid}`);
 //     const snapshot = await get(userRef);
-    
+
 //     if (snapshot.exists()) {
 //       console.log("User exists in Firebase:", snapshot.val());
 //       return snapshot.val();
