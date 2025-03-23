@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar"; // ✅ Ensure this is correct
 import Home from "./Home";
 import Product from "./Product";
@@ -26,6 +26,7 @@ import "react-toastify/dist/ReactToastify.css";
 function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapseBar, setIsCollapseBar] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -35,9 +36,18 @@ function Dashboard() {
     setIsCollapseBar(value);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="flex lg:flex-row flex-col w-full">
-      <div className={`${isCollapseBar ? "lg:w-[10%]" : "lg:w-[20%]"} `}>
+      <div className={`${isCollapseBar ? "lg:w-[10%]" : "lg:w-[20%]"}`}>
         <button
           className={`fixed top-3 left-4 z-50 ${
             isMobileMenuOpen ? "hidden" : ""
@@ -54,10 +64,10 @@ function Dashboard() {
       </div>
       <motion.div
         initial={{ x: 0 }}
-        animate={isCollapseBar ? { x: -50 } : {}}
+        animate={isLargeScreen && isCollapseBar ? { x: -50 } : {}}
         transition={{ type: "spring", stiffness: 260, damping: 30 }}
         className={`${
-          isCollapseBar ? "lg:w-[90%]" : "lg:w-[80%]"
+          isCollapseBar ? "lg:w-[90%] w-full" : "lg:w-[80%] w-full"
         }  overflow-y-auto}`}
       >
         <Routes>

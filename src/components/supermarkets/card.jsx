@@ -26,7 +26,7 @@ const HighlightedText = ({ text, searchTerm }) => {
 
 const Card = ({ data, onDelete, highlightSearchTerm, isShow = false }) => {
   return (
-    <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3 relative">
+    <div className="border-2 border-gray-200 h-[300px] rounded-xl w-full px-4 py-3 mt-3 relative">
       {isShow && (
         <div
           className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]"
@@ -35,27 +35,38 @@ const Card = ({ data, onDelete, highlightSearchTerm, isShow = false }) => {
           <Trash2 className="text-white" size={18} />
         </div>
       )}
-      <div className="flex justify-center">
-        <ImageTag path={data.images} classes="size-32" altText="logo" />
-      </div>
-      <p className="text-darkColor font-HelveticaNeueMedium text-sm pt-2">
-        <HighlightedText
-          text={data.supermarketName}
-          searchTerm={highlightSearchTerm}
-        />
-      </p>
-      <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-2">
-        <p className="line-clamp-3">
+      <div className="h-[90%]">
+        <div className="flex justify-center">
+          <ImageTag path={data.images} classes="size-32" altText="logo" />
+        </div>
+        <p className="text-darkColor font-HelveticaNeueMedium text-sm pt-2">
           <HighlightedText
-            text={data.description}
+            text={data.supermarketName}
             searchTerm={highlightSearchTerm}
           />
         </p>
+        <div className="font-HelveticaNeueRegular text-darkColor text-sm flex items-center justify-between pt-2">
+          <p className="line-clamp-3">
+            <HighlightedText
+              text={data.description}
+              searchTerm={highlightSearchTerm}
+            />
+          </p>
+        </div>
       </div>
-      <Link to={`/dashboard/add-supermarkets?id=${data.id}`}>
-        <button className="bg-gkRedColor py-2 mt-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
-          <Pencil size={15} />
-          <span className="pl-2">Edit SuperMarket</span>
+      <Link
+        to={`/dashboard/add-supermarkets?id=${data.id}`}
+        className="h-[10%] flex items-center"
+      >
+        <button className="bg-gkRedColor py-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
+          {isShow ? (
+            <>
+              <Pencil size={15} />
+              <span className="pl-2">Edit SuperMarket</span>
+            </>
+          ) : (
+            <span className="pl-2">Show SuperMarket</span>
+          )}
         </button>
       </Link>
     </div>

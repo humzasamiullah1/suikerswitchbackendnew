@@ -11,6 +11,7 @@ import {
 } from "../utils/firebasefunctions";
 import WarningPopup from "../popup/warning";
 import { toast } from "react-toastify";
+import NoData from "../reuseable/noData"
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
@@ -159,9 +160,7 @@ const MainProucts = () => {
                     </button>
                     <button
                       className={`w-1/2 py-2 text-sm text-center font-HelveticaNeueMedium ${
-                        activeTab === "supermarket"
-                          ? "bg-gray-200"
-                          : ""
+                        activeTab === "supermarket" ? "bg-gray-200" : ""
                       }`}
                       onClick={() => setActiveTab("supermarket")}
                     >
@@ -174,7 +173,10 @@ const MainProucts = () => {
                     {activeTab === "category" ? (
                       <ul>
                         {categories.map((category, i) => (
-                          <li key={i} className="flex items-center text-[15px] font-HelveticaNeueRegular gap-2 py-1">
+                          <li
+                            key={i}
+                            className="flex items-center text-[15px] font-HelveticaNeueRegular gap-2 py-1"
+                          >
                             <input
                               type="checkbox"
                               className="w-4 h-4"
@@ -305,9 +307,9 @@ const MainProucts = () => {
             </motion.div>
           ))
         ) : (
-          <p className="text-center text-gray-500 w-full mt-10">
-            No data found
-          </p>
+          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+            <NoData />
+          </div>
         )}
       </motion.div>
       {warning && (

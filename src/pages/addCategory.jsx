@@ -124,7 +124,7 @@ const AddCategory = () => {
                     placeholder="Enter Category"
                     value={item.name}
                     onChange={(event) => handleCategoryChange(event, index)}
-                    className="px-4 py-2 bg-gray-100 !border-2 !border-black rounded-lg flex-1 focus:outline-none"
+                    className="px-4 py-2 bg-gray-50 !border-2 !border-gray-100 rounded-lg flex-1 focus:outline-none"
                   />
                   <Trash2
                     onClick={() => deleteCategory(index)}
@@ -133,7 +133,7 @@ const AddCategory = () => {
                 </div>
               ))}
             </div>
-            <div className="h-[30%] flex flex-col items-center justify-center">
+            <div className="h-[30%] flex flex-col items-center justify-center pb-5 lg:pb-0">
               <div
                 onClick={addCategory}
                 className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"

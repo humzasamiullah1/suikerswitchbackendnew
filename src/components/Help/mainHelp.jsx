@@ -5,7 +5,12 @@ import RequestCard from "./requestCard";
 import LikePopup from "../popup/like";
 import { motion, AnimatePresence } from "framer-motion";
 import CommentsPopup from "../../components/popup/comments";
-import { getHelpElker, deleteHelp, AcceptHelpElker } from "../utils/firebasefunctions";
+import NoData from "../reuseable/noData";
+import {
+  getHelpElker,
+  deleteHelp,
+  AcceptHelpElker,
+} from "../utils/firebasefunctions";
 import { toast } from "react-toastify";
 import WarningPopup from "../popup/warning";
 import { serverTimestamp } from "firebase/firestore";
@@ -16,114 +21,6 @@ const MainHelp = () => {
   const [isCommentPopup, setIsCommentPopup] = useState(false);
   const [warning, setWarning] = useState(false);
   const [onDeleteId, setOnDeleteId] = useState("");
-  const [blogsData, setBlogsData] = useState([
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-    {
-      title: "Olivia Martin",
-      time: "1m ago",
-      description:
-        "How Ketchup Revolutionized How Food Is Grown, Processed and Regulated | Smithsonian and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      like: 24,
-      comments: 11,
-    },
-  ]);
-  const [requestData, setRequestData] = useState([
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-    {
-      name: "Natalie Clark",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in erat quis urna mollis vulputate sit amet quis mi. Integer et quam dui. Nulla efficitur eu felis id gravida. Proin ut molestie dolor. Mauris iaculis elementum vulputate. Morbi eget fringilla lectus. Nunc elementum nisi eu mi placerat vulputate.",
-    },
-  ]);
 
   const [helpConfirmData, setHelpConfirmData] = useState([]);
   const [helpPendingData, setHelpPendingData] = useState([]);
@@ -197,15 +94,15 @@ const MainHelp = () => {
       help.content.toLowerCase().includes(search.toLowerCase())
   );
 
-  const updateStatus = async (id,filterData, status) => {
+  const updateStatus = async (id, filterData, status) => {
     try {
       await AcceptHelpElker(id, filterData);
-      if(status === 'confirm'){
+      if (status === "confirm") {
         toast.success("Help Elker Accepted successfully!");
       } else {
         toast.success("Help Elker Rejected successfully!");
       }
-      fetchData()
+      fetchData();
     } catch (error) {
       console.error(error);
       toast.error(error.message);
@@ -213,32 +110,32 @@ const MainHelp = () => {
     } finally {
       // setLoading(false); // Stop Loading
     }
-  }
+  };
 
   const handleAccept = (id) => {
     const filterData = filteredHelpPending.find((x) => x.id === id);
     const data = {
-      content : filterData.content,
+      content: filterData.content,
       description: filterData.description,
       images: filterData.images,
-      status: 'confirmed',
+      status: "confirmed",
       userId: filterData?.userId,
       createAt: serverTimestamp(),
     };
-    updateStatus(filterData.id,data, 'confirm')
+    updateStatus(filterData.id, data, "confirm");
   };
 
   const handleReject = (id) => {
     const filterData = filteredHelpPending.find((x) => x.id === id);
     const data = {
-      content : filterData.content,
+      content: filterData.content,
       description: filterData.description,
       images: filterData.images,
-      status: 'reject',
+      status: "reject",
       userId: filterData?.userId,
       createAt: serverTimestamp(),
     };
-    updateStatus(filterData.id,data,'reject')
+    updateStatus(filterData.id, data, "reject");
   };
 
   return (
@@ -264,9 +161,9 @@ const MainHelp = () => {
               </motion.div>
             ))
           ) : (
-            <p className="text-center text-gray-500 w-full mt-10">
-              No data found
-            </p>
+            <div className="flex w-full h-full items-center justify-center">
+              <NoData />
+            </div>
           )}
         </div>
       </motion.div>
@@ -284,8 +181,7 @@ const MainHelp = () => {
               Help Elkar
             </p>
           </div>
-          <div className="flex items-center lg:w-[70%] xl:w-[40%] justify-end">
-            {/* <div className="flex items-center gap-2 mt-3 md:mt-0"> */}
+          <div className="flex items-center py-6 lg:py-0 w-full lg:w-[70%] xl:w-[40%] justify-end">
             <div className="relative w-full">
               <input
                 type="text"
@@ -296,7 +192,6 @@ const MainHelp = () => {
               />
               <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
             </div>
-            {/* </div> */}
           </div>
         </div>
 
@@ -322,9 +217,9 @@ const MainHelp = () => {
                 </motion.div>
               ))
             ) : (
-              <p className="text-center text-gray-500 w-full mt-10">
-                No data found
-              </p>
+              <div className="flex w-full h-[300px] lg:h-full items-center justify-center">
+                <NoData />
+              </div>
             )}
           </div>
           <motion.div
@@ -346,14 +241,14 @@ const MainHelp = () => {
                   <RequestCard
                     data={item}
                     onAccept={(id) => handleAccept(id)}
-                    onReject={(id)=> handleReject(id)}
+                    onReject={(id) => handleReject(id)}
                   />
                 </motion.div>
               ))
             ) : (
-              <p className="text-center text-gray-500 w-full mt-10">
-                No data found
-              </p>
+              <div className="flex w-full h-full items-center justify-center">
+                <NoData />
+              </div>
             )}
           </motion.div>
         </div>

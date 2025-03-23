@@ -10,6 +10,7 @@ import {
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { useStateValue } from "../../context/StateProvider";
 import { serverTimestamp } from "firebase/firestore";
+import BreadCrumbs from "../reuseable/breadCrumbs";
 
 import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
@@ -147,6 +148,13 @@ const RichTextEditor = () => {
   return (
     <div className="bg-white rounded-[30px] shadow-md px-5 mb-5 lg:mb-0 h-full flex flex-col">
       <div className="h-[85%] overflow-y-scroll panelScroll">
+        <div className="pt-3">
+          <BreadCrumbs
+            link={"/dashboard/blogs"}
+            firstLink="Blogs"
+            secondLink="Add Blog"
+          />
+        </div>
         <div className="px-2 pt-7">
           <h2 className="text-base font-HelveticaNeueMedium pb-2">
             {id ? "Update Blog" : "Upload Logo"}

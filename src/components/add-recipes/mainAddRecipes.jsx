@@ -9,6 +9,7 @@ import {
 } from "../utils/firebasefunctions";
 import { useStateValue } from "../../context/StateProvider";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import BreadCrumbs from "../reuseable/breadCrumbs"
 
 import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
@@ -130,6 +131,8 @@ const RichTextEditor = () => {
         setDescription("");
         setThumbnail(null);
         setThumbnailURL("");
+        setImages([]);
+        setImageFiles([]);
       }
     } catch (error) {
       console.error(error);
@@ -143,6 +146,13 @@ const RichTextEditor = () => {
   return (
     <div className="bg-white rounded-[30px] shadow-md px-5 mb-5 lg:mb-0 h-full flex flex-col">
       <div className="h-[85%] overflow-y-scroll panelScroll">
+      <div className="pt-3">
+          <BreadCrumbs
+            link={"/dashboard/recipies"}
+            firstLink="Recipies"
+            secondLink="Add Recipies"
+          />
+        </div>
         <div className="px-2 pt-7">
           <h2 className="text-base font-HelveticaNeueMedium pb-2">
             {id ? "Update Recipe" : "Upload Logo"}
@@ -258,7 +268,7 @@ const RichTextEditor = () => {
       {/* 🔹 Buttons */}
       <div className="h-[15%] flex items-center justify-center">
         {/* <div className="flex justify-end"> */}
-        <Link to="/dashboard/blogs">
+        <Link to="/dashboard/recipies">
           <button
             className="w-[120px] py-2 font-HelveticaNeueMedium rounded-full bg-gray-200 text-darkColor mr-2"
             disabled={loading}

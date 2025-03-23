@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { getRecipe, deleteRecipe } from "../utils/firebasefunctions";
 import WarningPopup from "../../components/popup/warning"
+import NoData from "../reuseable/noData"
 import { toast } from "react-toastify";
 
 const MainRecipies = () => {
@@ -145,9 +146,9 @@ const MainRecipies = () => {
             </motion.div>
           ))
         ) : (
-          <p className="text-center text-gray-500 w-full mt-10">
-            No data found
-          </p>
+          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+            <NoData/>
+          </div>
         )}
       </div>
       {warning && (

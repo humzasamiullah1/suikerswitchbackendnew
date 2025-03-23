@@ -24,6 +24,7 @@ import {
 import WarningPopup from "../popup/warning";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import BreadCrumbs from "../reuseable/breadCrumbs";
 
 const commentsData = [
   {
@@ -175,9 +176,17 @@ const MainRecipiesDetail = () => {
       {/* Header Section */}
       <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
         <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
-          <p className="font-HelveticaNeueMedium text-darkColor/50 text-lg">
-            Recipes Detail
-          </p>
+          <div>
+            <BreadCrumbs
+              link={"/dashboard/recipies"}
+              firstLink="Recipies"
+              secondLink="Add Recipies"
+            />
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+              Recipes Detail
+            </p>
+          </div>
+
           <motion.div
             className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
             whileHover={{ scale: 1.1 }}
