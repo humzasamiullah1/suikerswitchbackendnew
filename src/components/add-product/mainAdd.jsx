@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import FormSection from "./FormSection"
+import BulkFormSection from "./BulkFormSection";
 
-const MainAddProucts = () => {
+const MainAddProucts = (props) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} // Pehle invisible aur neeche se aayega
@@ -16,8 +17,21 @@ const MainAddProucts = () => {
             Product Information
           </p>
         </div>
+
+
+
+              <button
+              onClick={props.onClick}
+              className="border hidden rounded-full px-4  py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90">
+                <p className="text-sm pr-3">{props.bulkenabled ? "Add Product" :  "Bulk Upload"}</p>
+              </button>
+
       </div>
+      {props.bulkenabled ?
+      <BulkFormSection/>
+    :
       <FormSection/>
+}
     </motion.div>
   );
 };

@@ -5,11 +5,11 @@ import MainSearch from "../components/global-searchbar/mainSearch";
 
 function Product() {
   const [isGlobalSearch, setIsGlobalSearch] = useState(false);
-  
+
     const handleSearch = (value) => {
       setIsGlobalSearch(value);
     };
-  
+
     const handleGlobalSearch = (value) => {
       setIsGlobalSearch(value);
     };

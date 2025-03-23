@@ -120,7 +120,7 @@ const MainProucts = () => {
             </div>
           </Link>
         </div>
-        <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
+        <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end ">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
             {/* Search Input */}
             <div className="relative">
@@ -267,6 +267,8 @@ const MainProucts = () => {
                 <p className="text-sm pr-3">Add New Product</p>
               </button>
             </Link>
+
+
           </div>
         </div>
       </div>
