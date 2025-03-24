@@ -51,7 +51,7 @@ export const userlogin = async (email, password) => {
 
 export const uploadFormData = async (formData, imageFiles) => {
   try {
-    // Sare images upload karo aur unke URLs le lo
+   // Sare images upload karo aur unke URLs le lo
     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
     const imageUrls = await Promise.all(imageUploadPromises);
 
@@ -172,19 +172,27 @@ export const deleteSupermarket = async (id) => {
 
 export const uploadImage = async (file) => {
   return new Promise((resolve, reject) => {
-    const storageRef = ref(storage, `supermarket-logos/${file.name}`);
+
+    const storageRef = ref(storage, `supermarket-logos/${file.name}`)
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
       "state_changed",
       null,
-      (error) => reject(error),
+      (error) => {
+
+
+        console.log("this is the errro" + error)
+        reject(error)},
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         resolve(downloadURL);
       }
     );
   });
+
+
+
 };
 
 

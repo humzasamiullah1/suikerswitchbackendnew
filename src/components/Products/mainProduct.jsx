@@ -291,7 +291,7 @@ const MainProucts = () => {
         {filteredProduct.length > 0 ? (
           filteredProduct.map((item, index) => (
             <motion.div
-              key={index}
+              key={index.toString()}
               className="w-[49%] md:w-[32%] xl:w-[23%]"
               variants={{
                 hidden: { opacity: 0, y: 20 },

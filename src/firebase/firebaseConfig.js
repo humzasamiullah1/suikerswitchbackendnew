@@ -7,25 +7,26 @@ import { getStorage } from "firebase/storage"; // For Storage
 import { getMessaging } from "firebase/messaging";
 
 // Your web live app's Firebase configuration
-// const firebaseConfig = {
-//   apiKey: "AIzaSyC5tRBBLMidrbNP5uzxKcdbNtQkmebUz2Y",
-//   authDomain: "suiker-switch.firebaseapp.com",
-//   projectId: "suiker-switch",
-//   storageBucket: "suiker-switch.appspot.com", // Corrected storage bucket URL
-//   messagingSenderId: "191271279519",
-//   appId: "1:191271279519:web:dd053b732d342ad106fbaa",
-//   measurementId: "G-7TBR318012"
-// };
+const firebaseConfig = {
+  apiKey: "AIzaSyC5tRBBLMidrbNP5uzxKcdbNtQkmebUz2Y",
+  authDomain: "suiker-switch.firebaseapp.com",
+  projectId: "suiker-switch",
+  storageBucket: "suiker-switch.firebasestorage.app",
+  messagingSenderId: "191271279519",
+  appId: "1:191271279519:web:903fc1978cf81ff206fbaa",
+  measurementId: "G-LS3ZDBWPCR"
+};
+
 
 // testing web live app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBKSwgvfO6iHHiw-MXQrRTLx6PFXwLAd24",
-  authDomain: "hassan-e3385.firebaseapp.com",
-  projectId: "hassan-e3385",
-  storageBucket: "hassan-e3385.appspot.com",
-  messagingSenderId: "744698661206",
-  appId: "1:744698661206:web:ee64a8d4cd723d635caef7"
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBKSwgvfO6iHHiw-MXQrRTLx6PFXwLAd24",
+//   authDomain: "hassan-e3385.firebaseapp.com",
+//   projectId: "hassan-e3385",
+//   storageBucket: "hassan-e3385.appspot.com",
+//   messagingSenderId: "744698661206",
+//   appId: "1:744698661206:web:ee64a8d4cd723d635caef7"
+// };
 
 // Initialize Firebase
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
