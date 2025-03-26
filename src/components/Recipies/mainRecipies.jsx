@@ -6,8 +6,9 @@ import CommentsPopup from "../../components/popup/comments";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { getRecipe, deleteRecipe } from "../utils/firebasefunctions";
-import WarningPopup from "../../components/popup/warning"
-import NoData from "../reuseable/noData"
+import WarningPopup from "../../components/popup/warning";
+import NoData from "../reuseable/noData";
+import MyLoader from "../reuseable/myLoader";
 import { toast } from "react-toastify";
 
 const MainRecipies = () => {
@@ -27,8 +28,7 @@ const MainRecipies = () => {
     console.log(recipeData);
   };
   useEffect(() => {
-   
-
+    setLoading(true);
     fetchData();
   }, []);
 
@@ -116,41 +116,48 @@ const MainRecipies = () => {
           </div>
         </div>
       </div>
-
-      {/* Blog List Section */}
-      <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
-        {filteredRecipe.length > 0 ? (
-          filteredRecipe.map((item, index) => (
-            <motion.div
-              key={index}
-              className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.4,
-                ease: "easeOut",
-                delay: index * 0.1,
-              }}
-              viewport={{ once: true }}
-            >
-              {/* {item.id}
+      {!loading ? (
+        <>
+          {/* Blog List Section */}
+          <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+            {filteredRecipe.length > 0 ? (
+              filteredRecipe.map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeOut",
+                    delay: index * 0.1,
+                  }}
+                  viewport={{ once: true }}
+                >
+                  {/* {item.id}
             <Link to={`/dashboard/blogs-detail/${item.id}`}> */}
-              <RecipiesCard
-                data={item}
-                isShow={true}
-                onLikePopup={opeLikePopup}
-                onCommentPopup={opeCommentsPopup}
-                onDelete={() => openConfirmPopup(item.id)}
-              />
-              {/* </Link> */}
-            </motion.div>
-          ))
-        ) : (
-          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
-            <NoData/>
+                  <RecipiesCard
+                    data={item}
+                    isShow={true}
+                    onLikePopup={opeLikePopup}
+                    onCommentPopup={opeCommentsPopup}
+                    onDelete={() => openConfirmPopup(item.id)}
+                  />
+                  {/* </Link> */}
+                </motion.div>
+              ))
+            ) : (
+              <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+                <NoData />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+          <MyLoader />
+        </div>
+      )}
       {warning && (
         <WarningPopup
           name="recipe"

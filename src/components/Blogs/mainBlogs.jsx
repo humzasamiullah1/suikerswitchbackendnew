@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { getBlogs, deleteBlog } from "../utils/firebasefunctions";
 import WarningPopup from "../popup/warning";
 import NoData from "../reuseable/noData"
+import MyLoader from "../reuseable/myLoader"
 import { toast } from "react-toastify";
 
 const MainBlogs = () => {
@@ -23,6 +24,7 @@ const MainBlogs = () => {
   };
 
   useEffect(() => {
+    setLoading(true)
     fetchData();
   }, []);
 
@@ -92,7 +94,7 @@ const MainBlogs = () => {
           </div>
         </div>
       </div>
-
+      {!loading ? (
       <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
         {filteredBlog.length > 0 ? (
           filteredBlog.map((item, index) => (
@@ -120,6 +122,11 @@ const MainBlogs = () => {
           </div>
         )}
       </div>
+      ) : (
+        <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+          <MyLoader />
+        </div>
+      )}
       {warning && (
         <WarningPopup
           name="blog"

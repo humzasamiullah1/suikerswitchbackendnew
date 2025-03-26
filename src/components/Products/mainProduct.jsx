@@ -11,7 +11,8 @@ import {
 } from "../utils/firebasefunctions";
 import WarningPopup from "../popup/warning";
 import { toast } from "react-toastify";
-import NoData from "../reuseable/noData"
+import NoData from "../reuseable/noData";
+import MyLoader from "../reuseable/myLoader";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
@@ -59,6 +60,7 @@ const MainProucts = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchCategories();
     fetchSupermarkets();
     fetchData();
@@ -273,43 +275,51 @@ const MainProucts = () => {
         </div>
       </div>
 
-      {/* Cards Section with Staggered Animation */}
-      <motion.div
-        className="flex flex-wrap gap-1 lg:gap-3 lg:h-[88%] lg:overflow-y-scroll panelScroll pb-3"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.2 }, // Har card thoda delay se aayega
-          },
-        }}
-      >
-        {filteredProduct.length > 0 ? (
-          filteredProduct.map((item, index) => (
-            <motion.div
-              key={index}
-              className="w-[49%] md:w-[32%] xl:w-[23%]"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <ProductCard
-                data={item}
-                onDelete={() => openConfirmPopup(item.id)}
-                isShow={true}
-              />
-            </motion.div>
-          ))
-        ) : (
-          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
-            <NoData />
-          </div>
-        )}
-      </motion.div>
+      {!loading ? (
+        <>
+          {/* Cards Section with Staggered Animation */}
+          <motion.div
+            className="flex flex-wrap gap-1 lg:gap-3 lg:h-[88%] lg:overflow-y-scroll panelScroll pb-3"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.2 }, // Har card thoda delay se aayega
+              },
+            }}
+          >
+            {filteredProduct.length > 0 ? (
+              filteredProduct.map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="w-[49%] md:w-[32%] xl:w-[23%]"
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                >
+                  <ProductCard
+                    data={item}
+                    onDelete={() => openConfirmPopup(item.id)}
+                    isShow={true}
+                  />
+                </motion.div>
+              ))
+            ) : (
+              <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+                <NoData />
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : (
+        <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+          <MyLoader />
+        </div>
+      )}
       {warning && (
         <WarningPopup
           name="product"
