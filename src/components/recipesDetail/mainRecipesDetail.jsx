@@ -68,22 +68,26 @@ const MainRecipiesDetail = () => {
 
   const { id } = useParams(); // URL se id get krni
   const [recipe, setRecipe] = useState(null);
+
+
   const fetchRecipe = async () => {
     if (!id) return;
 
     const blogData = await getRecipeById(id); // Function call
     setRecipe(blogData);
     fetchUserData(blogData.userId);
-    console.log("hassan", recipe);
+    console.log("recipe", recipe);
   };
+
   useEffect(() => {
     fetchRecipe();
   }, [id]);
+
   const fetchUserData = async (userId) => {
     if (!userId) return;
 
     const userData = await fetchUserById(userId);
-    console.log("rehan", userData);
+    console.log("userData", userData);
 
     if (userData) {
       setUserData({

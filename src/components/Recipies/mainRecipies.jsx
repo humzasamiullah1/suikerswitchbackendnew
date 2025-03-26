@@ -20,9 +20,10 @@ const MainRecipies = () => {
   const [onDeleteId, setOnDeleteId] = useState("");
 
   const [recipeData, setRecipeData] = useState([]);
+
+
   const fetchData = async () => {
     const data = await getRecipe();
-    console.log("hassan", data);
     setRecipeData(data);
     setLoading(false);
     console.log(recipeData);

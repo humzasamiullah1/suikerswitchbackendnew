@@ -64,7 +64,7 @@ const FormSection = () => {
       return;
     }
     setLoading(true);
-    const timestamp = serverTimestamp(); 
+    const timestamp = serverTimestamp();
 
     const formData = {
       supermarketName,
@@ -81,6 +81,8 @@ const FormSection = () => {
           navigate("/dashboard/supermarkets");
         }, 1000);
       } else {
+
+
         await uploadFormData(formData, imageFiles);
         toast.success("Supermarket added successfully!");
         setSupermarketName("");

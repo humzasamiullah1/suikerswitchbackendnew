@@ -18,7 +18,7 @@ const HeaderBar = (props) => {
           {user.firstname} {user.lastname}
         </h1>
         <p className="font-HelveticaNeueRegular text-darkColor text-sm">
-          {subHeading}
+          Explore Information about your Products and Recipees!
         </p>
       </div>
       <div className="lg:w-[50%] w-full flex justify-between pt-4 xl:pt-0">
