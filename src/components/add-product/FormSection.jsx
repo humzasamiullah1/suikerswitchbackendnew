@@ -26,6 +26,8 @@ const FormSection = () => {
   const [isChecSuperMarket, setIsCheckSuperMarket] = useState(false);
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  const [description, setDescription] = useState("");
+  const [isCheckDesc, setIsCheckDesc] = useState(false);
   const navigate = useNavigate();
 
   const id = searchParams.get("id");
@@ -85,6 +87,7 @@ const FormSection = () => {
         fetchCategories(product);
         fetchSupermarkets(product);
         setProductName(product.productName);
+        setDescription(product.description)
         setImages(product.images || []);
       }
     } catch (error) {
@@ -113,6 +116,10 @@ const FormSection = () => {
       toast.error("Product Name is required");
       setIsCheckName(true);
       return;
+    } else if (description === "") {
+      toast.error("Description is required");
+      setIsCheckDesc(true);
+      return;
     } else if (selectedCategories.length === 0) {
       toast.error("Categories is required");
       setIsCheckCat(true);
@@ -133,6 +140,7 @@ const FormSection = () => {
 
     const productData = {
       productName,
+      description,
       selectedCategories: selectedCategories.map((cat) => cat.value),
       selectedSupermarkets: selectedSupermarkets.map((sup) => sup.value),
       timestamp: serverTimestamp(),
@@ -157,6 +165,9 @@ const FormSection = () => {
         setImage(null);
         setImages([]);
         setImageFiles([]);
+        setTimeout(() => {
+          navigate("/dashboard/products");
+        }, 1000);
       }
     } catch (error) {
       toast.error("Error processing request");
@@ -244,6 +255,18 @@ const FormSection = () => {
             }`}
           />
         </div>
+      </div>
+      <div className="pt-4 w-full">
+      <label className="text-sm">Description</label>
+        <textarea
+          cols={10}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Write Supermarket Description"
+          className={`w-full h-40 mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50 !focus:outline-none ${
+            isCheckDesc ? "border-2 border-red-600" : ""
+          }`}
+        />
       </div>
 
       {/* ✅ Submit Button */}

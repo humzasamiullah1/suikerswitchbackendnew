@@ -319,6 +319,7 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
     // Update Firestore document
     await updateDoc(docRef, {
       productName: formData.productName,
+      description: formData.description,
       selectedCategories: formData.selectedCategories,
       selectedSupermarkets: formData.selectedSupermarkets,
       images: imageURLs,
