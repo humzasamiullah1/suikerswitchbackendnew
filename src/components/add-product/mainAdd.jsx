@@ -14,14 +14,14 @@ const MainAddProucts = (props) => {
     >
       <div className="flex lg:flex-row flex-col border-b-2 border-gray-100 justify-between items-center pt-2 lg:h-[12%]">
         <div className="flex flex-col justify-center w-full lg:w-[30%] xl:w-[50%]">
+          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+            Product Information
+          </p>
           <BreadCrumbs
             link={"/dashboard/products"}
             firstLink="Product"
             secondLink="Product Information"
           />
-          <p className="font-HelveticaNeueMedium text-darkColor text-lg pt-1">
-            Product Information
-          </p>
         </div>
 
         <button

@@ -13,14 +13,14 @@ const MainAddSupermarket = () => {
     >
       <div className="flex lg:flex-row flex-col border-b-2 border-gray-100 justify-between items-center pt-2 lg:h-[12%]">
         <div className="flex flex-col justify-center w-full lg:w-[30%] xl:w-[50%]">
+          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+            SuperMarket Information
+          </p>
           <BreadCrumbs
             link={"/dashboard/supermarkets"}
             firstLink="SuperMarkets"
             secondLink="SuperMarket Information"
           />
-          <p className="font-HelveticaNeueMedium text-darkColor text-lg pt-1">
-            SuperMarket Information
-          </p>
         </div>
         {/* <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end pb-3 lg:pb-0">
           <div className="flex items-center gap-2 mt-3 md:mt-0">
