@@ -16,6 +16,8 @@ import WarningPopup from "../popup/warning";
 import { serverTimestamp } from "firebase/firestore";
 import MyLoader from "../reuseable/myLoader";
 
+import ReactPaginate from "react-paginate";
+
 const MainHelp = () => {
   const [search, setSearch] = useState("");
   const [isLikePopup, setIsLikePopup] = useState(false);
@@ -26,6 +28,10 @@ const MainHelp = () => {
 
   const [helpConfirmData, setHelpConfirmData] = useState([]);
   const [helpPendingData, setHelpPendingData] = useState([]);
+
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(0);
+  const productsPerPage = 30;
 
   const fetchData = async () => {
     const data = await getHelpElker();
@@ -86,7 +92,7 @@ const MainHelp = () => {
     },
   };
 
-  const filteredHelpConfirm = helpConfirmData.filter(
+  const searchedProducts = helpConfirmData.filter(
     (help) =>
       help.description.toLowerCase().includes(search.toLowerCase()) ||
       help.content.toLowerCase().includes(search.toLowerCase())
@@ -140,6 +146,16 @@ const MainHelp = () => {
       createAt: serverTimestamp(),
     };
     updateStatus(filterData.id, data, "reject");
+  };
+
+  const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
+  const currentProducts = searchedProducts.slice(
+    currentPage * productsPerPage,
+    (currentPage + 1) * productsPerPage
+  );
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
   };
 
   return (
@@ -208,31 +224,54 @@ const MainHelp = () => {
         {/* help List Section */}
         <div className="lg:h-[88%] w-full flex lg:flex-row flex-col justify-between">
           {!loading ? (
-            <div className="w-full lg:w-[73%] lg:overflow-y-scroll panelScroll h-full">
-              {filteredHelpConfirm.length > 0 ? (
-                filteredHelpConfirm.map((item, index) => (
-                  <motion.div
-                    key={index}
-                    className="w-full"
-                    initial="hidden"
-                    whileInView="visible"
-                    variants={pageVariants}
-                    viewport={{ once: true }}
-                  >
-                    <HelpCard
-                      data={item}
-                      onLikePopup={opeLikePopup}
-                      onCommentsClick={opeCommentsPopup}
-                      onDelete={() => openConfirmPopup(item.id)}
-                    />
-                  </motion.div>
-                ))
-              ) : (
-                <div className="flex w-full h-[300px] lg:h-full items-center justify-center">
-                  <NoData />
+            <>
+              <div className="w-full lg:w-[73%] lg:overflow-y-scroll panelScroll h-full">
+                {currentProducts.length > 0 ? (
+                  currentProducts.map((item, index) => (
+                    <motion.div
+                      key={index}
+                      className="w-full"
+                      initial="hidden"
+                      whileInView="visible"
+                      variants={pageVariants}
+                      viewport={{ once: true }}
+                    >
+                      <HelpCard
+                        data={item}
+                        onLikePopup={opeLikePopup}
+                        onCommentsClick={opeCommentsPopup}
+                        onDelete={() => openConfirmPopup(item.id)}
+                      />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="flex w-full h-[300px] lg:h-full items-center justify-center">
+                    <NoData />
+                  </div>
+                )}
+              </div>
+              {pageCount > 1 && (
+                <div className="lg:h-[10%] pb-5 lg:pb-0">
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageClick}
+                    containerClassName={
+                      "pagination flex justify-center mt-4 space-x-2 font-HelveticaNeueMedium text-sm"
+                    }
+                    pageClassName={"px-3 py-2 bg-gray-200 rounded-md"}
+                    activeClassName={"!bg-gkRedColor !text-white"}
+                    previousClassName={"px-4 py-2 bg-gray-300 rounded-md"}
+                    nextClassName={"px-4 py-2 bg-gray-300 rounded-md"}
+                    disabledClassName={"opacity-50 cursor-not-allowed"}
+                  />
                 </div>
               )}
-            </div>
+            </>
           ) : (
             <div className="flex w-full h-[300px] lg:h-full items-center justify-center">
               <MyLoader />
