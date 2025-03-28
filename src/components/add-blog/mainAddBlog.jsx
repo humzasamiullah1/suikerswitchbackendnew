@@ -135,6 +135,9 @@ const RichTextEditor = () => {
         setThumbnailURL("");
         setImages([]);
         setImageFiles([]);
+        setTimeout(() => {
+          navigate("/dashboard/blogs");
+        }, 1000);
       }
     } catch (error) {
       console.error(error);
