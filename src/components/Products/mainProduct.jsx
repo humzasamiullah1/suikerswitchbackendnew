@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Search, Menu, Plus } from "lucide-react";
 import ProductCard from "./productCard";
 import { motion } from "framer-motion";
@@ -33,6 +33,8 @@ const MainProucts = () => {
   // Pagination States
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = 30;
+
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -110,6 +112,18 @@ const MainProucts = () => {
     setWarning(true);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} // Pehle invisible aur neeche se aayega
@@ -143,7 +157,7 @@ const MainProucts = () => {
             </div>
 
             {/* Filter Button */}
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
                 className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-300"
                 onClick={() => setIsOpen(!isOpen)}
