@@ -289,7 +289,7 @@ const MainProucts = () => {
         }}
       >
         {filteredProduct.length > 0 ? (
-          filteredProduct.slice(0, 10).map((item, index) => (
+          filteredProduct.map((item, index) => (
             <motion.div
               key={index.toString()}
               className="w-[49%] md:w-[32%] xl:w-[23%]"
