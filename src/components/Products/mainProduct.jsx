@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Search, Menu, Plus } from "lucide-react";
 import ProductCard from "./productCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import {
   getProducts,
   deleteProduct,
@@ -11,13 +12,14 @@ import {
 } from "../utils/firebasefunctions";
 import WarningPopup from "../popup/warning";
 import { toast } from "react-toastify";
-import NoData from "../reuseable/noData"
+import NoData from "../reuseable/noData";
+import MyLoader from "../reuseable/myLoader";
 
 const MainProucts = () => {
   const [search, setSearch] = useState("");
-
   const [product, setProduct] = useState([]);
   const [productCache, setProductCache] = useState([]);
+  const [filteredProduct, setFilteredProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("category");
@@ -28,61 +30,47 @@ const MainProucts = () => {
   const [warning, setWarning] = useState(false);
   const [onDeleteId, setOnDeleteId] = useState("");
 
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(0);
+  const productsPerPage = 30;
+
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    fetchData();
+    fetchCategories();
+    fetchSupermarkets();
+  }, []);
+
   const fetchData = async () => {
     const data = await getProducts();
     setProduct(data);
     setProductCache(data);
+    setFilteredProduct(data);
     setLoading(false);
   };
 
   const fetchCategories = async () => {
-    try {
-      const data = await getCategoriesFromFirebase();
-      setCategories(data);
-    } catch (error) {
-      // toast.error("Error fetching categories");
-    }
+    const data = await getCategoriesFromFirebase();
+    setCategories(data);
   };
 
   const fetchSupermarkets = async () => {
-    try {
-      const data = await getSupermarkets();
-      setSupermarkets(data);
-    } catch (error) {
-      // toast.error("Error fetching supermarkets");
-    }
+    const data = await getSupermarkets();
+    setSupermarkets(data);
   };
-
-  const openConfirmPopup = (id) => {
-    setOnDeleteId(id);
-    setWarning(true);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-    fetchSupermarkets();
-    fetchData();
-  }, []);
 
   const handleDelete = async (id) => {
     await deleteProduct(id);
     setWarning(false);
-    toast.success("Product Delete Successfully");
+    toast.success("Product Deleted Successfully");
     fetchData();
   };
 
-  const filteredProduct = product.filter((product) =>
-    product.productName.toLowerCase().includes(search.toLowerCase())
-  );
-
+  // Filtering logic
   const handleFilter = () => {
-    let filtered = product;
-    if (selectedCategories.length === 0 && selectedSupermarkets.length === 0) {
-      setProduct(productCache);
-      return;
-    }
+    let filtered = productCache;
 
-    // Filter by Categories
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((item) =>
         item.selectedCategories.some((category) =>
@@ -91,7 +79,6 @@ const MainProucts = () => {
       );
     }
 
-    // Filter by Supermarkets
     if (selectedSupermarkets.length > 0) {
       filtered = filtered.filter((item) =>
         item.selectedSupermarkets.some((supermarket) =>
@@ -100,8 +87,42 @@ const MainProucts = () => {
       );
     }
 
-    setProduct(filtered);
+    setFilteredProduct(filtered);
+    setCurrentPage(0); // Reset pagination after filtering
   };
+
+  // Search filter
+  const searchedProducts = filteredProduct.filter((p) =>
+    p.productName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Pagination Logic
+  const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
+  const currentProducts = searchedProducts.slice(
+    currentPage * productsPerPage,
+    (currentPage + 1) * productsPerPage
+  );
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id);
+    setWarning(true);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <motion.div
@@ -136,7 +157,7 @@ const MainProucts = () => {
             </div>
 
             {/* Filter Button */}
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
                 className="border rounded-full px-4 py-2 flex items-center font-HelveticaNeueRegular text-darkColor bg-gray-200 hover:bg-gray-300"
                 onClick={() => setIsOpen(!isOpen)}
@@ -269,49 +290,77 @@ const MainProucts = () => {
                 <p className="text-sm pr-3">Add New Product</p>
               </button>
             </Link>
-
-
           </div>
         </div>
       </div>
 
-      {/* Cards Section with Staggered Animation */}
-      <motion.div
-        className="flex flex-wrap gap-1 lg:gap-3 lg:h-[88%] lg:overflow-y-scroll panelScroll pb-3"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.2 }, // Har card thoda delay se aayega
-          },
-        }}
-      >
-        {filteredProduct.length > 0 ? (
-          filteredProduct.map((item, index) => (
-            <motion.div
-              key={index.toString()}
-              className="w-[49%] md:w-[32%] xl:w-[23%]"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <ProductCard
-                data={item}
-                onDelete={() => openConfirmPopup(item.id)}
-                isShow={true}
+      {!loading ? (
+        <>
+          {/* Cards Section with Staggered Animation */}
+          <motion.div
+            className="flex flex-wrap gap-1 lg:gap-3 lg:h-[78%] lg:overflow-y-scroll panelScroll pb-3"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.2 }, // Har card thoda delay se aayega
+              },
+            }}
+          >
+            {currentProducts.length > 0 ? (
+              currentProducts.map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="w-[49%] md:w-[32%] xl:w-[23%]"
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                >
+                  <ProductCard
+                    data={item}
+                    onDelete={() => openConfirmPopup(item.id)}
+                    isShow={true}
+                  />
+                </motion.div>
+              ))
+            ) : (
+              <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+                <NoData />
+              </div>
+            )}
+          </motion.div>
+          {/* Pagination Controls */}
+          {pageCount > 1 && (
+            <div className="lg:h-[10%] pb-5 lg:pb-0">
+              <ReactPaginate
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={
+                  "pagination flex justify-center mt-4 space-x-2 font-HelveticaNeueMedium text-sm"
+                }
+                pageClassName={"px-3 py-2 bg-gray-200 rounded-md"}
+                activeClassName={"!bg-gkRedColor !text-white"}
+                previousClassName={"px-4 py-2 bg-gray-300 rounded-md"}
+                nextClassName={"px-4 py-2 bg-gray-300 rounded-md"}
+                disabledClassName={"opacity-50 cursor-not-allowed"}
               />
-            </motion.div>
-          ))
-        ) : (
-          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
-            <NoData />
-          </div>
-        )}
-      </motion.div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+          <MyLoader />
+        </div>
+      )}
       {warning && (
         <WarningPopup
           name="product"

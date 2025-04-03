@@ -89,6 +89,9 @@ const FormSection = () => {
         setDescription("");
         setImages([]);
         setImageFiles([]);
+        setTimeout(() => {
+          navigate("/dashboard/supermarkets");
+        }, 1000);
       }
     } catch (error) {
       toast.error("Error: " + error.message);

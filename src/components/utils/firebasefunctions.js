@@ -319,6 +319,8 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
     // Update Firestore document
     await updateDoc(docRef, {
       productName: formData.productName,
+      description: formData.description,
+      content: formData.content,
       selectedCategories: formData.selectedCategories,
       selectedSupermarkets: formData.selectedSupermarkets,
       images: imageURLs,
@@ -579,14 +581,26 @@ export const deleteHelp = async (id) => {
 // 🔹 Fetch Blog from Firestore
 export const getBlogs = async () => {
   try {
-    const querySnapshot = await getDocs(collection(firestored, "blogs"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const q = query(collection(firestored, "blogs"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.docs.forEach((doc) => {
+      console.log("Blog Created At:", doc.data().createdAt); // Debugging
+    });
+
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
     return data;
   } catch (error) {
     console.error("Error fetching blogs: ", error);
     return [];
   }
 };
+
+
 
 
 export const fetchBlogById = async (blogId) => {

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom"; // ✅ Import useRouter for query params
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
 import Select from "react-select";
 import { serverTimestamp } from "firebase/firestore";
 import {
+  uploadImageToBlogFirebase,
   getCategoriesFromFirebase,
   getSupermarkets,
   addProductToFirebase,
@@ -13,6 +16,7 @@ import { toast } from "react-toastify";
 import { Plus, X } from "lucide-react";
 
 const FormSection = () => {
+  const [content, setContent] = useState("");
   const [searchParams] = useSearchParams();
   const [productName, setProductName] = useState("");
   const [categories, setCategories] = useState([]);
@@ -26,6 +30,9 @@ const FormSection = () => {
   const [isChecSuperMarket, setIsCheckSuperMarket] = useState(false);
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  const [description, setDescription] = useState("");
+  const [isCheckDesc, setIsCheckDesc] = useState(false);
+  const [loadingRichText, setLoadingRichText] = useState(false);
   const navigate = useNavigate();
 
   const id = searchParams.get("id");
@@ -85,6 +92,8 @@ const FormSection = () => {
         fetchCategories(product);
         fetchSupermarkets(product);
         setProductName(product.productName);
+        setDescription(product.description);
+        setContent(product.content);
         setImages(product.images || []);
       }
     } catch (error) {
@@ -105,6 +114,31 @@ const FormSection = () => {
     setImageFiles([]);
   };
 
+  const handleImageUpload = async (file, info, uploadHandler) => {
+    setLoadingRichText(true);
+    try {
+      const imageUrl = await uploadImageToBlogFirebase(file, "blogImages");
+      if (imageUrl) {
+        uploadHandler({
+          result: [{ url: imageUrl, name: file.name }],
+        });
+
+        // ✅ Remove base64 image & insert Firebase URL
+        setContent((prevContent) =>
+          prevContent.replace(
+            /<img[^>]+src=["'](data:image\/[^"']+)["']/g,
+            `<img src="${imageUrl}"`
+          )
+        );
+        setLoadingRichText(false);
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      uploadHandler({ errorMessage: "Image upload failed!" });
+      setLoadingRichText(false);
+    }
+  };
+
   // ✅ Handle Create or Update Product
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,6 +146,10 @@ const FormSection = () => {
     if (productName === "") {
       toast.error("Product Name is required");
       setIsCheckName(true);
+      return;
+    } else if (description === "") {
+      toast.error("Description is required");
+      setIsCheckDesc(true);
       return;
     } else if (selectedCategories.length === 0) {
       toast.error("Categories is required");
@@ -133,6 +171,8 @@ const FormSection = () => {
 
     const productData = {
       productName,
+      description,
+      content,
       selectedCategories: selectedCategories.map((cat) => cat.value),
       selectedSupermarkets: selectedSupermarkets.map((sup) => sup.value),
       timestamp: serverTimestamp(),
@@ -157,6 +197,9 @@ const FormSection = () => {
         setImage(null);
         setImages([]);
         setImageFiles([]);
+        setTimeout(() => {
+          navigate("/dashboard/products");
+        }, 1000);
       }
     } catch (error) {
       toast.error("Error processing request");
@@ -244,6 +287,82 @@ const FormSection = () => {
             }`}
           />
         </div>
+      </div>
+      <div className="pt-4 w-full">
+        <label className="text-sm">Description</label>
+        <textarea
+          cols={10}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Write Supermarket Description"
+          className={`w-full h-40 mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50 !focus:outline-none ${
+            isCheckDesc ? "border-2 border-red-600" : ""
+          }`}
+        />
+      </div>
+      {/* 🔹 Rich Text Editor */}
+      <div className="flex-1 h-full overflow-hidden relative pt-5 pb-20">
+        {loadingRichText && (
+          <main className="w-full h-screen backdrop-blur-sm bg-black/40 absolute inset-0 z-50 flex items-center justify-center">
+            <section className="w-[90%] sm:w-[65%] md:w-[50%] lg:w-[40%] xl:w-[30%] bg-texture myshades rounded-[31px] mx-auto">
+              <div role="status" className="">
+                <svg
+                  aria-hidden="true"
+                  class="w-24 h-24 text-gray-200 animate-spin dark:text-white fill-gkRedColor"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill"
+                  />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </section>
+          </main>
+        )}
+        <SunEditor
+          setContents={content}
+          onChange={setContent}
+          placeholder="Write something here..."
+          setOptions={{
+            minHeight: "100%",
+            height: "100%",
+            imageUploadUrl: null, // 🔥 Disable default base64 upload
+            imageGalleryUrl: null, // 🔥 Disable gallery uploads
+            buttonList: [
+              ["formatBlock", "bold", "underline", "italic", "strike"],
+              ["list", "align", "link", "image", "video"],
+              ["fullScreen", "undo", "redo"],
+            ],
+            formats: [
+              "p",
+              "h1",
+              "h2",
+              "h3",
+              "h4",
+              "h5",
+              "h6",
+              "blockquote",
+              "pre",
+            ],
+            popupDisplay: "show",
+            showPathLabel: false,
+            appendToBody: true,
+            callBackSave: (content) => setContent(content), // ✅ Ensure content is updated
+          }}
+          onImageUploadBefore={(files, _, uploadHandler) => {
+            handleImageUpload(files[0], {}, uploadHandler);
+            return false; // 🔥 Prevent default base64 upload
+          }}
+          className="h-full"
+        />
       </div>
 
       {/* ✅ Submit Button */}

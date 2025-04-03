@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
-import BreadCrumbs from "../reuseable/breadCrumbs"
+import BreadCrumbs from "../reuseable/breadCrumbs";
 import { useParams } from "react-router-dom";
 import {
   getBlogsById,
@@ -68,6 +68,7 @@ const MainBlogDetail = () => {
 
     const blogData = await getBlogsById(id); // Function call
     setBlog(blogData);
+    console.log('blogData', blogData)
     fetchUserData(blogData.userId);
   };
   useEffect(() => {
@@ -184,10 +185,10 @@ const MainBlogDetail = () => {
               secondLink="Blog Detail"
             />
             <p className="font-HelveticaNeueMedium text-darkColor text-lg">
-            Blog Detail
-          </p>
+              Blog Detail
+            </p>
           </div>
-          
+
           <Link to={"/dashboard/add-blog"}>
             <motion.div
               className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
@@ -279,7 +280,16 @@ const MainBlogDetail = () => {
               </div>
             </div>
             <div
-              className="font-HelveticaNeueRegular text-darkColor text-sm pt-4 px-2"
+            id="editor-content"
+              style={{
+                fontFamily: "HelveticaNeueRegular",
+                color: "darkColor",
+                fontSize: "0.875rem",
+                paddingTop: "1rem",
+                paddingLeft: "0.5rem",
+                paddingRight: "0.5rem",
+                lineHeight: "1.5",
+              }}
               dangerouslySetInnerHTML={{ __html: blog?.content }}
             ></div>
 

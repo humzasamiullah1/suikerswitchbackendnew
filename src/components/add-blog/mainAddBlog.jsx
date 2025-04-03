@@ -135,6 +135,9 @@ const RichTextEditor = () => {
         setThumbnailURL("");
         setImages([]);
         setImageFiles([]);
+        setTimeout(() => {
+          navigate("/dashboard/blogs");
+        }, 1000);
       }
     } catch (error) {
       console.error(error);
@@ -240,22 +243,14 @@ const RichTextEditor = () => {
               imageUploadUrl: null, // 🔥 Disable default base64 upload
               imageGalleryUrl: null, // 🔥 Disable gallery uploads
               buttonList: [
-                [
-                  "formatBlock",
-                  "bold",
-                  "underline",
-                  "italic",
-                  "strike",
-                  "list",
-                  "align",
-                  "link",
-                  "image",
-                  "video",
-                  "fullScreen",
-                  "undo",
-                  "redo",
-                ],
+                ["formatBlock", "bold", "underline", "italic", "strike"],
+                ["list", "align", "link", "image", "video"],
+                ["fullScreen", "undo", "redo"],
               ],
+              formats: ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre"],
+              popupDisplay: "show",
+              showPathLabel: false,
+              appendToBody: true,
               callBackSave: (content) => setContent(content), // ✅ Ensure content is updated
             }}
             onImageUploadBefore={(files, _, uploadHandler) => {

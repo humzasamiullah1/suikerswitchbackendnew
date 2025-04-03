@@ -4,16 +4,17 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Card from "./card";
 import { getSupermarkets, deleteSupermarket } from "../utils/firebasefunctions";
-import WarningPopup from "../popup/warning"
+import WarningPopup from "../popup/warning";
 import { toast } from "react-toastify";
-import NoData from '../reuseable/noData'
+import NoData from "../reuseable/noData";
+import MyLoader from "../reuseable/myLoader";
 
 const MainSuperMarket = () => {
   const [search, setSearch] = useState("");
   const [supermarkets, setSupermarkets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [warning, setWarning] = useState(false);
-  const [onDeleteId, setOnDeleteId] = useState('');
+  const [onDeleteId, setOnDeleteId] = useState("");
 
   const fetchData = async () => {
     const data = await getSupermarkets();
@@ -22,23 +23,24 @@ const MainSuperMarket = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchData();
   }, []);
 
   const openConfirmPopup = (id) => {
-    setOnDeleteId(id)
+    setOnDeleteId(id);
     setWarning(true);
-  }
+  };
 
   const handleDelete = async (id) => {
     // const confirmDelete = window.confirm(
     //   "Are you sure you want to delete this supermarket?"
     // );
     // if (confirmDelete) {
-      await deleteSupermarket(id);
-      setWarning(false);
-      toast.success('Supermarket Delete Successfully')
-      fetchData();
+    await deleteSupermarket(id);
+    setWarning(false);
+    toast.success("Supermarket Delete Successfully");
+    fetchData();
     // }
   };
 
@@ -92,41 +94,57 @@ const MainSuperMarket = () => {
       </div>
 
       {/* 🔹 Search Result Section */}
-      <motion.div
-        className="flex flex-wrap gap-4 lg:h-[88%] lg:overflow-y-scroll panelScroll"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.2 },
-          },
-        }}
-      >
-        {filteredSupermarkets.length > 0 ? (
-          filteredSupermarkets.map((item, index) => (
-            <motion.div
-              key={index}
-              className="w-full md:w-[32%] xl:w-[23%]"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              {/* handleDelete(item.id) */}
-              <Card data={item} isShow={true} onDelete={() => openConfirmPopup(item.id)} />
-            </motion.div>
-          ))
-        ) : (
-          <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
-            <NoData/>
-          </div>
-        )}
-      </motion.div>
-      { warning &&
-        <WarningPopup name='supermarket' itemId={onDeleteId} onClose={() => setWarning(false) } onDelete={(id) => handleDelete(id)}/>}
+      {!loading ? (
+        <motion.div
+          className="flex flex-wrap gap-4 lg:h-[88%] lg:overflow-y-scroll panelScroll"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.2 },
+            },
+          }}
+        >
+          {filteredSupermarkets.length > 0 ? (
+            filteredSupermarkets.map((item, index) => (
+              <motion.div
+                key={index}
+                className="w-full md:w-[32%] xl:w-[23%]"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                {/* handleDelete(item.id) */}
+                <Card
+                  data={item}
+                  isShow={true}
+                  onDelete={() => openConfirmPopup(item.id)}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+              <NoData />
+            </div>
+          )}
+        </motion.div>
+      ) : (
+        <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
+          <MyLoader />
+        </div>
+      )}
+      {warning && (
+        <WarningPopup
+          name="supermarket"
+          itemId={onDeleteId}
+          onClose={() => setWarning(false)}
+          onDelete={(id) => handleDelete(id)}
+        />
+      )}
     </motion.div>
   );
 };
