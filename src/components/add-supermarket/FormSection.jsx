@@ -64,8 +64,8 @@ const FormSection = () => {
       return;
     }
     setLoading(true);
-    const timestamp = serverTimestamp();
-
+    // const timestamp = serverTimestamp();
+    const timestamp = Date.now();
     const formData = {
       supermarketName,
       description,

@@ -4,6 +4,7 @@ import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import Select from "react-select";
 import { serverTimestamp } from "firebase/firestore";
+import { PlusCircle, Trash2 } from "lucide-react";
 import {
   uploadImageToBlogFirebase,
   getCategoriesFromFirebase,
@@ -21,6 +22,7 @@ const FormSection = () => {
   const [productName, setProductName] = useState("");
   const [categories, setCategories] = useState([]);
   const [supermarkets, setSupermarkets] = useState([]);
+  const [ingredients, setingredients] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSupermarkets, setSelectedSupermarkets] = useState([]);
   const [image, setImage] = useState(null);
@@ -91,8 +93,10 @@ const FormSection = () => {
       if (product) {
         fetchCategories(product);
         fetchSupermarkets(product);
+
         setProductName(product.productName);
         setDescription(product.description);
+        setingredients(product?.ingredients)
         setContent(product.content);
         setImages(product.images || []);
       }
@@ -139,8 +143,28 @@ const FormSection = () => {
     }
   };
 
+  const handleingredientChange = (event, index) => {
+    const newingredients = [...ingredients];
+    newingredients[index] = event.target.value;
+    setingredients(newingredients);
+  };
+
+  const addIngredient = () => {
+    setingredients([...ingredients, ""]);
+  };
+
+    const deleteIngredient = async (index) => {
+
+
+      // ✅ Frontend se category remove karein
+      const newingredients = ingredients.filter((_, i) => i !== index);
+      setingredients(newingredients);
+    };
+
   // ✅ Handle Create or Update Product
   const handleSubmit = async (e) => {
+
+
     e.preventDefault();
 
     if (productName === "") {
@@ -152,13 +176,19 @@ const FormSection = () => {
       setIsCheckDesc(true);
       return;
     } else if (selectedCategories.length === 0) {
-      toast.error("Categories is required");
+      toast.error("Categories are required");
       setIsCheckCat(true);
       // setIsCheckName(false)
       return;
     } else if (selectedSupermarkets.length === 0) {
-      toast.error("Supermarkets is required");
+      toast.error("Supermarkets are required");
       setIsCheckSuperMarket(true);
+      // setIsCheckCat(false)
+      // setIsCheckName(false)
+      return;
+    }else if (ingredients.length === 0) {
+      toast.error("Ingredients are required");
+
       // setIsCheckCat(false)
       // setIsCheckName(false)
       return;
@@ -175,7 +205,8 @@ const FormSection = () => {
       content,
       selectedCategories: selectedCategories.map((cat) => cat.value),
       selectedSupermarkets: selectedSupermarkets.map((sup) => sup.value),
-      timestamp: serverTimestamp(),
+      ingredients: ingredients,
+      timestamp: Date.now(),
       images,
     };
 
@@ -194,6 +225,7 @@ const FormSection = () => {
         setProductName("");
         setSelectedCategories([]);
         setSelectedSupermarkets([]);
+        setingredients([])
         setImage(null);
         setImages([]);
         setImageFiles([]);
@@ -300,8 +332,43 @@ const FormSection = () => {
           }`}
         />
       </div>
+<div className="mt-[10px]">
+      <label className="text-sm ">Ingredients</label>
+              <div className="lg:h-[88%] w-full">
+                  <div className="h-[70%] lg:overflow-y-scroll panelScroll w-full pt-3 ">
+                    {ingredients.map((item, index) => (
+                      <div key={index} className="flex items-center mb-3 w-full px-2">
+                        <input
+                          type="text"
+                          placeholder="Enter Ingredient"
+                          value={item}
+                          onChange={(event) => handleingredientChange(event, index)}
+                          className="px-4 py-2 bg-gray-50 !border-2 !border-gray-100 rounded-lg flex-1 focus:outline-none"
+                        />
+                        <Trash2
+                          onClick={() => deleteIngredient(index)}
+                          className="ml-2 text-red-500 cursor-pointer hover:text-red-600"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="h-[30%] flex flex-col items-center justify-center pb-5 lg:pb-0">
+                    <div
+                      onClick={addIngredient}
+                      className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
+                    >
+                      <PlusCircle size={45} className=" text-gkRedColor" />
+                      <span className="font-HelveticaNeueMedium text-darkColor">
+                        Add Ingredient's
+                      </span>
+                    </div>
+
+
+                  </div>
+                </div>
+                </div>
       {/* 🔹 Rich Text Editor */}
-      <div className="flex-1 h-full overflow-hidden relative pt-5 pb-20">
+      {/* <div className="flex-1 h-full overflow-hidden relative pt-5 pb-20">
         {loadingRichText && (
           <main className="w-full h-screen backdrop-blur-sm bg-black/40 absolute inset-0 z-50 flex items-center justify-center">
             <section className="w-[90%] sm:w-[65%] md:w-[50%] lg:w-[40%] xl:w-[30%] bg-texture myshades rounded-[31px] mx-auto">
@@ -363,7 +430,7 @@ const FormSection = () => {
           }}
           className="h-full"
         />
-      </div>
+      </div> */}
 
       {/* ✅ Submit Button */}
       <div className="flex items-center justify-center gap-2 mt-7">

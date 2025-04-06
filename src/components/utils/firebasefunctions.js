@@ -320,10 +320,12 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
     await updateDoc(docRef, {
       productName: formData.productName,
       description: formData.description,
-      content: formData.content,
+      // content: formData.content,
       selectedCategories: formData.selectedCategories,
       selectedSupermarkets: formData.selectedSupermarkets,
+      ingredients: formData.ingredients,
       images: imageURLs,
+
     });
 
     console.log("products updated successfully");
@@ -379,6 +381,7 @@ export const addProductToFirebase = async (productData, imageFiles) => {
       id: docId,
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
+      favourites: [],
     });
 
     return { success: true, id: docId };
@@ -666,6 +669,8 @@ export const saveRecipeToFirestore = async (formData, imageFiles) => {
       id: docId, // Document ki ID bhi save ho rahi hai
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
+      timestamp: Date.now(),
+      favourites: [],
     });
 
     return { success: true, id: docId };

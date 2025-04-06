@@ -130,7 +130,7 @@ const MainHelp = () => {
       images: filterData.images,
       status: "confirmed",
       userId: filterData?.userId,
-      createAt: serverTimestamp(),
+      createAt: Date.now(),
     };
     updateStatus(filterData.id, data, "confirm");
   };
@@ -143,7 +143,7 @@ const MainHelp = () => {
       images: filterData.images,
       status: "reject",
       userId: filterData?.userId,
-      createAt: serverTimestamp(),
+      createAt: Date.now(),
     };
     updateStatus(filterData.id, data, "reject");
   };

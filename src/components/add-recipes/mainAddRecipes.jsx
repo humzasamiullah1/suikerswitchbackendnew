@@ -110,7 +110,8 @@ const RichTextEditor = () => {
       description,
       userId: user?.id || "Unknown",
       userType: user?.usertype || "Guest",
-      createdAt: serverTimestamp(),
+      createdAt: Date.now(),
+
     };
 
     try {

@@ -50,9 +50,12 @@ const BulkFormSection = () => {
       const jsonData = XLSX.utils.sheet_to_json(sheet);
 
       let newdata = []
+
       jsonData.forEach((item) => {
+
         const categories = item?.Category ? item?.Category?.split(",") : []
         const supermarkets = item?.Supermarket ?  item?.Supermarket?.split(","): []
+        const ingredients = item?.Ingredients ?  item?.Ingredients?.split(","): []
         let imageurls = []
         imageurls.push(item?.ImageURL)
 let datset = {
@@ -60,9 +63,11 @@ let datset = {
     selectedCategories: categories.map((cat) => cat.trim()),
     selectedSupermarkets: supermarkets.map((sup) => sup.trim()),
     images: imageurls,
-    timestamp: serverTimestamp(),
+    timestamp: Date.now(),
     createdAt: new Date(),
-
+    favourites: [],
+    description: item?.ProductInformation ? item?.ProductInformation : "",
+    ingredients: ingredients.map((ing) => ing.trim()),
 }
 newdata.push(datset)
 
@@ -91,17 +96,10 @@ newdata.push(datset)
         const supermarkets = item?.Supermarket ?  item?.Supermarket?.split(","): []
         let imageurls = []
         imageurls.push(item?.ImageURL)
-// let datset = {
-//     productName: item?.ProductName,
-//     selectedCategories: categories.map((cat) => cat.trim()),
-//     selectedSupermarkets: supermarkets.map((sup) => sup.trim()),
-//     images: imageurls,
-//     timestamp: serverTimestamp(),
-//     createdAt: new Date(),
-//     id: docId
-// }
-newdata.push(item)
-        batch.set(newDocRef, item);
+let datset = {...item}
+datset["id"] = docId
+newdata.push(datset)
+        batch.set(newDocRef, datset);
         setProgress(((index + 1) / data.length) * 100);
       });
 
