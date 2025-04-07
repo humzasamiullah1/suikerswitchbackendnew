@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
 import {
   CircleArrowDown,
   Plus,
@@ -68,7 +70,6 @@ const MainRecipiesDetail = () => {
 
   const { id } = useParams(); // URL se id get krni
   const [recipe, setRecipe] = useState(null);
-
 
   const fetchRecipe = async () => {
     if (!id) return;
@@ -277,10 +278,33 @@ const MainRecipiesDetail = () => {
                 )}
               </div>
             </div>
-            <div
+            {/* <div
               className="font-HelveticaNeueRegular text-darkColor text-sm pt-4 px-2"
               dangerouslySetInnerHTML={{ __html: recipe?.content }}
-            ></div>
+            ></div> */}
+            <div id="gk-text">
+              <SunEditor
+                setContents={recipe?.content}
+                placeholder="Write something here..."
+                disable={true}
+                hideToolbar={true}
+                setOptions={{
+                  minHeight: "100%",
+                  height: "100%",
+                  showPathLabel: false,
+                  popupDisplay: "show",
+                  appendToBody: true,
+                }}
+                style={{
+                  border: "none",
+                  boxShadow: "none",
+                  outline: "none",
+                  background: "transparent",
+                }}
+                className="h-full no-border-editor"
+              />
+            </div>
+
             {recipe?.isLike && (
               <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
                 <div
