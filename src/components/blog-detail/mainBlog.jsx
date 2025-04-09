@@ -25,6 +25,8 @@ import ImageTag from "../reuseable/imageTag";
 import { Link, useNavigate } from "react-router-dom";
 import WarningPopup from "../popup/warning";
 import { toast } from "react-toastify";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
 
 const commentsData = [
   {
@@ -279,10 +281,10 @@ const MainBlogDetail = () => {
                 )}
               </div>
             </div>
-            <div
+            {/* <div
             id="editor-content"
               style={{
-                fontFamily: "HelveticaNeueRegular",
+                fontFamily: "",
                 color: "darkColor",
                 fontSize: "0.875rem",
                 paddingTop: "1rem",
@@ -291,7 +293,30 @@ const MainBlogDetail = () => {
                 lineHeight: "1.5",
               }}
               dangerouslySetInnerHTML={{ __html: blog?.content }}
-            ></div>
+            ></div> */}
+            <div id="gk-text">
+              <SunEditor
+                setContents={blog?.content}
+                placeholder="Write something here..."
+                disable={true}
+                hideToolbar={true}
+                setOptions={{
+                  minHeight: "100%",
+                  height: "100%",
+                  showPathLabel: false,
+                  popupDisplay: "show",
+                  appendToBody: true,
+                }}
+                style={{
+                  border: "none",
+                  boxShadow: "none",
+                  outline: "none",
+                  background: "transparent",
+                }}
+                className="h-full no-border-editor"
+              />
+            </div>
+            
 
             {blog?.isLike && (
               <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
