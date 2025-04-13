@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import { PlusCircle, Trash2 } from "lucide-react";
 import HeaderBar from "../components/reuseable/headerBar";
 import { motion } from "framer-motion";
-import MainSearch from '../components/global-searchbar/mainSearch'
+import MainCategory from "../components/add-category/addCategory"
+import MainSearch from "../components/global-searchbar/mainSearch";
 
 const AddCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -87,14 +88,26 @@ const AddCategory = () => {
   };
 
   const handleGlobalSearch = (value) => {
-    setIsGlobalSearch(value)
-  }
+    setIsGlobalSearch(value);
+  };
 
   return (
     <div className="w-[95%] mx-auto lg:h-screen pt-12 lg:pt-0">
       {!isGlobalSearch ? (
         <>
-      <div className="pt-5 w-full lg:h-[15%]">
+          <div className="pt-5 w-full lg:h-[15%]">
+            <HeaderBar
+              heading="Hello, John!"
+              subHeading="Explore information and activity about your property"
+              handleSearch={(value) => {
+                handleSearch(value);
+              }}
+            />
+          </div>
+          <div className="h-[85%] pt-5 lg:pt-0 pb-5">
+            <MainCategory/>
+          </div>
+          {/* <div className="pt-5 w-full lg:h-[15%]">
         <HeaderBar
           heading="Hello, John!"
           subHeading="Explore information and activity about your property"
@@ -174,11 +187,9 @@ const AddCategory = () => {
               </button>
             </div>
           </div>
-
-          {/* {loading && <div className="flex justify-center py-3">...Loading</div>} */}
         </motion.div>
-      </div>
-      </>
+      </div> */}
+        </>
       ) : (
         <MainSearch onEmptyBlur={(value) => handleGlobalSearch(value)} />
       )}

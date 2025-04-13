@@ -18,6 +18,7 @@ import BlogsDetail from "./BlogDetail";
 import AddRecipes from "./AddRecipes";
 import HelpDetail from "./HelpDetail";
 import AddCategory from "./addCategory";
+import Category from "./Category";
 import { Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
@@ -87,6 +88,7 @@ function Dashboard() {
           <Route path="/add-supermarkets" element={<AddSuperMarket />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/account-settings" element={<Settings />} />
+          <Route path="/category" element={<Category />} />
           <Route path="/add-category" element={<AddCategory />} />
         </Routes>
         <ToastContainer

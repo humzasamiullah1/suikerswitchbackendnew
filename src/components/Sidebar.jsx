@@ -70,6 +70,7 @@ const menuItems = [
     title: "Category",
     icon: ChartBarStacked,
     paths: [
+      "/dashboard/category",
       "/dashboard/add-category",
     ],
   },
