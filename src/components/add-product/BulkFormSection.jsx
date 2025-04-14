@@ -54,20 +54,23 @@ const BulkFormSection = () => {
       jsonData.forEach((item) => {
 
         const categories = item?.Category ? item?.Category?.split(",") : []
+        const subcategories = item?.Subcategories ? item?.Subcategories?.split(",") : []
+
         const supermarkets = item?.Supermarket ?  item?.Supermarket?.split(","): []
-        const ingredients = item?.Ingredients ?  item?.Ingredients?.split(","): []
+        const ingredients = item?.Ingredients ?  item?.Ingredients : []
         let imageurls = []
-        imageurls.push(item?.ImageURL)
+        imageurls.push(item?.Imageurl)
 let datset = {
     productName: item?.ProductName,
     selectedCategories: categories.map((cat) => cat.trim()),
+    selectedSubCategories: subcategories.map((subcat) => subcat.trim()),
     selectedSupermarkets: supermarkets.map((sup) => sup.trim()),
     images: imageurls,
     timestamp: Date.now(),
     createdAt: new Date(),
     favourites: [],
     description: item?.ProductInformation ? item?.ProductInformation : "",
-    ingredients: ingredients.map((ing) => ing.trim()),
+    ingredients: ingredients,
 }
 newdata.push(datset)
 
