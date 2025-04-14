@@ -71,10 +71,12 @@ const MainProucts = () => {
   const handleFilter = () => {
     let filtered = productCache;
 
+
+
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((item) =>
-        item.selectedCategories.some((category) =>
-          selectedCategories.includes(category)
+        item.selectedCategories?.some((category) =>
+          selectedCategories?.includes(category)
         )
       );
     }
@@ -93,7 +95,7 @@ const MainProucts = () => {
 
   // Search filter
   const searchedProducts = filteredProduct.filter((p) =>
-    p.productName.toLowerCase().includes(search.toLowerCase())
+    p?.productName?.toLowerCase()?.includes(search.toLowerCase())
   );
 
   // Pagination Logic
@@ -202,20 +204,20 @@ const MainProucts = () => {
                               type="checkbox"
                               className="w-4 h-4"
                               checked={selectedCategories.includes(
-                                category.name
+                                category?.categoryName
                               )}
                               onChange={() =>
                                 setSelectedCategories((prev) =>
-                                  prev.includes(category.name)
+                                  prev.includes(category?.categoryName)
                                     ? prev.filter(
-                                        (item) => item !== category.name
+                                        (item) => item !== category?.categoryName
                                       )
-                                    : [...prev, category.name]
+                                    : [...prev, category?.categoryName]
                                 )
                               }
                             />
                             <label className="cursor-pointer">
-                              {category.name}
+                              {category?.categoryName}
                             </label>
                           </li>
                         ))}

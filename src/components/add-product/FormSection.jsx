@@ -21,9 +21,11 @@ const FormSection = () => {
   const [searchParams] = useSearchParams();
   const [productName, setProductName] = useState("");
   const [categories, setCategories] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
   const [supermarkets, setSupermarkets] = useState([]);
-  const [ingredients, setingredients] = useState([]);
+  const [ingredients, setingredients] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
   const [selectedSupermarkets, setSelectedSupermarkets] = useState([]);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,6 +37,10 @@ const FormSection = () => {
   const [description, setDescription] = useState("");
   const [isCheckDesc, setIsCheckDesc] = useState(false);
   const [loadingRichText, setLoadingRichText] = useState(false);
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [subCategoryOptions, setSubCategoryOptions] = useState([]);
+  const [isLoad, setIsLoad] = useState(true);
+  const [allCategory, setallCategory] = useState([]);
   const navigate = useNavigate();
 
   const id = searchParams.get("id");
@@ -51,18 +57,82 @@ const FormSection = () => {
   const fetchCategories = async (product) => {
     try {
       const data = await getCategoriesFromFirebase();
+      setallCategory(data)
       if (product) {
         setSelectedCategories(
           product.selectedCategories.map((cat) => ({ label: cat, value: cat }))
         );
+        setSelectedSubCategories(product.selectedSubCategories.map((sub) => ({ label: sub, value: sub })))
+        setTimeout(() => {
+          if (product.selectedCategories.length > 0) {
+            const subCategoryData = product.selectedCategories.flatMap((sel) => {
+              const matchData = data.find((x) => x.categoryName === sel);
+              return matchData?.subCategory?.map((sub) => ({
+                label: sub.name,
+                value: sub.name,
+              })) || [];
+            });
+
+            setSubCategoryOptions(subCategoryData);
+            setIsLoad(false);
+          } else {
+            setSubCategoryOptions([]);
+            setIsLoad(false);
+          }
+        }, 500);
+
       }
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.name }))
+        data.map((category) => ({
+          label: category.categoryName,
+          value: category.categoryName,
+        }))
       );
+      // for (let i = 0; data.selectedSubCategories.length > ; i++) {
+        // setSubCategoryOptions(
+        //   data.selectedSubCategories.map((subcategory) => ({
+        //     label: subcategory,
+        //     value: subcategory,
+        //   }))
+        // );
+      // }
     } catch (error) {
       toast.error("Error fetching categories");
     }
   };
+
+
+
+  const handleCategoryChange = (selected) => {
+    setIsLoad(true);
+    setSelectedCategories(selected || []);
+
+    if (selected && selected.length > 0) {
+      const data = selected.flatMap((sel) => {
+        const matchData = allCategory.find((x) => x.categoryName === sel.label);
+        return matchData?.subCategory?.map((sub) => ({
+          label: sub.name,
+          value: sub.name,
+        })) || [];
+      });
+
+      setSubCategoryOptions(data);
+
+      // Filter already selected subcategories to retain valid ones
+      setSelectedSubCategories((prev) =>
+        prev.filter((sub) =>
+          data.some((opt) => opt.value === sub.value)
+        )
+      );
+
+      setIsLoad(false);
+    } else {
+      setSubCategoryOptions([]);
+      setSelectedSubCategories([]);
+      setIsLoad(false);
+    }
+  };
+
 
   const fetchSupermarkets = async (product) => {
     try {
@@ -96,7 +166,7 @@ const FormSection = () => {
 
         setProductName(product.productName);
         setDescription(product.description);
-        setingredients(product?.ingredients)
+        setingredients(product?.ingredients);
         setContent(product.content);
         setImages(product.images || []);
       }
@@ -143,28 +213,24 @@ const FormSection = () => {
     }
   };
 
-  const handleingredientChange = (event, index) => {
-    const newingredients = [...ingredients];
-    newingredients[index] = event.target.value;
-    setingredients(newingredients);
-  };
+  // const handleingredientChange = (event, index) => {
+  //   const newingredients = [...ingredients];
+  //   newingredients[index] = event.target.value;
+  //   setingredients(newingredients);
+  // };
 
-  const addIngredient = () => {
-    setingredients([...ingredients, ""]);
-  };
+  // const addIngredient = () => {
+  //   setingredients([...ingredients, ""]);
+  // };
 
-    const deleteIngredient = async (index) => {
-
-
-      // ✅ Frontend se category remove karein
-      const newingredients = ingredients.filter((_, i) => i !== index);
-      setingredients(newingredients);
-    };
+  // const deleteIngredient = async (index) => {
+  //   // ✅ Frontend se category remove karein
+  //   const newingredients = ingredients.filter((_, i) => i !== index);
+  //   setingredients(newingredients);
+  // };
 
   // ✅ Handle Create or Update Product
   const handleSubmit = async (e) => {
-
-
     e.preventDefault();
 
     if (productName === "") {
@@ -186,7 +252,7 @@ const FormSection = () => {
       // setIsCheckCat(false)
       // setIsCheckName(false)
       return;
-    }else if (ingredients.length === 0) {
+    } else if (ingredients.length === 0) {
       toast.error("Ingredients are required");
 
       // setIsCheckCat(false)
@@ -205,10 +271,13 @@ const FormSection = () => {
       content,
       selectedCategories: selectedCategories.map((cat) => cat.value),
       selectedSupermarkets: selectedSupermarkets.map((sup) => sup.value),
+      selectedSubCategories: selectedSubCategories.map((sub) => sub.value),
       ingredients: ingredients,
       timestamp: Date.now(),
       images,
     };
+
+    console.log(productData)
 
     try {
       if (id) {
@@ -225,7 +294,7 @@ const FormSection = () => {
         setProductName("");
         setSelectedCategories([]);
         setSelectedSupermarkets([]);
-        setingredients([])
+        setingredients("");
         setImage(null);
         setImages([]);
         setImageFiles([]);
@@ -295,7 +364,7 @@ const FormSection = () => {
 
       {/* ✅ Supermarkets & Categories */}
       <div className="flex flex-col md:flex-row justify-between pt-5">
-        <div className="w-full md:w-[49%]">
+        <div className="w-full md:w-[32%]">
           <label className="text-sm">Select Supermarkets</label>
           <Select
             isMulti
@@ -307,18 +376,32 @@ const FormSection = () => {
             }`}
           />
         </div>
-        <div className="w-full md:w-[49%] pt-4 md:pt-0">
+        <div className="w-full md:w-[32%] pt-4 md:pt-0">
           <label className="text-sm">Select Categories</label>
           <Select
             isMulti
             options={categories}
             value={selectedCategories}
-            onChange={setSelectedCategories}
-            className={`mt-1 w-full ${
-              isChecCat ? "border-2 border-red-600" : ""
-            }`}
+            onChange={handleCategoryChange}
+            className="mt-1 w-full"
           />
         </div>
+
+        {/* Sub-category Select */}
+        {/* {!isLoad && ( */}
+          <div className="w-full md:w-[32%] pt-4 md:pt-0">
+
+            <label className="text-sm">Select Sub Categories</label>
+            <Select
+              isMulti
+              isDisabled={selectedCategories.length === 0}
+              options={subCategoryOptions}
+              value={selectedSubCategories}
+              onChange={setSelectedSubCategories}
+              className="mt-1 w-full"
+            />
+          </div>
+        {/* )} */}
       </div>
       <div className="pt-4 w-full">
         <label className="text-sm">Description</label>
@@ -332,41 +415,51 @@ const FormSection = () => {
           }`}
         />
       </div>
-<div className="mt-[10px]">
-      <label className="text-sm ">Ingredients</label>
-              <div className="lg:h-[88%] w-full">
-                  <div className="h-[70%] lg:overflow-y-scroll panelScroll w-full pt-3 ">
-                    {ingredients.map((item, index) => (
-                      <div key={index} className="flex items-center mb-3 w-full px-2">
-                        <input
-                          type="text"
-                          placeholder="Enter Ingredient"
-                          value={item}
-                          onChange={(event) => handleingredientChange(event, index)}
-                          className="px-4 py-2 bg-gray-50 !border-2 !border-gray-100 rounded-lg flex-1 focus:outline-none"
-                        />
-                        <Trash2
-                          onClick={() => deleteIngredient(index)}
-                          className="ml-2 text-red-500 cursor-pointer hover:text-red-600"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="h-[30%] flex flex-col items-center justify-center pb-5 lg:pb-0">
-                    <div
-                      onClick={addIngredient}
-                      className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
-                    >
-                      <PlusCircle size={45} className=" text-gkRedColor" />
-                      <span className="font-HelveticaNeueMedium text-darkColor">
-                        Add Ingredient's
-                      </span>
-                    </div>
-
-
-                  </div>
-                </div>
-                </div>
+      <div className="pt-4 w-full">
+        <label className="text-sm">Ingredients</label>
+        <textarea
+          cols={10}
+          value={ingredients}
+          onChange={(e) => setingredients(e.target.value)}
+          placeholder="Write Ingredients"
+          className={`w-full h-40 mt-1 text-sm bg-bgColor font-popinsRegular px-3 py-2 rounded-lg text-darkColor placeholder:text-zinc-700/50 !focus:outline-none ${
+            isCheckDesc ? "border-2 border-red-600" : ""
+          }`}
+        />
+      </div>
+      {/* <div className="mt-[10px]">
+        <label className="text-sm ">Ingredients</label>
+        <div className="lg:h-[88%] w-full">
+          <div className="h-[70%] lg:overflow-y-scroll panelScroll w-full pt-3 ">
+            {ingredients.map((item, index) => (
+              <div key={index} className="flex items-center mb-3 w-full px-2">
+                <input
+                  type="text"
+                  placeholder="Enter Ingredient"
+                  value={item}
+                  onChange={(event) => handleingredientChange(event, index)}
+                  className="px-4 py-2 bg-gray-50 !border-2 !border-gray-100 rounded-lg flex-1 focus:outline-none"
+                />
+                <Trash2
+                  onClick={() => deleteIngredient(index)}
+                  className="ml-2 text-red-500 cursor-pointer hover:text-red-600"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="h-[30%] flex flex-col items-center justify-center pb-5 lg:pb-0">
+            <div
+              onClick={addIngredient}
+              className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
+            >
+              <PlusCircle size={45} className=" text-gkRedColor" />
+              <span className="font-HelveticaNeueMedium text-darkColor">
+                Add Ingredient's
+              </span>
+            </div>
+          </div>
+        </div>
+      </div> */}
       {/* 🔹 Rich Text Editor */}
       {/* <div className="flex-1 h-full overflow-hidden relative pt-5 pb-20">
         {loadingRichText && (

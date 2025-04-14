@@ -17,6 +17,15 @@ const firebaseConfig = {
   measurementId: "G-LS3ZDBWPCR"
 };
 
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBKSwgvfO6iHHiw-MXQrRTLx6PFXwLAd24",
+//   authDomain: "hassan-e3385.firebaseapp.com",
+//   projectId: "hassan-e3385",
+//   storageBucket: "hassan-e3385.appspot.com",
+//   messagingSenderId: "744698661206",
+//   appId: "1:744698661206:web:ee64a8d4cd723d635caef7"
+// };
+
 
 
 

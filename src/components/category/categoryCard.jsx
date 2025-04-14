@@ -7,11 +7,11 @@ const HighlightedText = ({ text, searchTerm }) => {
   if (!searchTerm) return <>{text}</>;
 
   const regex = new RegExp(`(${searchTerm})`, "gi");
-  const parts = text !== undefined ? text?.split(regex) : [];
+  const parts = text.split(regex);
 
   return (
     <>
-      {parts?.map((part, index) =>
+      {parts.map((part, index) =>
         part?.toLowerCase() === searchTerm?.toLowerCase() ? (
           <span key={index} style={{ backgroundColor: "yellow" }}>
             {part}
@@ -24,7 +24,7 @@ const HighlightedText = ({ text, searchTerm }) => {
   );
 };
 
-const ProductCard = ({
+const CategoryCard = ({
   data,
   onDelete,
   highlightSearchTerm,
@@ -32,7 +32,7 @@ const ProductCard = ({
   hidebutton,
 }) => {
   return (
-    <div className="border-2 border-gray-200 rounded-xl h-[355px] w-full px-4 py-3 mt-3 relative">
+    <div className="border-2 border-gray-200 rounded-xl h-[280px] w-full px-4 py-3 mt-3 relative">
       {isShow && (
         <div
           className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]"
@@ -46,43 +46,31 @@ const ProductCard = ({
           <ImageTag path={data?.images} classes="size-32" altText="logo" />
         </div>
         <div className="flex flex-wrap">
-          {data?.selectedSupermarkets?.map((item, index) => (
+          {data?.subCategory.map((item, index) => (
             <div className="bg-gray-200 rounded-full px-2 flex justify-center py-1 mt-3 mr-2">
               <p className="text-xs font-HelveticaNeueRegular text-darkColor">
-                {item}
+                {item.name}
               </p>
             </div>
           ))}
         </div>
         <p className="text-darkColor font-HelveticaNeueMedium line-clamp-2 text-base pt-2">
           <HighlightedText
-            text={data?.productName}
+            text={data?.categoryName}
             searchTerm={highlightSearchTerm}
           />
         </p>
-        <div className="flex justify-between flex-wrap text-xs lg:text-sm pt-2">
-          {/* <div className="w-[40%] lg:w-[35%]"> */}
-          <p className="font-HelveticaNeueRegular text-sm line-clamp-2">
-            {data?.description}
-          </p>
-          {/* </div> */}
-          {/* <div className="w-[57%] lg:w-[73%] flex flex-wrap whitespace-nowrap">
-          {data?.selectedCategories?.map((item, index) => (
-            <p className=" text-gray-400 text-xs">{item}</p>
-          ))}
-        </div> */}
-        </div>
       </div>
       {!hidebutton && (
-        <Link to={`/dashboard/add-product?id=${data?.id}`} className="h-[10%] flex items-center">
-          <button className="bg-gkRedColor py-2 mt-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
+        <Link to={`/dashboard/add-category?id=${data?.id}`} className="h-[10%] flex items-center">
+          <button className="bg-gkRedColor py-2  text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
             {isShow ? (
               <>
                 <Pencil size={15} />
-                <span className="pl-2">Edit Product</span>
+                <span className="pl-2">Edit Category</span>
               </>
             ) : (
-              <span className="pl-2">Show Product</span>
+              <span className="pl-2">Show Category</span>
             )}
           </button>
         </Link>
@@ -91,4 +79,4 @@ const ProductCard = ({
   );
 };
 
-export default ProductCard;
+export default CategoryCard;

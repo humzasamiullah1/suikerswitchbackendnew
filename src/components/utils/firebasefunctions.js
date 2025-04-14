@@ -1,24 +1,55 @@
-import { getFirestore, collection, doc, getDocs, query, orderBy, arrayUnion, updateDoc, getDoc, where, documentId, onSnapshot, setDoc, addDoc, getAggregateFromServer, sum, limit, or, deleteDoc, arrayRemove, serverTimestamp  } from "firebase/firestore"
-import { firestored, app, storage } from "../../firebase/firebaseConfig"
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { ref, uploadBytesResumable, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDocs,
+  query,
+  orderBy,
+  arrayUnion,
+  updateDoc,
+  getDoc,
+  where,
+  documentId,
+  onSnapshot,
+  setDoc,
+  addDoc,
+  getAggregateFromServer,
+  sum,
+  limit,
+  or,
+  deleteDoc,
+  arrayRemove,
+  serverTimestamp,
+} from "firebase/firestore";
+import { firestored, app, storage } from "../../firebase/firebaseConfig";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 import { get } from "firebase/database";
 // import moment from 'moment';
 // import DatePicker from "react-horizontal-datepicker";
-
 
 ////////////////actual//////////////////////
 const auth = getAuth();
 
 export const saveuserdata = async (data, uid) => {
-
-  return await setDoc(doc(firestored, "users", `${uid}`), data, { merge: true }).then(() => {
-    return "success";
-  })
+  return await setDoc(doc(firestored, "users", `${uid}`), data, { merge: true })
+    .then(() => {
+      return "success";
+    })
     .catch((err) => {
       return err;
-    })
-}
+    });
+};
 
 // export const saveuserdata = async (userData, userId) => {
 //   try {
@@ -32,26 +63,22 @@ export const saveuserdata = async (data, uid) => {
 //   }
 // };
 
-
 export const userlogin = async (email, password) => {
-
   return await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in
       const user = userCredential.user;
-      return user
+      return user;
       // ...
     })
     .catch((err) => {
-      return err
+      return err;
     });
-}
-
-
+};
 
 export const uploadFormData = async (formData, imageFiles) => {
   try {
-   // Sare images upload karo aur unke URLs le lo
+    // Sare images upload karo aur unke URLs le lo
     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
     const imageUrls = await Promise.all(imageUploadPromises);
 
@@ -111,14 +138,23 @@ export const updateSupermarket = async (id, formData, newImageFiles) => {
       const oldImageURL = imageURLs[0]; // First image
 
       // Delete old image if it exists
-      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+      if (
+        oldImageURL &&
+        oldImageURL.startsWith("https://firebasestorage.googleapis.com")
+      ) {
+        const imageRef = ref(
+          storage,
+          decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])
+        ); // Ensure correct decoding
         await deleteObject(imageRef);
       }
 
       // Upload new image
       const newImageFile = newImageFiles[0];
-      const storageRef = ref(storage, `supermarkets/${id}/${newImageFile.name}`);
+      const storageRef = ref(
+        storage,
+        `supermarkets/${id}/${newImageFile.name}`
+      );
       await uploadBytes(storageRef, newImageFile);
       const newImageURL = await getDownloadURL(storageRef);
 
@@ -155,7 +191,9 @@ export const deleteSupermarket = async (id) => {
     // Firebase Storage se sabhi images delete karna
     for (const imageURL of imageURLs) {
       if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
         const imageRef = ref(storage, imagePath);
         await deleteObject(imageRef);
       }
@@ -169,32 +207,58 @@ export const deleteSupermarket = async (id) => {
   }
 };
 
+export const deleteCategory = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "categories", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Category not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("Category deleted successfully");
+  } catch (error) {
+    console.error("Error deleting Category:", error);
+  }
+};
 
 export const uploadImage = async (file) => {
   return new Promise((resolve, reject) => {
-
-    const storageRef = ref(storage, `supermarket-logos/${file.name}`)
+    const storageRef = ref(storage, `supermarket-logos/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
       "state_changed",
       null,
       (error) => {
-
-
-        console.log("this is the errro" + error)
-        reject(error)},
+        console.log("this is the errro" + error);
+        reject(error);
+      },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         resolve(downloadURL);
       }
     );
   });
-
-
-
 };
-
 
 export const getSupermarkets = async () => {
   const supermarketsRef = collection(firestored, "supermarkets");
@@ -283,6 +347,22 @@ export const getProductById = async (id) => {
   }
 };
 
+export const getCategoryById = async (id) => {
+  try {
+    const categoryRef = doc(firestored, "categories", id);
+    const categorySnap = await getDoc(categoryRef);
+
+    if (categorySnap.exists()) {
+      return { id: categorySnap.id, ...categorySnap.data() };
+    } else {
+      throw new Error("category not found");
+    }
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    throw error;
+  }
+};
+
 export const updateProductToFirebase = async (id, formData, newImageFiles) => {
   try {
     // Fetch existing document data
@@ -302,8 +382,14 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
       const oldImageURL = imageURLs[0]; // First image
 
       // Delete old image if it exists
-      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+      if (
+        oldImageURL &&
+        oldImageURL.startsWith("https://firebasestorage.googleapis.com")
+      ) {
+        const imageRef = ref(
+          storage,
+          decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])
+        ); // Ensure correct decoding
         await deleteObject(imageRef);
       }
 
@@ -323,9 +409,9 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
       // content: formData.content,
       selectedCategories: formData.selectedCategories,
       selectedSupermarkets: formData.selectedSupermarkets,
+      selectedSubCategories: formData.selectedSubCategories,
       ingredients: formData.ingredients,
       images: imageURLs,
-
     });
 
     console.log("products updated successfully");
@@ -333,6 +419,68 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
     console.error("Error updating products:", error);
   }
 };
+
+
+export const updateCategoryToFirebase = async (id, formData, newImageFiles) => {
+  try {
+    // 1. Fetch existing document
+    const docRef = doc(firestored, "categories", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("❌ Document not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    let imageURLs = data.images || [];
+
+    // 2. If new image is uploaded
+    if (newImageFiles.length > 0) {
+      const oldImageURL = imageURLs[0];
+
+      // 2.a. Delete old image from storage
+      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        try {
+          const filePath = decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0]);
+          const oldImageRef = ref(storage, filePath);
+          await deleteObject(oldImageRef);
+          console.log("✅ Old image deleted:", filePath);
+        } catch (deleteErr) {
+          console.warn("⚠️ Could not delete old image:", deleteErr.message);
+        }
+      }
+
+      // 2.b. Upload new image with unique name
+      const newImageFile = newImageFiles[0];
+      const uniqueName = `${Date.now()}-${newImageFile.name}`;
+      const storagePath = `supermarket-logos/${id}/${uniqueName}`;
+      const newImageRef = ref(storage, storagePath);
+
+      console.log("📤 Uploading image to:", storagePath);
+      await uploadBytes(newImageRef, newImageFile);
+
+      const newImageURL = await getDownloadURL(newImageRef);
+      console.log("✅ New image URL:", newImageURL);
+
+      // Replace image URL in array
+      imageURLs = [newImageURL];
+    }
+
+    // 3. Update Firestore
+    await updateDoc(docRef, {
+      categoryName: formData.categoryName,
+      subCategory: formData.subCategory,
+      images: imageURLs,
+      timestamp: formData.timestamp,
+    });
+
+    console.log("✅ Category updated successfully");
+  } catch (error) {
+    console.error("❌ Error updating category:", error.message);
+  }
+};
+
 
 export const deleteProduct = async (id) => {
   try {
@@ -351,7 +499,9 @@ export const deleteProduct = async (id) => {
     // Firebase Storage se sabhi images delete karna
     for (const imageURL of imageURLs) {
       if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
         const imageRef = ref(storage, imagePath);
         await deleteObject(imageRef);
       }
@@ -391,6 +541,31 @@ export const addProductToFirebase = async (productData, imageFiles) => {
   }
 };
 
+export const addCategoryToFirebase = async (categoryData, imageFiles) => {
+  try {
+    // Sare images upload karo aur unke URLs le lo
+    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    const docRef = doc(collection(firestored, "categories"));
+    const docId = docRef.id; // Yeh document ki generated ID hai
+
+    // Firestore me data save karo
+    await setDoc(docRef, {
+      ...categoryData,
+      id: docId,
+      images: imageUrls, // Firebase se milne wale URLs yahan save honge
+      createdAt: new Date(),
+    });
+
+    return { success: true, id: docId };
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    return { success: false, error: error.message };
+  }
+};
+
 export const getProducts = async () => {
   const productsRef = collection(firestored, "products");
   const q = query(productsRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
@@ -402,6 +577,19 @@ export const getProducts = async () => {
   }));
 
   return products;
+};
+
+export const getCategory = async () => {
+  const categoryRef = collection(firestored, "categories");
+  const q = query(categoryRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
+
+  const querySnapshot = await getDocs(q);
+  const category = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return category;
 };
 
 export const uploadImageToBlogFirebase = async (file, folder) => {
@@ -458,7 +646,9 @@ export const deleteBlog = async (id) => {
     // Firebase Storage se sabhi images delete karna
     for (const imageURL of imageURLs) {
       if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
         const imageRef = ref(storage, imagePath);
         await deleteObject(imageRef);
       }
@@ -491,14 +681,23 @@ export const updateBlogs = async (id, formData, newImageFiles) => {
       const oldImageURL = imageURLs[0]; // First image
 
       // Delete old image if it exists
-      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+      if (
+        oldImageURL &&
+        oldImageURL.startsWith("https://firebasestorage.googleapis.com")
+      ) {
+        const imageRef = ref(
+          storage,
+          decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])
+        ); // Ensure correct decoding
         await deleteObject(imageRef);
       }
 
       // Upload new image
       const newImageFile = newImageFiles[0];
-      const storageRef = ref(storage, `supermarkets/${id}/${newImageFile.name}`);
+      const storageRef = ref(
+        storage,
+        `supermarkets/${id}/${newImageFile.name}`
+      );
       await uploadBytes(storageRef, newImageFile);
       const newImageURL = await getDownloadURL(storageRef);
 
@@ -567,7 +766,9 @@ export const deleteHelp = async (id) => {
     // Firebase Storage se sabhi images delete karna
     for (const imageURL of imageURLs) {
       if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
         const imageRef = ref(storage, imagePath);
         await deleteObject(imageRef);
       }
@@ -584,7 +785,10 @@ export const deleteHelp = async (id) => {
 // 🔹 Fetch Blog from Firestore
 export const getBlogs = async () => {
   try {
-    const q = query(collection(firestored, "blogs"), orderBy("createdAt", "desc"));
+    const q = query(
+      collection(firestored, "blogs"),
+      orderBy("createdAt", "desc")
+    );
     const querySnapshot = await getDocs(q);
 
     querySnapshot.docs.forEach((doc) => {
@@ -602,9 +806,6 @@ export const getBlogs = async () => {
     return [];
   }
 };
-
-
-
 
 export const fetchBlogById = async (blogId) => {
   try {
@@ -632,14 +833,12 @@ export const fetchBlogById = async (blogId) => {
   }
 };
 
-
 export const fetchAllBlogs = async () => {
   const querySnapshot = await getDocs(collection(firestored, "blogs"));
   querySnapshot.forEach((doc) => {
     console.log("🔥 Firestore Blog ID:", doc.id); // Sab IDs print hongi
   });
 };
-
 
 export const uploadImageToRecipeFirebase = async (file, folder) => {
   if (!file) return null;
@@ -699,14 +898,23 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
       const oldImageURL = imageURLs[0]; // First image
 
       // Delete old image if it exists
-      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imageRef = ref(storage, decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])); // Ensure correct decoding
+      if (
+        oldImageURL &&
+        oldImageURL.startsWith("https://firebasestorage.googleapis.com")
+      ) {
+        const imageRef = ref(
+          storage,
+          decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0])
+        ); // Ensure correct decoding
         await deleteObject(imageRef);
       }
 
       // Upload new image
       const newImageFile = newImageFiles[0];
-      const storageRef = ref(storage, `supermarkets/${id}/${newImageFile.name}`);
+      const storageRef = ref(
+        storage,
+        `supermarkets/${id}/${newImageFile.name}`
+      );
       await uploadBytes(storageRef, newImageFile);
       const newImageURL = await getDownloadURL(storageRef);
 
@@ -739,7 +947,7 @@ export const AcceptHelpElker = async (id, formData) => {
 
     // Update Firestore document
     await updateDoc(docRef, {
-      ...formData
+      ...formData,
     });
 
     console.log("helpElker updated successfully");
@@ -765,7 +973,9 @@ export const deleteRecipe = async (id) => {
     // Firebase Storage se sabhi images delete karna
     for (const imageURL of imageURLs) {
       if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
-        const imagePath = decodeURIComponent(imageURL.split("/o/")[1].split("?alt=")[0]);
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
         const imageRef = ref(storage, imagePath);
         await deleteObject(imageRef);
       }
@@ -782,8 +992,11 @@ export const deleteRecipe = async (id) => {
 export const getRecipe = async () => {
   try {
     const querySnapshot = await getDocs(collection(firestored, "recipe"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    console.log('recipe data',data)
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    console.log("recipe data", data);
     return data;
   } catch (error) {
     console.error("Error fetching recipe: ", error);
@@ -884,8 +1097,11 @@ export const uploadUserImage = async (file, userId) => {
 export const getUser = async () => {
   try {
     const querySnapshot = await getDocs(collection(firestored, "users"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    console.log('users data',data)
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    console.log("users data", data);
     return data;
   } catch (error) {
     console.error("Error fetching users: ", error);
@@ -896,8 +1112,11 @@ export const getUser = async () => {
 export const getHelpElker = async () => {
   try {
     const querySnapshot = await getDocs(collection(firestored, "helpElker"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    console.log('helpElker data',data)
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    console.log("helpElker data", data);
     return data;
   } catch (error) {
     console.error("Error fetching helpElker: ", error);
@@ -923,11 +1142,6 @@ export const getHelpElker = async () => {
 //   }
 // };
 
-
-
-
-
-
 export const getuserinformation = async (collectionname, documentId) => {
   try {
     const docRef = doc(firestored, collectionname, documentId);
@@ -948,228 +1162,341 @@ export const getuserinformation = async (collectionname, documentId) => {
 export const getAllUserItems = async (table, parameter, comparison, value) => {
   const items = await getDocs(
     query(collection(firestored, table), where(parameter, comparison, value))
-
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-
-
-
-
-export const getAllSlotsWhere = async (table, parameter, comparison, value, parameter1, comparison1, value1, parameter2, comparison2, value2) => {
+export const getAllSlotsWhere = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  parameter1,
+  comparison1,
+  value1,
+  parameter2,
+  comparison2,
+  value2
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where(parameter1, comparison1, value1), where(parameter2, comparison2, value2))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where(parameter1, comparison1, value1),
+      where(parameter2, comparison2, value2)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-export const getAllSlotsWherex4 = async (table, parameter, comparison, value, parameter1, comparison1, value1, parameter2, comparison2, value2, parameter3, comparison3, value3) => {
+export const getAllSlotsWherex4 = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  parameter1,
+  comparison1,
+  value1,
+  parameter2,
+  comparison2,
+  value2,
+  parameter3,
+  comparison3,
+  value3
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where(parameter1, comparison1, value1), where(parameter2, comparison2, value2), where(parameter3, comparison3, value3))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where(parameter1, comparison1, value1),
+      where(parameter2, comparison2, value2),
+      where(parameter3, comparison3, value3)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
-export const getAllSlotsWherex3 = async (table, parameter, comparison, value, parameter1, comparison1, value1, parameter2, comparison2, value2, parameter3, comparison3, value3) => {
+};
+export const getAllSlotsWherex3 = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  parameter1,
+  comparison1,
+  value1,
+  parameter2,
+  comparison2,
+  value2,
+  parameter3,
+  comparison3,
+  value3
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where(parameter1, comparison1, value1), where(parameter1, comparison1, value1))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where(parameter1, comparison1, value1),
+      where(parameter1, comparison1, value1)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllSlotsForChecking = async (table, parameter, comparison, value, parameter1, comparison1, value1,) => {
+export const getAllSlotsForChecking = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  parameter1,
+  comparison1,
+  value1
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where(parameter1, comparison1, value1), where("status", "==", "Accepted"))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where(parameter1, comparison1, value1),
+      where("status", "==", "Accepted")
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllEmployeeandSupervisors = async (table, parameter, comparison, value, value2) => {
+export const getAllEmployeeandSupervisors = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  value2
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, "in", [value, value2]))
-
+    query(
+      collection(firestored, table),
+      where(parameter, "in", [value, value2])
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllEmployeeandSupervisorsforclient = async (table, parameter, comparison, value, value2, clientid) => {
+export const getAllEmployeeandSupervisorsforclient = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  value2,
+  clientid
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, "in", [value, value2]), where("createdby", "==", clientid))
-
+    query(
+      collection(firestored, table),
+      where(parameter, "in", [value, value2]),
+      where("createdby", "==", clientid)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
-
+};
 
 export const getAllApprovedleaves = async (table, parameter, data) => {
   const items = await getDocs(
     query(collection(firestored, table), where(parameter, "in", data))
-
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
 export const getAllCleanerShifts = async (table, cleanerid, date) => {
   const items = await getDocs(
-    query(collection(firestored, table), where("cleaningshiftid", "==", cleanerid),  where("sheduleddate", "==", date))
-
+    query(
+      collection(firestored, table),
+      where("cleaningshiftid", "==", cleanerid),
+      where("sheduleddate", "==", date)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-
-
-export const getAllEmployeeandSupervisorsforsupervisor = async (table, parameter, comparison, value, value2, creatorid) => {
+export const getAllEmployeeandSupervisorsforsupervisor = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  value2,
+  creatorid
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, "in", [value, value2]), where("createdby", "==", creatorid))
-
+    query(
+      collection(firestored, table),
+      where(parameter, "in", [value, value2]),
+      where("createdby", "==", creatorid)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllEmployeeForProject = async (table, parameter, comparison, value, projectid) => {
+export const getAllEmployeeForProject = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  projectid
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where("projectassigned", comparison, projectid))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where("projectassigned", comparison, projectid)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-export const getAllEmployeeForClient = async (table, parameter, comparison, value, projectid) => {
+export const getAllEmployeeForClient = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  projectid
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where("createdby", comparison, projectid))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where("createdby", comparison, projectid)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getallemployeesslotsdata = async (table, projectid, scheduledate) => {
-
-
+export const getallemployeesslotsdata = async (
+  table,
+  projectid,
+  scheduledate
+) => {
   let data = [];
-  let items = []
-  if(projectid == undefined){
-     items = await getDocs(
-      query(collection(firestored, table), where("sheduleddate", "==", scheduledate))
+  let items = [];
+  if (projectid == undefined) {
+    items = await getDocs(
+      query(
+        collection(firestored, table),
+        where("sheduleddate", "==", scheduledate)
+      )
     );
-  }else{
-     items = await getDocs(
-      query(collection(firestored, table), where("sheduleddate", "==", scheduledate), where("projectid", "==", projectid))
-
+  } else {
+    items = await getDocs(
+      query(
+        collection(firestored, table),
+        where("sheduleddate", "==", scheduledate),
+        where("projectid", "==", projectid)
+      )
     );
   }
   items.docs.map((doc) => {
     if (doc.exists) {
-      let newdata = doc.data()
-      newdata["recordid"] = doc.id
+      let newdata = doc.data();
+      newdata["recordid"] = doc.id;
       data.push(newdata);
     }
-});
-return data;
-}
-
+  });
+  return data;
+};
 
 export const getallcleanerslotsdata = async (table, projectid) => {
-
-
   let data = [];
-  let items = []
-  if(projectid === undefined){
-     items = await getDocs(
-      query(collection(firestored, table))
-    );
-  }else{
-     items = await getDocs(
-      query(collection(firestored, table),  where("projectid", "==", projectid))
-
+  let items = [];
+  if (projectid === undefined) {
+    items = await getDocs(query(collection(firestored, table)));
+  } else {
+    items = await getDocs(
+      query(collection(firestored, table), where("projectid", "==", projectid))
     );
   }
   items.docs.map((doc) => {
     if (doc.exists) {
-      let newdata = doc.data()
-      newdata["recordid"] = doc.id
+      let newdata = doc.data();
+      newdata["recordid"] = doc.id;
       data.push(newdata);
     }
-});
-return data;
-}
+  });
+  return data;
+};
 
 export const getAllProjectsforSupervisor = async (table, projectids) => {
   const items = await getDocs(
-    query(collection(firestored, table),  where("id", "in", projectids))
-
+    query(collection(firestored, table), where("id", "in", projectids))
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
 export const getAllChats = async (table) => {
-  const items = await getDocs(
-    collection(firestored, table))
-
-
+  const items = await getDocs(collection(firestored, table));
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
 export const getAdminChats = async (table, id) => {
   const items = await getDocs(
-    query(collection(firestored, table), where("admin", "==", id)))
-
-
+    query(collection(firestored, table), where("admin", "==", id))
+  );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-
-export const getAllEmployeeTasks = async (table, parameter, comparison, value) => {
+export const getAllEmployeeTasks = async (
+  table,
+  parameter,
+  comparison,
+  value
+) => {
   const items = await getDocs(
     query(collection(firestored, table), where(parameter, comparison, value))
-
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllEmployeeslotfordate = async (table, parameter, comparison, value,  parameter1, comparison1, value1) => {
+export const getAllEmployeeslotfordate = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  parameter1,
+  comparison1,
+  value1
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), where(parameter1, comparison1, value1))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      where(parameter1, comparison1, value1)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllEmployeesCleaningShifts = async (table, parameter, comparison, value) => {
+export const getAllEmployeesCleaningShifts = async (
+  table,
+  parameter,
+  comparison,
+  value
+) => {
   const items = await getDocs(
     query(collection(firestored, table), where(parameter, comparison, value))
-
   );
 
   return items.docs.map((doc) => doc.data());
-}
-
+};
 
 export const deleteDocument = async (table, docId) => {
   try {
@@ -1179,332 +1506,425 @@ export const deleteDocument = async (table, docId) => {
     // Delete the document
     await deleteDoc(docRef);
 
-    return true
+    return true;
   } catch (error) {
     console.error("Error deleting document: ", error);
-        return false
+    return false;
   }
 };
 
-export const getAllEmployeeTasksByOrder = async (table, parameter, comparison, value, orderparameter, ordertype) => {
+export const getAllEmployeeTasksByOrder = async (
+  table,
+  parameter,
+  comparison,
+  value,
+  orderparameter,
+  ordertype
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where(parameter, comparison, value), orderBy(orderparameter, ordertype))
-
+    query(
+      collection(firestored, table),
+      where(parameter, comparison, value),
+      orderBy(orderparameter, ordertype)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-export const getAllBlogsPosts = async (table, orderparameter, ordertype,) => {
+export const getAllBlogsPosts = async (table, orderparameter, ordertype) => {
   const items = await getDocs(
     query(collection(firestored, table), orderBy(orderparameter, ordertype))
-
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-export const gethighestWmployeeID = async (table, orderparameter, ordertype,id) => {
+export const gethighestWmployeeID = async (
+  table,
+  orderparameter,
+  ordertype,
+  id
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where("createdby", "==", id), orderBy(orderparameter, ordertype), limit(1))
-
+    query(
+      collection(firestored, table),
+      where("createdby", "==", id),
+      orderBy(orderparameter, ordertype),
+      limit(1)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-export const getAllBlogsPostsAdmin = async (table, orderparameter, ordertype, adminid) => {
+export const getAllBlogsPostsAdmin = async (
+  table,
+  orderparameter,
+  ordertype,
+  adminid
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where("admin", "==", adminid), orderBy(orderparameter, ordertype))
-
+    query(
+      collection(firestored, table),
+      where("admin", "==", adminid),
+      orderBy(orderparameter, ordertype)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-export const getAllBlogsPostsClient = async (table, orderparameter, ordertype, adminid) => {
+export const getAllBlogsPostsClient = async (
+  table,
+  orderparameter,
+  ordertype,
+  adminid
+) => {
   const items = await getDocs(
-    query(collection(firestored, table), where("admin", "==", adminid), orderBy(orderparameter, ordertype))
-
+    query(
+      collection(firestored, table),
+      where("admin", "==", adminid),
+      orderBy(orderparameter, ordertype)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
 export const getAllData = async (table) => {
-  const items = await getDocs(
-    query(collection(firestored, table))
+  const items = await getDocs(query(collection(firestored, table)));
 
+  return items.docs.map((doc) => doc.data());
+};
+
+export const saveitem = async (table, data) => {
+  return await setDoc(doc(firestored, table, `${Date.now()}`), data, {
+    merge: true,
+  })
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const saveitemnew = async (table, data) => {
+  return await setDoc(
+    doc(firestored, table, data.schedulecreationdate.toString()),
+    data,
+    { merge: true }
+  )
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const saveitemwithid = async (table, id, data) => {
+  return await setDoc(doc(firestored, table, id), data, { merge: true })
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const updateItem = async (table, id, data) => {
+  return await setDoc(doc(firestored, table, id.toString()), data, {
+    merge: true,
+  })
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const updateNestedItem = async (
+  table,
+  id,
+  innertable,
+  data,
+  innerid
+) => {
+  return await setDoc(
+    doc(firestored, `${table}/${id}/${innertable}`, innerid.toString()),
+    data,
+    { merge: true }
+  )
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+export const updateNestedArrayItem = async (
+  table,
+  id,
+  innertable,
+  data,
+  innerid
+) => {
+  return await setDoc(
+    doc(firestored, `${table}/${id}/${innertable}`, innerid.toString()),
+    { slots: arrayUnion(data) },
+    { merge: true }
+  )
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const resetpassword = async (email) => {
+  return await sendPasswordResetEmail(auth, email)
+    .then((response) => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const updateNestedItemcheckout = async (
+  table,
+  id,
+  innertable,
+  data,
+  innerid
+) => {
+  return await setDoc(
+    doc(firestored, `${table}/${id}/${innertable}/${innerid}`),
+    data,
+    { merge: true }
+  )
+    .then(() => {
+      return "success";
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+export const getNestedItem = async (table, id, innertable) => {
+  const items = await getDocs(
+    query(
+      collection(firestored, `${table}/${id}/${innertable}`),
+      orderBy("checkindatetime", "desc"),
+      limit(1)
+    )
   );
 
   return items.docs.map((doc) => doc.data());
-}
+};
 
-
-export const saveitem = async (table, data) => {
-
-  return await setDoc(doc(firestored, table, `${Date.now()}`), data, { merge: true }).then(() => {
-    return "success";
-  })
-    .catch((err) => {
-      return err;
-    })
-
-}
-
-export const saveitemnew = async (table, data) => {
-
-  return await setDoc(doc(firestored, table,data.schedulecreationdate.toString()), data, { merge: true }).then(() => {
-    return "success";
-  })
-    .catch((err) => {
-      return err;
-    })
-
-}
-
-export const saveitemwithid = async (table, id, data) => {
-
-  return await setDoc(doc(firestored, table, id), data, { merge: true }).then(() => {
-    return "success";
-  })
-    .catch((err) => {
-      return err;
-    })
-
-}
-
-
-export const updateItem = async (table, id, data) => {
-
-  return await setDoc(doc(firestored, table, id.toString()), data, { merge: true }).then(() => {
-    return "success";
-  })
-    .catch((err) => {
-      return err;
-    })
-
-}
-
-
-
-
-export const updateNestedItem = async (table, id, innertable, data, innerid) => {
-
-  return await setDoc(doc(firestored, `${table}/${id}/${innertable}`, innerid.toString()), data, { merge: true })
-    .then(() => {
-      return "success";
-    })
-    .catch((err) => {
-      return err;
-    })
-
-
-
-}
-export const updateNestedArrayItem = async (table, id, innertable, data, innerid) => {
-
-  return await setDoc(doc(firestored, `${table}/${id}/${innertable}`, innerid.toString()), { slots: arrayUnion(data) }, { merge: true })
-    .then(() => {
-      return "success";
-    })
-    .catch((err) => {
-      return err;
-    })
-
-
-
-}
-
-
-
-
-export const resetpassword = async (email) => {
-
-  return await sendPasswordResetEmail(auth, email)
-    .then((response) => {
-
-      return "success"
-
-    })
-    .catch((err) => {
-      return err
-    });
-}
-
-
-
-
-export const updateNestedItemcheckout = async (table, id, innertable, data, innerid) => {
-
-  return await setDoc(doc(firestored, `${table}/${id}/${innertable}/${innerid}`), data, { merge: true })
-    .then(() => {
-      return "success";
-    })
-    .catch((err) => {
-      return err;
-    })
-
-
-
-}
-
-export const getNestedItem = async (table, id, innertable) => {
-
-
-  const items = await getDocs(
-    query(collection(firestored, `${table}/${id}/${innertable}`), orderBy("checkindatetime", "desc"), limit(1)))
-
-
-
-  return items.docs.map((doc) => doc.data());
-
-}
-
-
-export const getSumofNestedItem = async (table, id, parameter, comparison, value, parametertwo, comparisontwo, valuetwo) => {
-
-
+export const getSumofNestedItem = async (
+  table,
+  id,
+  parameter,
+  comparison,
+  value,
+  parametertwo,
+  comparisontwo,
+  valuetwo
+) => {
   const count = await getAggregateFromServer(
-    query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo), where("employeeid", "==", id)), {
-    totalhours: sum('minutes')
-  }).catch((err) => {
-    console.log(err)
-  })
-
-
+    query(
+      collection(firestored, `${table}`),
+      where(parameter, comparison, value),
+      where(parametertwo, comparisontwo, valuetwo),
+      where("employeeid", "==", id)
+    ),
+    {
+      totalhours: sum("minutes"),
+    }
+  ).catch((err) => {
+    console.log(err);
+  });
 
   return count?.data().totalhours;
-
-}
+};
 
 export const getSumofAllNestedItems = async (table, id) => {
-
-
   const count = await getAggregateFromServer(
-    query(collection(firestored, `${table}`), where("employeeid", "==", id)), {
-    totalhours: sum('minutes')
-  }).catch((err) => {
-    console.log(err)
-  })
-
-
+    query(collection(firestored, `${table}`), where("employeeid", "==", id)),
+    {
+      totalhours: sum("minutes"),
+    }
+  ).catch((err) => {
+    console.log(err);
+  });
 
   return count?.data().totalhours;
+};
 
-}
-
-
-
-
-
-
-export const getNestedItemdualcondition = async (table, id, parameter, comparison, value, parametertwo, comparisontwo, valuetwo, parameterthree, comparisonthree, valuethree) => {
-  let items = []
+export const getNestedItemdualcondition = async (
+  table,
+  id,
+  parameter,
+  comparison,
+  value,
+  parametertwo,
+  comparisontwo,
+  valuetwo,
+  parameterthree,
+  comparisonthree,
+  valuethree
+) => {
+  let items = [];
   if (valuethree != undefined) {
-
-    items = await getDocs(query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo), where(parameterthree, comparisonthree, valuethree), where("employeeid", "==", id)))
+    items = await getDocs(
+      query(
+        collection(firestored, `${table}`),
+        where(parameter, comparison, value),
+        where(parametertwo, comparisontwo, valuetwo),
+        where(parameterthree, comparisonthree, valuethree),
+        where("employeeid", "==", id)
+      )
+    );
   } else {
-
-    items = await getDocs(query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo), where("employeeid", "==", id)))
+    items = await getDocs(
+      query(
+        collection(firestored, `${table}`),
+        where(parameter, comparison, value),
+        where(parametertwo, comparisontwo, valuetwo),
+        where("employeeid", "==", id)
+      )
+    );
   }
 
   return items.docs.map((doc) => doc.data());
+};
 
-}
-
-export const getgeneralNestedItemdualcondition = async (table, id, parameter, comparison, value, parametertwo, comparisontwo, valuetwo, parameterthree, comparisonthree, valuethree) => {
-  let items = []
+export const getgeneralNestedItemdualcondition = async (
+  table,
+  id,
+  parameter,
+  comparison,
+  value,
+  parametertwo,
+  comparisontwo,
+  valuetwo,
+  parameterthree,
+  comparisonthree,
+  valuethree
+) => {
+  let items = [];
   if (valuethree != undefined) {
     // items = await getDocs(query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo), where(parameterthree, comparisonthree, valuethree), where("employeeid", "in", id)))
-    items = await getDocs(query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo), where(parameterthree, comparisonthree, valuethree) ))
-
+    items = await getDocs(
+      query(
+        collection(firestored, `${table}`),
+        where(parameter, comparison, value),
+        where(parametertwo, comparisontwo, valuetwo),
+        where(parameterthree, comparisonthree, valuethree)
+      )
+    );
   } else {
     // items = await getDocs(query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo), where("employeeid", "in", id))).catch((err) => {
     //   console.log(err)
     // })
-    items = await getDocs(query(collection(firestored, `${table}`), where(parameter, comparison, value), where(parametertwo, comparisontwo, valuetwo))).catch((err) => {
-      console.log(err)
-    })
+    items = await getDocs(
+      query(
+        collection(firestored, `${table}`),
+        where(parameter, comparison, value),
+        where(parametertwo, comparisontwo, valuetwo)
+      )
+    ).catch((err) => {
+      console.log(err);
+    });
   }
-
 
   let array = items.docs.map((doc) => doc.data());
 
   array = array.filter(function (itemdata) {
-    return id.includes(itemdata.employeeid)
-  })
+    return id.includes(itemdata.employeeid);
+  });
 
   // .map(function (itemdata) {
   //   return itemdata;
   // })
 
   return array;
-
-}
+};
 
 export const saveitemwithkey = async (collection, key, chatdata) => {
-
-  return await setDoc(doc(firestored, collection, key), chatdata, { merge: true }).then(() => {
-    return "success";
+  return await setDoc(doc(firestored, collection, key), chatdata, {
+    merge: true,
   })
+    .then(() => {
+      return "success";
+    })
     .catch((err) => {
       return err;
+    });
+};
+
+export const saveitemwithkeynestedarray = async (
+  parentcollection,
+  parentkey,
+  innercollection,
+  childid,
+  chatdata
+) => {
+  return await doc(firestored, parentcollection, parentkey)
+    .setDoc(doc(firestored, innercollection, childid), chatdata, {
+      merge: true,
     })
-
-}
-
-export const saveitemwithkeynestedarray = async (parentcollection, parentkey, innercollection, childid, chatdata) => {
-
-  return await doc(firestored, parentcollection, parentkey).setDoc(doc(firestored, innercollection, childid), chatdata, { merge: true }).then(() => {
-    return "success";
-  })
+    .then(() => {
+      return "success";
+    })
     .catch((err) => {
       return err;
-    })
-
-}
+    });
+};
 
 export const getlivedata = async (collectionname, document) => {
   const items = await getDoc(
     onSnapshot(doc(firestored, collectionname, document))
   );
   return items.data();
-}
+};
 
 ////////////////reference//////////////////////
 //Saving new item
 
-
-
-
-
 export const saveOrder = async (collection, data, orderdate) => {
-
-  return await setDoc(doc(firestored, collection, `${orderdate}`), { "orders": arrayUnion(data) }, { merge: true }).then(() => {
-    return "success";
-  })
+  return await setDoc(
+    doc(firestored, collection, `${orderdate}`),
+    { orders: arrayUnion(data) },
+    { merge: true }
+  )
+    .then(() => {
+      return "success";
+    })
     .catch((err) => {
       return "error";
-    })
-
-}
+    });
+};
 
 export const saveemployeetoproject = async (data, id) => {
-
-  return await setDoc(doc(firestored, "TodaysOrders", `${id}`), { "employees": arrayUnion(data) }, { merge: true }).then(() => {
-    return "success";
-  })
+  return await setDoc(
+    doc(firestored, "TodaysOrders", `${id}`),
+    { employees: arrayUnion(data) },
+    { merge: true }
+  )
+    .then(() => {
+      return "success";
+    })
     .catch((err) => {
       return "error";
-    })
-
-}
-
-
+    });
+};
 
 //getall food items
 export const getAllFoodItems = async (data) => {
@@ -1513,19 +1933,12 @@ export const getAllFoodItems = async (data) => {
   );
 
   return items.docs.map((doc) => doc.data());
-
-
-}
-
+};
 
 //getall users items
 
-
-
 export const getAllOrderItems = async (date) => {
-  const items = await getDocs(
-    query(collection(firestored, "TodaysOrders"))
-  );
+  const items = await getDocs(query(collection(firestored, "TodaysOrders")));
   // .where('timestamp', '>=', time)
   // .where('timestamp', '<=', lastdate)
 
@@ -1533,32 +1946,29 @@ export const getAllOrderItems = async (date) => {
   // let data = items.docs.map((doc) => doc.data())
   //     return data;
 
-  let data = items.docs.filter(function (doc) {
-    return doc.id.includes(date)
-  }).map(function (doc) {
+  let data = items.docs
+    .filter(function (doc) {
+      return doc.id.includes(date);
+    })
+    .map(function (doc) {
+      let newdata = doc.data();
+      newdata["date"] = doc.id;
 
-    let newdata = doc.data()
-    newdata["date"] = doc.id
-
-
-    return newdata;
-  })
+      return newdata;
+    });
   return data;
-}
-
+};
 
 export const updateUserstable = async (collection, document, jsonObject) => {
-  return await setDoc(doc(firestored, collection, document), jsonObject, { merge: true }).then((response) => {
-    console.log(response)
-    return "success";
+  return await setDoc(doc(firestored, collection, document), jsonObject, {
+    merge: true,
   })
-    .catch((err) => {
-      console.log(err)
-      return "error";
+    .then((response) => {
+      console.log(response);
+      return "success";
     })
-
-
-
-}
-
-
+    .catch((err) => {
+      console.log(err);
+      return "error";
+    });
+};
