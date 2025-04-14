@@ -99,8 +99,8 @@ const FormSection = () => {
           value: sub.name,
         })) || [];
       });
-    
-      setSubCategoryOptions(data); 
+
+      setSubCategoryOptions(data);
       setIsLoad(false);
     } else {
       setSubCategoryOptions([]);
@@ -251,6 +251,7 @@ const FormSection = () => {
       images,
     };
 
+
     try {
       if (id) {
         // ✅ Update existing product
@@ -362,7 +363,7 @@ const FormSection = () => {
         {/* Sub-category Select */}
         {/* {!isLoad && ( */}
           <div className="w-full md:w-[32%] pt-4 md:pt-0">
-          
+
             <label className="text-sm">Select Sub Categories</label>
             <Select
               isMulti
