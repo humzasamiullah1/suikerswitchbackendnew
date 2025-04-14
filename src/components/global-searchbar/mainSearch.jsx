@@ -130,9 +130,9 @@ const MainSearch = ({ onEmptyBlur }) => {
       return;
     }
 
-    const lowerValue = value.toLowerCase();
+    const lowerValue = value?.toLowerCase();
     setFilteredProducts(
-      products.filter((p) => p.productName.toLowerCase().includes(lowerValue))
+      products.filter((p) => p?.productName?.toLowerCase().includes(lowerValue))
     );
     setFilteredBlogs(
       blogsData.filter(

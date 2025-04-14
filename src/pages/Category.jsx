@@ -17,7 +17,7 @@ function Category() {
 
   return (
     <div className="w-[95%] mx-auto lg:h-screen pt-12 lg:pt-0">
-      {/* {!isGlobalSearch ? ( */}
+      {!isGlobalSearch ? (
         <>
       <div className="pt-5 w-full lg:h-[15%]">
         <HeaderBar
@@ -32,9 +32,9 @@ function Category() {
         <MainCategory />
       </div>
       </>
-      {/* ) : (
+       ) : (
         <MainSearch onEmptyBlur={(value)=> handleGlobalSearch(value)}/>
-      )} */}
+      )}
     </div>
   );
 }
