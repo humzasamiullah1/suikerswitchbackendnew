@@ -42,9 +42,7 @@ const MainCategory = () => {
   // Search filter
   const filteredCategory = category.filter(
     (supermarket) =>
-      supermarket.categoryName
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      supermarket.categoryName?.toLowerCase()?.includes(search.toLowerCase())
   );
 
 

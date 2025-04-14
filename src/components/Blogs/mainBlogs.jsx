@@ -49,8 +49,8 @@ const MainBlogs = () => {
 
   const searchedProducts = blogsData.filter(
     (blog) =>
-      blog.description.toLowerCase().includes(search.toLowerCase()) ||
-      blog.content.toLowerCase().includes(search.toLowerCase())
+      blog?.description?.toLowerCase()?.includes(search.toLowerCase()) ||
+      blog?.content?.toLowerCase()?.includes(search.toLowerCase())
   );
 
   const pageCount = Math.ceil(searchedProducts.length / productsPerPage);

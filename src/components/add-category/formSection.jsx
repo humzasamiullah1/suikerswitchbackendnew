@@ -92,8 +92,12 @@ const FormSection = () => {
     };
 
     console.log(categoryData);
+
+
+
     try {
       if (id) {
+
         // ✅ Update existing product
         await updateCategoryToFirebase(id, categoryData, imageFiles);
         toast.success("Category updated successfully!");
@@ -101,6 +105,7 @@ const FormSection = () => {
           navigate("/dashboard/category");
         }, 1000);
       } else {
+
         // ✅ Add new product
         await addCategoryToFirebase(categoryData, imageFiles);
         toast.success("Category added successfully!");

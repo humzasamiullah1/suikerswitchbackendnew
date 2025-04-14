@@ -40,7 +40,7 @@ const HighlightedText = ({ text, searchTerm }) => {
   return (
     <>
       {parts.map((part, index) =>
-        part.toLowerCase() === searchTerm.toLowerCase() ? (
+        part?.toLowerCase() === searchTerm?.toLowerCase() ? (
           <span key={index} style={{ backgroundColor: "yellow" }}>
             {part}
           </span>

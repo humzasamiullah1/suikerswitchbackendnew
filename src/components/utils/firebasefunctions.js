@@ -472,7 +472,6 @@ export const updateCategoryToFirebase = async (id, formData, newImageFiles) => {
       subCategory: formData.subCategory,
       images: imageURLs,
       timestamp: formData.timestamp,
-      createdAt: formData.createdAt,
     });
 
     console.log("✅ Category updated successfully");
