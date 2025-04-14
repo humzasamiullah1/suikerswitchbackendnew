@@ -409,6 +409,7 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
       // content: formData.content,
       selectedCategories: formData.selectedCategories,
       selectedSupermarkets: formData.selectedSupermarkets,
+      selectedSubCategories: formData.selectedSubCategories,
       ingredients: formData.ingredients,
       images: imageURLs,
     });

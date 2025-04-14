@@ -7,11 +7,11 @@ const HighlightedText = ({ text, searchTerm }) => {
   if (!searchTerm) return <>{text}</>;
 
   const regex = new RegExp(`(${searchTerm})`, "gi");
-  const parts = text.split(regex);
+  const parts = text !== undefined ? text?.split(regex) : [];
 
   return (
     <>
-      {parts.map((part, index) =>
+      {parts?.map((part, index) =>
         part?.toLowerCase() === searchTerm?.toLowerCase() ? (
           <span key={index} style={{ backgroundColor: "yellow" }}>
             {part}
@@ -46,7 +46,7 @@ const ProductCard = ({
           <ImageTag path={data?.images} classes="size-32" altText="logo" />
         </div>
         <div className="flex flex-wrap">
-          {data?.selectedSupermarkets.map((item, index) => (
+          {data?.selectedSupermarkets?.map((item, index) => (
             <div className="bg-gray-200 rounded-full px-2 flex justify-center py-1 mt-3 mr-2">
               <p className="text-xs font-HelveticaNeueRegular text-darkColor">
                 {item}

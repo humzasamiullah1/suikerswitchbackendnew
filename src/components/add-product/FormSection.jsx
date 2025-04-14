@@ -38,6 +38,8 @@ const FormSection = () => {
   const [isCheckDesc, setIsCheckDesc] = useState(false);
   const [loadingRichText, setLoadingRichText] = useState(false);
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [subCategoryOptions, setSubCategoryOptions] = useState([]);
+  const [isLoad, setIsLoad] = useState(true);
   const [allCategory, setallCategory] = useState([]);
   const navigate = useNavigate();
 
@@ -61,6 +63,24 @@ const FormSection = () => {
           product.selectedCategories.map((cat) => ({ label: cat, value: cat }))
         );
         setSelectedSubCategories(product.selectedSubCategories.map((sub) => ({ label: sub, value: sub })))
+        setTimeout(() => {
+          if (product.selectedCategories.length > 0) {
+            const subCategoryData = product.selectedCategories.flatMap((sel) => {
+              const matchData = data.find((x) => x.categoryName === sel);
+              return matchData?.subCategory?.map((sub) => ({
+                label: sub.name,
+                value: sub.name,
+              })) || [];
+            });
+
+            setSubCategoryOptions(subCategoryData);
+            setIsLoad(false);
+          } else {
+            setSubCategoryOptions([]);
+            setIsLoad(false);
+          }
+        }, 500);
+
       }
       setCategories(
         data.map((category) => ({
@@ -81,15 +101,11 @@ const FormSection = () => {
     }
   };
 
-  const [subCategoryOptions, setSubCategoryOptions] = useState([]);
-  const [isLoad, setIsLoad] = useState(true);
+
 
   const handleCategoryChange = (selected) => {
     setIsLoad(true);
     setSelectedCategories(selected || []);
-    setSelectedSubCategories([]);
-    setSubCategoryOptions([])
-    // const data = [];
 
     if (selected && selected.length > 0) {
       const data = selected.flatMap((sel) => {
@@ -101,12 +117,22 @@ const FormSection = () => {
       });
 
       setSubCategoryOptions(data);
+
+      // Filter already selected subcategories to retain valid ones
+      setSelectedSubCategories((prev) =>
+        prev.filter((sub) =>
+          data.some((opt) => opt.value === sub.value)
+        )
+      );
+
       setIsLoad(false);
     } else {
       setSubCategoryOptions([]);
+      setSelectedSubCategories([]);
       setIsLoad(false);
     }
   };
+
 
   const fetchSupermarkets = async (product) => {
     try {
@@ -251,6 +277,7 @@ const FormSection = () => {
       images,
     };
 
+    console.log(productData)
 
     try {
       if (id) {
