@@ -72,7 +72,7 @@ const FormSection = () => {
                 value: sub.name,
               })) || [];
             });
-  
+
             setSubCategoryOptions(subCategoryData);
             setIsLoad(false);
           } else {
@@ -80,7 +80,7 @@ const FormSection = () => {
             setIsLoad(false);
           }
         }, 500);
-        
+
       }
       setCategories(
         data.map((category) => ({
@@ -101,12 +101,12 @@ const FormSection = () => {
     }
   };
 
-  
+
 
   const handleCategoryChange = (selected) => {
     setIsLoad(true);
     setSelectedCategories(selected || []);
-  
+
     if (selected && selected.length > 0) {
       const data = selected.flatMap((sel) => {
         const matchData = allCategory.find((x) => x.categoryName === sel.label);
@@ -115,16 +115,16 @@ const FormSection = () => {
           value: sub.name,
         })) || [];
       });
-  
+
       setSubCategoryOptions(data);
-  
+
       // Filter already selected subcategories to retain valid ones
-      setSelectedSubCategories((prev) => 
+      setSelectedSubCategories((prev) =>
         prev.filter((sub) =>
           data.some((opt) => opt.value === sub.value)
         )
       );
-  
+
       setIsLoad(false);
     } else {
       setSubCategoryOptions([]);
@@ -132,7 +132,7 @@ const FormSection = () => {
       setIsLoad(false);
     }
   };
-  
+
 
   const fetchSupermarkets = async (product) => {
     try {
@@ -390,7 +390,7 @@ const FormSection = () => {
         {/* Sub-category Select */}
         {/* {!isLoad && ( */}
           <div className="w-full md:w-[32%] pt-4 md:pt-0">
-          
+
             <label className="text-sm">Select Sub Categories</label>
             <Select
               isMulti
