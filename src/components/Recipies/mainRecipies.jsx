@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Menu, CircleArrowDown, Plus } from "lucide-react";
+import { Search, X, CircleArrowDown, Plus } from "lucide-react";
 import RecipiesCard from "./recipiesCard";
 import LikePopup from "../../components/popup/like";
 import CommentsPopup from "../../components/popup/comments";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { getRecipe, deleteRecipe } from "../utils/firebasefunctions";
 import WarningPopup from "../../components/popup/warning";
+import DraggableScrollablePills from "../reuseable/draggable-scrollable-pills";
 import NoData from "../reuseable/noData";
 import MyLoader from "../reuseable/myLoader";
 import { toast } from "react-toastify";
@@ -20,13 +21,25 @@ const MainRecipies = () => {
   const [loading, setLoading] = useState(true);
   const [warning, setWarning] = useState(false);
   const [onDeleteId, setOnDeleteId] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const categoryItems = [
+    { id: "1", label: "Zoet ontbijt" },
+    { id: "2", label: "Hartig ontbijt" },
+    { id: "3", label: "Lunch" },
+    { id: "4", label: "Diner" },
+    { id: "5", label: "Snack" },
+    { id: "6", label: "Smoothies" },
+    { id: "7", label: "Zoete baksels" },
+    { id: "8", label: "Brunch" },
+    { id: "9", label: "Feestelijk" },
+  ];
 
   const [recipeData, setRecipeData] = useState([]);
 
   // Pagination States
-    const [currentPage, setCurrentPage] = useState(0);
-    const productsPerPage = 30;
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const productsPerPage = 30;
 
   const fetchData = async () => {
     const data = await getRecipe();
@@ -71,11 +84,17 @@ const MainRecipies = () => {
     fetchData();
   };
 
-  const searchedProducts = recipeData.filter(
-    (recipe) =>
+  const searchedProducts = recipeData.filter((recipe) => {
+    const matchesSearch =
       recipe.description.toLowerCase().includes(search.toLowerCase()) ||
-      recipe.content.toLowerCase().includes(search.toLowerCase())
-  );
+      recipe.content.toLowerCase().includes(search.toLowerCase());
+
+    const matchesCategory = selectedCategory
+      ? recipe.category === selectedCategory
+      : true;
+
+    return matchesSearch && matchesCategory;
+  });
 
   const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
   const currentProducts = searchedProducts.slice(
@@ -86,6 +105,10 @@ const MainRecipies = () => {
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
   };
+
+  const handleCategory = (item) => {
+    setSelectedCategory(item.label)
+  }
 
   return (
     <motion.div
@@ -131,6 +154,24 @@ const MainRecipies = () => {
               </motion.button>
             </Link>
           </div>
+        </div>
+      </div>
+      <div className="flex justify-between my-5">
+        <div className="w-[95%] border border-gray-200 rounded-lg">
+          <DraggableScrollablePills
+            items={categoryItems}
+            onPillClick={(item) => handleCategory(item)}
+            isActive={selectedCategory}
+          />
+        </div>
+        {/* </div> */}
+        <div className="w-[4%]">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className="text-sm bg-gkRedColor flex justify-center items-center w-full h-full text-white rounded-full"
+          >
+            <X size={20}/>
+          </button>
         </div>
       </div>
       {!loading ? (

@@ -925,6 +925,7 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
     await updateDoc(docRef, {
       content: formData.content,
       description: formData.description,
+      category: formData.category,
       images: imageURLs,
     });
 

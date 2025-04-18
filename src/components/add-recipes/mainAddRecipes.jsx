@@ -9,7 +9,7 @@ import {
 } from "../utils/firebasefunctions";
 import { useStateValue } from "../../context/StateProvider";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
-import BreadCrumbs from "../reuseable/breadCrumbs"
+import BreadCrumbs from "../reuseable/breadCrumbs";
 
 import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
@@ -21,6 +21,7 @@ const RichTextEditor = () => {
   const [imageFiles, setImageFiles] = useState([]);
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailURL, setThumbnailURL] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,6 +71,7 @@ const RichTextEditor = () => {
       if (data) {
         setContent(data.content);
         setDescription(data.description);
+        setCategory(data.category)
         setImages(data.images || []);
       }
     } catch (error) {
@@ -108,10 +110,10 @@ const RichTextEditor = () => {
     const recipeData = {
       content,
       description,
+      category,
       userId: user?.id || "Unknown",
       userType: user?.usertype || "Guest",
       createdAt: Date.now(),
-
     };
 
     try {
@@ -132,6 +134,7 @@ const RichTextEditor = () => {
         setDescription("");
         setThumbnail(null);
         setThumbnailURL("");
+        setCategory("")
         setImages([]);
         setImageFiles([]);
         setTimeout(() => {
@@ -150,7 +153,7 @@ const RichTextEditor = () => {
   return (
     <div className="bg-white rounded-[30px] shadow-md px-5 mb-5 lg:mb-0 h-full flex flex-col">
       <div className="h-[85%] overflow-y-scroll panelScroll">
-      <div className="pt-3">
+        <div className="pt-3">
           <BreadCrumbs
             link={"/dashboard/recipies"}
             firstLink="Recipies"
@@ -190,18 +193,39 @@ const RichTextEditor = () => {
             )}
           </div>
         </div>
-        <div className="w-full my-3 px-3">
-          <label className="text-sm">Short Description</label>
-          <div className="">
-            <input
-              type="text"
-              placeholder="Enter description..."
-              className={`w-full mt-1 ${
-                isCheckTitle ? "border-2 border-red-600" : ""
-              } text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
+        <div className="flex justify-between items-center">
+          <div className="w-[49%] my-3 px-3">
+            <label className="text-sm">Short Description</label>
+            <div className="">
+              <input
+                type="text"
+                placeholder="Enter description..."
+                className={`w-full mt-1 ${
+                  isCheckTitle ? "border-2 border-red-600" : ""
+                } text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="w-[49%]">
+            <label className="text-sm">Category</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="block w-full bg-bgColor px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-themeColor focus:border-themeColor sm:text-sm mt-1"
+            >
+              <option value="">Select Category</option>
+              <option value="Zoet ontbijt">Zoet ontbijt</option>
+              <option value="Hartig ontbijt">Hartig ontbijt</option>
+              <option value="Lunch">Lunch</option>
+              <option value="Diner">Diner</option>
+              <option value="Snack">Snack</option>
+              <option value="Smoothies">Smoothies</option>
+              <option value="Zoete baksels">Zoete baksels</option>
+              <option value="Brunch">Brunch</option>
+              <option value="Feestelijk">Feestelijk</option>
+            </select>
           </div>
         </div>
 
@@ -258,7 +282,17 @@ const RichTextEditor = () => {
                   "redo",
                 ],
               ],
-              formats: ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre"],
+              formats: [
+                "p",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "blockquote",
+                "pre",
+              ],
               callBackSave: (content) => setContent(content), // ✅ Ensure content is updated
             }}
             onImageUploadBefore={(files, _, uploadHandler) => {
