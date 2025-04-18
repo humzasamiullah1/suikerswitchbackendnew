@@ -110,7 +110,7 @@ export default function DraggableScrollablePills({ items, className, onPillClick
             key={item.id}
             onClick={(e) => handlePillClick(item, e)}
             className={cn(
-              "px-4 py-1 rounded-full text-sm font-HelveticaNeueRegular transition-colors whitespace-nowrap",
+              "px-4 py-1 rounded-full text-xs lg:text-sm font-HelveticaNeueRegular transition-colors whitespace-nowrap",
               " focus:outline-none focus:ring-2 focus:ring-gray-200",
               isActive === item.label ? "bg-gkRedColor text-white" : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-100",
             )}

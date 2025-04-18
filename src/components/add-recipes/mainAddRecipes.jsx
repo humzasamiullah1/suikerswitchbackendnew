@@ -193,8 +193,8 @@ const RichTextEditor = () => {
             )}
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <div className="w-[49%] my-3 px-3">
+        <div className="flex flex-wrap justify-between items-center">
+          <div className="w-full lg:w-[49%] my-3 px-3">
             <label className="text-sm">Short Description</label>
             <div className="">
               <input
@@ -208,7 +208,7 @@ const RichTextEditor = () => {
               />
             </div>
           </div>
-          <div className="w-[49%]">
+          <div className="w-full lg:w-[49%] mb-5 lg:mb-0 px-3">
             <label className="text-sm">Category</label>
             <select
               value={category}

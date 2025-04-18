@@ -157,7 +157,7 @@ const MainRecipies = () => {
         </div>
       </div>
       <div className="flex justify-between my-5">
-        <div className="w-[94%] border border-gray-200 rounded-lg">
+        <div className="w-[85%] sm:w-[90%] md:w-[92%] lg:w-[91%] xl:w-[94%] border border-gray-200 rounded-lg">
           <DraggableScrollablePills
             items={categoryItems}
             onPillClick={(item) => handleCategory(item)}
@@ -165,12 +165,12 @@ const MainRecipies = () => {
           />
         </div>
         {/* </div> */}
-        <div className="w-[4%]">
+        <div className="w-[13%] sm:w-[8%] md:w-[6%] lg:w-[7%] xl:w-[4%]">
           <button
             onClick={() => setSelectedCategory(null)}
             className="text-sm bg-gkRedColor flex justify-center items-center w-full h-full text-white rounded-full"
           >
-            <X size={20}/>
+            <X className="size-5"/>
           </button>
         </div>
       </div>

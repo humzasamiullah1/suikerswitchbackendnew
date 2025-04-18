@@ -203,7 +203,7 @@ const MainProucts = () => {
 
               {/* Dropdown */}
               {isOpen && (
-                <div className="absolute right-[-60px] mt-2 w-[400px] bg-white border rounded-lg shadow-lg z-50">
+                <div className="absolute right-[-15px] md:right-[-60px] mt-2 w-[330px] md:w-[400px] bg-white border rounded-lg shadow-lg z-50">
                   {/* Tabs */}
                   <div className="flex border-b">
                     <button
@@ -235,7 +235,7 @@ const MainProucts = () => {
                   </div>
 
                   {/* Tab Content */}
-                  <div className="p-3 h-[280px] overflow-y-scroll">
+                  <div className="p-3 h-[180px] md:h-[280px] overflow-y-scroll">
                     {activeTab === "category" ? (
                       <ul>
                         {categories.map((category, i) => (
