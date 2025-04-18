@@ -157,7 +157,7 @@ const MainRecipies = () => {
         </div>
       </div>
       <div className="flex justify-between my-5">
-        <div className="w-[95%] border border-gray-200 rounded-lg">
+        <div className="w-[94%] border border-gray-200 rounded-lg">
           <DraggableScrollablePills
             items={categoryItems}
             onPillClick={(item) => handleCategory(item)}
