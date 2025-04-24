@@ -18,7 +18,8 @@
 }
 
 textarea:focus,
-input:focus {
+input:focus,
+select:focus  {
   outline: #c4161b solid 2px !important;
   background-color: #f4f4f4 !important;
   color: #1a1a1a !important;
@@ -55,9 +56,9 @@ input[type="checkbox"]:checked {
   color: white !important; /* White check icon */
 }
 
-select {
+/* select {
   border: none !important;
-}
+} */
 
 body {
   background-color: #F4F4F4; /* Apne desired color ka code yahan lagayein */
