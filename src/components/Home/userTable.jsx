@@ -48,10 +48,10 @@ export default function ResponsiveTable({ data }) {
               <thead>
                 <tr className=" shadow-md rounded-full text-sm md:text-base text-left font-HelveticaNeueMedium text-darkColor">
                   <th className="p-4 w-[4%]">#</th>
-                  <th className="p-4 lg:w-[20%]">Name</th>
+                  <th className="p-4 lg:w-[22%]">Name</th>
                   <th className="p-4 lg:w-[22%]">Email</th>
-                  <th className="p-4 lg:w-[7%] text-center">Subscriptions</th>
-                  <th className="p-4 lg:w-[7%] text-center">Status</th>
+                  <th className="p-4 lg:w-[6%] text-center">Subscriptions</th>
+                  <th className="p-4 lg:w-[6%] text-center">Status</th>
                   <th className="p-4 w-full lg:w-[20%]">Expire Date</th>
                 </tr>
               </thead>
