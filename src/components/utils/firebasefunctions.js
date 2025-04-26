@@ -990,13 +990,34 @@ export const deleteRecipe = async (id) => {
   }
 };
 
+// export const getRecipe = async () => {
+//   try {
+//     const querySnapshot = await getDocs(collection(firestored, "recipe"));
+//     const data = querySnapshot.docs.map((doc) => ({
+//       id: doc.id,
+//       ...doc.data(),
+//     }));
+//     console.log("recipe data", data);
+//     return data;
+//   } catch (error) {
+//     console.error("Error fetching recipe: ", error);
+//     return [];
+//   }
+// };
+
 export const getRecipe = async () => {
   try {
-    const querySnapshot = await getDocs(collection(firestored, "recipe"));
+    const recipeQuery = query(
+      collection(firestored, "recipe"),
+      orderBy("createdAt", "desc")  // sorting by Firestore Timestamp field
+    );
+
+    const querySnapshot = await getDocs(recipeQuery);
     const data = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
+
     console.log("recipe data", data);
     return data;
   } catch (error) {

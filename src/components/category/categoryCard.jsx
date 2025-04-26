@@ -32,7 +32,7 @@ const CategoryCard = ({
   hidebutton,
 }) => {
   return (
-    <div className="border-2 border-gray-200 rounded-xl h-[280px] w-full px-4 py-3 mt-3 relative">
+    <div className="border-2 border-gray-200 rounded-xl h-[350px] w-full px-4 py-3 mt-3 relative">
       {isShow && (
         <div
           className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]"
@@ -46,7 +46,7 @@ const CategoryCard = ({
           <ImageTag path={data?.images} classes="size-32" altText="logo" />
         </div>
         <div className="flex flex-wrap">
-          {data?.subCategory.map((item, index) => (
+          {data?.subCategory?.slice(0, 3)?.map((item, index) => (
             <div className="bg-gray-200 rounded-full px-2 flex justify-center py-1 mt-3 mr-2">
               <p className="text-xs font-HelveticaNeueRegular text-darkColor">
                 {item.name}
@@ -54,7 +54,7 @@ const CategoryCard = ({
             </div>
           ))}
         </div>
-        <p className="text-darkColor font-HelveticaNeueMedium line-clamp-2 text-base pt-2">
+        <p className="text-darkColor font-HelveticaNeueMedium line-clamp-1 text-base pt-2">
           <HighlightedText
             text={data?.categoryName}
             searchTerm={highlightSearchTerm}

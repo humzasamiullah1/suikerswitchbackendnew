@@ -212,7 +212,7 @@ const RichTextEditor = () => {
                 />
               </div>
             </div>
-            <div className="w-full lg:w-[49%] mb-5 lg:mb-0 px-3">
+            <div className="w-full lg:w-[49%] mb-5 lg:mb-0">
               <label className="text-sm">Category</label>
               <select
                 value={category}

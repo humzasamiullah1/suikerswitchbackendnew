@@ -13,9 +13,7 @@ export default function ResponsiveTable({ data }) {
   const filteredUser = data.filter(
     (user) =>
       user.email.toLowerCase().includes(search.toLowerCase()) ||
-      user.firstname.toLowerCase().includes(search.toLowerCase()) ||
-      user.lastname.toLowerCase().includes(search.toLowerCase()) ||
-      user.phonenumber.toLowerCase().includes(search.toLowerCase())
+      user.username.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -52,8 +50,8 @@ export default function ResponsiveTable({ data }) {
                   <th className="p-4 w-[4%]">#</th>
                   <th className="p-4 lg:w-[20%]">Name</th>
                   <th className="p-4 lg:w-[22%]">Email</th>
-                  <th className="p-4 lg:w-[7%]">Subscriptions</th>
-                  <th className="p-4 lg:w-[7%">Status</th>
+                  <th className="p-4 lg:w-[7%] text-center">Subscriptions</th>
+                  <th className="p-4 lg:w-[7%] text-center">Status</th>
                   <th className="p-4 w-full lg:w-[20%]">Expire Date</th>
                 </tr>
               </thead>
@@ -83,18 +81,18 @@ export default function ResponsiveTable({ data }) {
                         />
                         {/* } */}
 
-                        <span className="pl-2">{user.username}</span>
+                        <span className="pl-2 overflow-hidden">{user.username}</span>
                       </div>
                     </td>
                     <td className="p-4 group-hover:bg-gray-50 truncate max-w-[150px] ">
                       {user.email}
                     </td>
-                    <td className={`${user.subscriptiontype === 'Annual' ? 'text-cyan-500' : 'text-[#68DE50]'} p-4 font-semibold group-hover:bg-gray-50 `}>
+                    <td className={`${user.subscriptiontype === 'Annual' ? 'text-cyan-500' : 'text-[#68DE50]'} p-4 font-semibold group-hover:bg-gray-50 text-center`}>
                       {user.subscriptiontype === undefined
                         ? "--"
                         : user.subscriptiontype}
                     </td>
-                    <td className={`${user.subscriptionexpirydate === undefined ? 'text-[#FF6B6B]' : 'text-[#68DE50]'} p-4 font-semibold  group-hover:bg-gray-50 `}>
+                    <td className={`${user.subscriptionexpirydate === undefined ? 'text-[#FF6B6B]' : 'text-[#68DE50]'} p-4 font-semibold  group-hover:bg-gray-50 text-center`}>
                       {user.subscriptionexpirydate === undefined ? 'Pending' : 'Paid'}
                     </td>
                     <td className="p-4 whitespace-nowrap rounded-r-full group-hover:bg-gray-50">

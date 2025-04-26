@@ -43,6 +43,7 @@ const MainRecipies = () => {
 
   const fetchData = async () => {
     const data = await getRecipe();
+    console.log('recipe', data)
     setRecipeData(data);
     setLoading(false);
     console.log(recipeData);
@@ -179,7 +180,7 @@ const MainRecipies = () => {
       {!loading ? (
         <>
           {/* Blog List Section */}
-          <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll">
+          <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll pb-8">
             {currentProducts.length > 0 ? (
               currentProducts.map((item, index) => (
                 <motion.div

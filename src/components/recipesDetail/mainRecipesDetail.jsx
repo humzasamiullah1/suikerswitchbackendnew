@@ -280,7 +280,7 @@ const MainRecipiesDetail = () => {
                 </div>
               </div>
               <div className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white w-fit text-sm mt-3">
-                <p>{recipe.category}</p>
+                <p>{recipe?.category}</p>
               </div>
             </div>
             {/* <div
