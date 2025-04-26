@@ -32,7 +32,7 @@ const CategoryCard = ({
   hidebutton,
 }) => {
   return (
-    <div className="border-2 border-gray-200 rounded-xl h-[350px] w-full px-4 py-3 mt-3 relative">
+    <div className="border-2 border-gray-200 rounded-xl h-[400px] md:h-[350px] w-full px-4 py-3 mt-3 relative">
       {isShow && (
         <div
           className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-13px]"
