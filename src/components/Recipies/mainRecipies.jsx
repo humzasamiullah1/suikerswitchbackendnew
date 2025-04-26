@@ -21,7 +21,7 @@ const MainRecipies = () => {
   const [loading, setLoading] = useState(true);
   const [warning, setWarning] = useState(false);
   const [onDeleteId, setOnDeleteId] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState([]);
 
   const categoryItems = [
     { id: "1", label: "Zoet ontbijt" },
@@ -89,9 +89,12 @@ const MainRecipies = () => {
       recipe.description.toLowerCase().includes(search.toLowerCase()) ||
       recipe.content.toLowerCase().includes(search.toLowerCase());
 
-    const matchesCategory = selectedCategory
-      ? recipe.category === selectedCategory
-      : true;
+      console.log('selectedCategory', selectedCategory)
+
+    const matchesCategory =
+      selectedCategory.length > 0
+        ? selectedCategory.includes(recipe.category)
+        : true;
 
     return matchesSearch && matchesCategory;
   });
@@ -107,8 +110,16 @@ const MainRecipies = () => {
   };
 
   const handleCategory = (item) => {
-    setSelectedCategory(item.label)
-  }
+    if (!item.label) return; // safeguard
+  
+    setSelectedCategory((prevSelected) => {
+      if (prevSelected.includes(item.label)) {
+        return prevSelected.filter((category) => category !== item.label);
+      } else {
+        return [...prevSelected, item.label];
+      }
+    });
+  };
 
   return (
     <motion.div
@@ -157,21 +168,12 @@ const MainRecipies = () => {
         </div>
       </div>
       <div className="flex justify-between my-5">
-        <div className="w-[85%] sm:w-[90%] md:w-[92%] lg:w-[91%] xl:w-[94%] border border-gray-200 rounded-lg">
+        <div className="w-[85%] sm:w-[90%] md:w-[92%] lg:w-[91%] xl:w-[94%]">
           <DraggableScrollablePills
             items={categoryItems}
-            onPillClick={(item) => handleCategory(item)}
-            isActive={selectedCategory}
+            onPillClick={(updatedIds, item) => handleCategory(item)}
+            isActive={selectedCategory} // 👈 ab yeh array h
           />
-        </div>
-        {/* </div> */}
-        <div className="w-[13%] sm:w-[8%] md:w-[6%] lg:w-[7%] xl:w-[4%]">
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className="text-sm bg-gkRedColor flex justify-center items-center w-full h-full text-white rounded-full"
-          >
-            <X className="size-5"/>
-          </button>
         </div>
       </div>
       {!loading ? (

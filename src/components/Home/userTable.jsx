@@ -2,10 +2,13 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import ImageTag from "../../components/reuseable/imageTag";
-import NoData from "../reuseable/noData"
+import NoData from "../reuseable/noData";
+
+import moment from "moment";
 
 export default function ResponsiveTable({ data }) {
   const [search, setSearch] = useState("");
+  console.log(data);
 
   const filteredUser = data.filter(
     (user) =>
@@ -46,11 +49,12 @@ export default function ResponsiveTable({ data }) {
             <>
               <thead>
                 <tr className=" shadow-md rounded-full text-sm md:text-base text-left font-HelveticaNeueMedium text-darkColor">
-                  <th className="p-4 w-12">#</th>
-                  <th className="p-4 w-1/4">Name</th>
-                  <th className="p-4 w-1/4">Email</th>
-                  <th className="p-4 w-1/4">Contact Number</th>
-                  <th className="p-4 w-1/4">Subscriptions</th>
+                  <th className="p-4 w-[4%]">#</th>
+                  <th className="p-4 lg:w-[20%]">Name</th>
+                  <th className="p-4 lg:w-[22%]">Email</th>
+                  <th className="p-4 lg:w-[7%]">Subscriptions</th>
+                  <th className="p-4 lg:w-[7%">Status</th>
+                  <th className="p-4 w-full lg:w-[20%]">Expire Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,10 +64,12 @@ export default function ResponsiveTable({ data }) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: user.id * 0.1 }}
-                    className="hover:bg-gray-50 rounded-full cursor-pointer shadow-md font-HelveticaNeueMedium text-darkColor"
+                    className="group cursor-pointer rounded-full shadow-md font-HelveticaNeueMedium text-darkColor"
                   >
-                    <td className="p-4">{i + 1}</td>
-                    <td className="p-4">
+                    <td className="p-4 rounded-l-full group-hover:bg-gray-50">
+                      {i + 1}
+                    </td>
+                    <td className="p-4 group-hover:bg-gray-50">
                       <div className="flex items-center">
                         {/* {data.length > 0 && */}
                         <ImageTag
@@ -77,22 +83,30 @@ export default function ResponsiveTable({ data }) {
                         />
                         {/* } */}
 
-                        <span className="pl-2">
-                          {user.firstname} {user.lastname}
-                        </span>
+                        <span className="pl-2">{user.username}</span>
                       </div>
                     </td>
-                    <td className="p-4 truncate max-w-[150px]">{user.email}</td>
-                    <td className="p-4">{user.phonenumber}</td>
-                    <td className="text-[#68DE50] p-4 font-semibold">{user.status}</td>
+                    <td className="p-4 group-hover:bg-gray-50 truncate max-w-[150px] ">
+                      {user.email}
+                    </td>
+                    <td className={`${user.subscriptiontype === 'Annual' ? 'text-cyan-500' : 'text-[#68DE50]'} p-4 font-semibold group-hover:bg-gray-50 `}>
+                      {user.subscriptiontype === undefined
+                        ? "--"
+                        : user.subscriptiontype}
+                    </td>
+                    <td className={`${user.subscriptionexpirydate === undefined ? 'text-[#FF6B6B]' : 'text-[#68DE50]'} p-4 font-semibold  group-hover:bg-gray-50 `}>
+                      {user.subscriptionexpirydate === undefined ? 'Pending' : 'Paid'}
+                    </td>
+                    <td className="p-4 whitespace-nowrap rounded-r-full group-hover:bg-gray-50">
+                      {moment(user.subscriptionexpirydate).format("DD-MM-YYYY")}
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>
             </>
           ) : (
             <div className="w-full flex justify-center">
-              
-              <NoData/>
+              <NoData />
             </div>
           )}
         </motion.table>

@@ -1,93 +1,85 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect } from "react";
 
-// Helper function to conditionally join classNames
 function cn(...classes) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
 
-export default function DraggableScrollablePills({ items, className, onPillClick, isActive }) {
-  const [activeId, setActiveId] = useState(items[0]?.id || null)
-  const [isDragging, setIsDragging] = useState(false)
-  const [startX, setStartX] = useState(0)
-  const [scrollLeft, setScrollLeft] = useState(0)
-  const containerRef = useRef(null)
-  const [isMouseDown, setIsMouseDown] = useState(false)
+export default function DraggableScrollablePills({
+  items,
+  className,
+  onPillClick,
+  isActive
+}) {
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const containerRef = useRef(null);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
   const handlePillClick = (item, event) => {
-    // Only trigger click if we're not dragging
     if (!isDragging) {
-      setActiveId(item.id)
-      onPillClick?.(item)
+      setSelectedIds((prev) => {
+        const alreadySelected = prev.includes(item.id);
+        const updated = alreadySelected
+          ? prev.filter((id) => id !== item.id)
+          : [...prev, item.id];
+        onPillClick?.(updated, item);
+        return updated;
+      });
     }
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   const handleMouseDown = (e) => {
-    if (!containerRef.current) return
-
-    setIsMouseDown(true)
-    setIsDragging(false)
-    setStartX(e.pageX - containerRef.current.offsetLeft)
-    setScrollLeft(containerRef.current.scrollLeft)
-  }
+    if (!containerRef.current) return;
+    setIsMouseDown(true);
+    setIsDragging(false);
+    setStartX(e.pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
+  };
 
   const handleMouseMove = (e) => {
-    if (!isMouseDown || !containerRef.current) return
-
-    e.preventDefault()
-    const x = e.pageX - containerRef.current.offsetLeft
-    const walk = (x - startX) * 2 // Scroll speed multiplier
-    containerRef.current.scrollLeft = scrollLeft - walk
-
-    // If we've moved more than a few pixels, consider it a drag
-    if (Math.abs(x - startX) > 5) {
-      setIsDragging(true)
-    }
-  }
+    if (!isMouseDown || !containerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    containerRef.current.scrollLeft = scrollLeft - walk;
+    if (Math.abs(x - startX) > 5) setIsDragging(true);
+  };
 
   const handleMouseUp = () => {
-    setIsMouseDown(false)
-    // Reset dragging state after a short delay to allow click events
+    setIsMouseDown(false);
     setTimeout(() => {
-      setIsDragging(false)
-    }, 100)
-  }
+      setIsDragging(false);
+    }, 100);
+  };
 
   const handleTouchStart = (e) => {
-    if (!containerRef.current) return
-
-    setIsMouseDown(true)
-    setIsDragging(false)
-    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft)
-    setScrollLeft(containerRef.current.scrollLeft)
-  }
+    if (!containerRef.current) return;
+    setIsMouseDown(true);
+    setIsDragging(false);
+    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
+  };
 
   const handleTouchMove = (e) => {
-    if (!isMouseDown || !containerRef.current) return
-
-    const x = e.touches[0].pageX - containerRef.current.offsetLeft
-    const walk = (x - startX) * 2
-    containerRef.current.scrollLeft = scrollLeft - walk
-
-    if (Math.abs(x - startX) > 5) {
-      setIsDragging(true)
-    }
-  }
+    if (!isMouseDown || !containerRef.current) return;
+    const x = e.touches[0].pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    containerRef.current.scrollLeft = scrollLeft - walk;
+    if (Math.abs(x - startX) > 5) setIsDragging(true);
+  };
 
   useEffect(() => {
-    // Add mouse leave event listener to the document
-    const handleMouseLeave = () => {
-      setIsMouseDown(false)
-    }
-
-    document.addEventListener("mouseup", handleMouseUp)
-    document.addEventListener("mouseleave", handleMouseLeave)
-
+    const handleMouseLeave = () => setIsMouseDown(false);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseleave", handleMouseLeave);
     return () => {
-      document.removeEventListener("mouseup", handleMouseUp)
-      document.removeEventListener("mouseleave", handleMouseLeave)
-    }
-  }, [])
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
 
   return (
     <div
@@ -95,7 +87,7 @@ export default function DraggableScrollablePills({ items, className, onPillClick
       className={cn(
         "w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent",
         isMouseDown ? "cursor-grabbing" : "cursor-grab",
-        className,
+        className
       )}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -112,7 +104,9 @@ export default function DraggableScrollablePills({ items, className, onPillClick
             className={cn(
               "px-4 py-1 rounded-full text-xs lg:text-sm font-HelveticaNeueRegular transition-colors whitespace-nowrap",
               " focus:outline-none focus:ring-2 focus:ring-gray-200",
-              isActive === item.label ? "bg-gkRedColor text-white" : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-100",
+              isActive?.includes(item.label)
+                ? "bg-gkRedColor text-white"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-100"
             )}
           >
             {item.label}
@@ -120,5 +114,5 @@ export default function DraggableScrollablePills({ items, className, onPillClick
         ))}
       </div>
     </div>
-  )
+  );
 }
