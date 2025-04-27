@@ -117,62 +117,67 @@ const RecipiesCard = ({
   }, []);
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
-      <div className="flex justify-between items-center border-b-2 border-darkColor/20 pb-3">
-        <div className={`${isShow ? 'w-full' : 'w-[60%]'} flex items-center`}>
-          {loading && (
-            <>
-              <ImageTag
-                path={
-                  userData.profilePicture !== ""
-                    ? userData.profilePicture
-                    : "/assets/images/default-image.png"
-                }
-                classes="size-10 rounded-full object-cover"
-                altText="logo"
-              />
-              <div className="pl-3">
-                <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                  {userData.firstname} {userData.lastname}
-                </p>
-                <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
-                  {timeAgo(data.createdAt)}
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-        {isShow && (
-          <div
-            className="w-[40%] flex justify-end text-darkColor relative"
-            ref={dropdownRef}
-          >
-            <Ellipsis
-              size={30}
-              className="cursor-pointer"
-              onClick={toggleMenu}
-            />
-            {isOpen && (
-              <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
-                <ul className="py-2 pl-4 w-full">
-                  <Link to={`/dashboard/add-recipies?id=${data.id}`}>
-                    <li className=" text-blue-500 border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
-                      <Pencil size={18} />
-                      <span className="pl-3">Edit</span>
-                    </li>
-                  </Link>
-
-                  <li
-                    className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
-                    onClick={onDelete}
-                  >
-                    <Trash2 size={18} />
-                    <span className="pl-3">Delete</span>
-                  </li>
-                </ul>
-              </div>
+      <div className="border-b-2 border-darkColor/20 pb-3">
+        <div className="flex justify-between items-center">
+          <div className={`${isShow ? "w-full" : "w-[60%]"} flex items-center`}>
+            {loading && (
+              <>
+                <ImageTag
+                  path={
+                    userData.profilePicture !== ""
+                      ? userData.profilePicture
+                      : "/assets/images/default-image.png"
+                  }
+                  classes="size-10 rounded-full object-cover"
+                  altText="logo"
+                />
+                <div className="pl-3">
+                  <p className="font-HelveticaNeueMedium text-darkColor text-base">
+                    {userData.firstname} {userData.lastname}
+                  </p>
+                  <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
+                    {timeAgo(data.createdAt)}
+                  </p>
+                </div>
+              </>
             )}
           </div>
-        )}
+          {isShow && (
+            <div
+              className="w-[40%] flex justify-end text-darkColor relative"
+              ref={dropdownRef}
+            >
+              <Ellipsis
+                size={30}
+                className="cursor-pointer"
+                onClick={toggleMenu}
+              />
+              {isOpen && (
+                <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
+                  <ul className="py-2 pl-4 w-full">
+                    <Link to={`/dashboard/add-recipies?id=${data.id}`}>
+                      <li className=" text-blue-500 border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
+                        <Pencil size={18} />
+                        <span className="pl-3">Edit</span>
+                      </li>
+                    </Link>
+
+                    <li
+                      className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                      onClick={onDelete}
+                    >
+                      <Trash2 size={18} />
+                      <span className="pl-3">Delete</span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white w-fit text-sm mt-3">
+          <p>{data.category}</p>
+        </div>
       </div>
       <Link to={`/dashboard/recipes-detail/${data.id}`}>
         <p className="font-HelveticaNeueRegular text-darkColor text-sm py-4">

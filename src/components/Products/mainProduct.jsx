@@ -27,6 +27,8 @@ const MainProucts = () => {
   const [selectedSupermarkets, setSelectedSupermarkets] = useState([]);
   const [categories, setCategories] = useState([]);
   const [supermarkets, setSupermarkets] = useState([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [warning, setWarning] = useState(false);
   const [onDeleteId, setOnDeleteId] = useState("");
 
@@ -52,6 +54,7 @@ const MainProucts = () => {
 
   const fetchCategories = async () => {
     const data = await getCategoriesFromFirebase();
+    console.log("data", data);
     setCategories(data);
   };
 
@@ -70,28 +73,39 @@ const MainProucts = () => {
   // Filtering logic
   const handleFilter = () => {
     let filtered = productCache;
-
-
-
+  
+    // Category filter
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((item) =>
         item.selectedCategories?.some((category) =>
-          selectedCategories?.includes(category)
+          selectedCategories.includes(category)
         )
       );
     }
-
+  
+    // Supermarket filter
     if (selectedSupermarkets.length > 0) {
       filtered = filtered.filter((item) =>
-        item.selectedSupermarkets.some((supermarket) =>
+        item.selectedSupermarkets?.some((supermarket) =>
           selectedSupermarkets.includes(supermarket)
         )
       );
     }
-
+  
+    // Subcategory filter
+    if (selectedSubCategories.length > 0) {
+      filtered = filtered.filter((item) =>
+        item.selectedSubCategories?.some((subCategory) =>
+          selectedSubCategories.includes(subCategory)
+        )
+      );
+    }
+  
     setFilteredProduct(filtered);
+    console.log(filtered);
     setCurrentPage(0); // Reset pagination after filtering
   };
+  
 
   // Search filter
   const searchedProducts = filteredProduct.filter((p) =>
@@ -125,6 +139,25 @@ const MainProucts = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleCategoryChange = (category) => {
+    const categoryName = category?.categoryName;
+    const subCats = category?.subCategory?.map((sub) => sub.name) || [];
+
+    setSelectedCategories((prev) => {
+      if (prev.includes(categoryName)) {
+        // If unchecking
+        setSubCategories((prevSub) =>
+          prevSub.filter((item) => !subCats.includes(item))
+        );
+        return prev.filter((item) => item !== categoryName);
+      } else {
+        // If checking
+        setSubCategories((prevSub) => [...prevSub, ...subCats]);
+        return [...prev, categoryName];
+      }
+    });
+  };
 
   return (
     <motion.div
@@ -170,7 +203,7 @@ const MainProucts = () => {
 
               {/* Dropdown */}
               {isOpen && (
-                <div className="absolute right-[-60px] mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
+                <div className="absolute right-[-15px] md:right-[-60px] mt-2 w-[330px] md:w-[400px] bg-white border rounded-lg shadow-lg z-50">
                   {/* Tabs */}
                   <div className="flex border-b">
                     <button
@@ -181,6 +214,16 @@ const MainProucts = () => {
                     >
                       Categories
                     </button>
+                    {selectedCategories.length > 0 && (
+                      <button
+                        className={`w-1/2 py-2 text-sm text-center font-HelveticaNeueMedium ${
+                          activeTab === "subcategory" ? "bg-gray-200" : ""
+                        }`}
+                        onClick={() => setActiveTab("subcategory")}
+                      >
+                        Sub Categories
+                      </button>
+                    )}
                     <button
                       className={`w-1/2 py-2 text-sm text-center font-HelveticaNeueMedium ${
                         activeTab === "supermarket" ? "bg-gray-200" : ""
@@ -192,7 +235,7 @@ const MainProucts = () => {
                   </div>
 
                   {/* Tab Content */}
-                  <div className="p-3">
+                  <div className="p-3 h-[180px] md:h-[280px] overflow-y-scroll">
                     {activeTab === "category" ? (
                       <ul>
                         {categories.map((category, i) => (
@@ -206,18 +249,39 @@ const MainProucts = () => {
                               checked={selectedCategories.includes(
                                 category?.categoryName
                               )}
+                              onChange={() => handleCategoryChange(category)}
+                            />
+                            <label className="cursor-pointer">
+                              {category?.categoryName}
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : activeTab === "subcategory" ? (
+                      <ul>
+                        {subCategories.map((subCategory, i) => (
+                          <li
+                            key={i}
+                            className="flex items-center gap-2 text-[15px] font-HelveticaNeueRegular py-1"
+                          >
+                            <input
+                              type="checkbox"
+                              className="w-4 h-4"
+                              checked={selectedSubCategories.includes(
+                                subCategory
+                              )} // ✅ Corrected line
                               onChange={() =>
-                                setSelectedCategories((prev) =>
-                                  prev.includes(category?.categoryName)
+                                setSelectedSubCategories((prev) =>
+                                  prev.includes(subCategory)
                                     ? prev.filter(
-                                        (item) => item !== category?.categoryName
+                                        (item) => item !== subCategory
                                       )
-                                    : [...prev, category?.categoryName]
+                                    : [...prev, subCategory]
                                 )
                               }
                             />
                             <label className="cursor-pointer">
-                              {category?.categoryName}
+                              {subCategory}
                             </label>
                           </li>
                         ))}
@@ -262,6 +326,7 @@ const MainProucts = () => {
                       onClick={() => {
                         setSelectedCategories([]);
                         setSelectedSupermarkets([]);
+                        setSelectedSubCategories([])
                         setProduct(productCache);
                       }}
                     >
