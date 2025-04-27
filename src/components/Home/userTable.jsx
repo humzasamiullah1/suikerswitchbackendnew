@@ -105,14 +105,24 @@ export default function ResponsiveTable({ data }) {
                     <td
                       className={`${
                         user.subscriptionid !== undefined &&
-                        user.subscriptionid != null
+                        user.subscriptionid != null &&
+                        !user?.subscriptioncancellationdate
                           ? "text-[#68DE50]"
-                          : "text-[#FF6B6B]"
+                          : user.subscriptionid !== undefined &&
+                            user.subscriptionid != null &&
+                            user?.subscriptioncancellationdate
+                          ? "text-red-500"
+                          : "text-yellow-500"
                       } p-4 font-semibold  group-hover:bg-gray-50 text-center`}
                     >
                       {user.subscriptionid !== undefined &&
-                      user.subscriptionid != null
+                      user.subscriptionid != null &&
+                      !user?.subscriptioncancellationdate
                         ? "Paid"
+                        : user.subscriptionid !== undefined &&
+                          user.subscriptionid != null &&
+                          user?.subscriptioncancellationdate
+                        ? "Cancelled"
                         : "Pending"}
                     </td>
                     {/* <td className="p-4 whitespace-nowrap rounded-r-full group-hover:bg-gray-50">
