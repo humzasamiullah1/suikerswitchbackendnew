@@ -52,7 +52,7 @@ export default function ResponsiveTable({ data }) {
                   <th className="p-4 lg:w-[22%]">Email</th>
                   <th className="p-4 lg:w-[6%] text-center">Subscriptions</th>
                   <th className="p-4 lg:w-[6%] text-center">Status</th>
-                  <th className="p-4 w-full lg:w-[20%]">Expire Date</th>
+                  {/* <th className="p-4 w-full lg:w-[20%]">Expire Date</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -81,23 +81,43 @@ export default function ResponsiveTable({ data }) {
                         />
                         {/* } */}
 
-                        <span className="pl-2 overflow-hidden">{user.username}</span>
+                        <span className="pl-2 overflow-hidden">
+                          {user.username}
+                        </span>
                       </div>
                     </td>
                     <td className="p-4 group-hover:bg-gray-50 truncate max-w-[150px] ">
                       {user.email}
                     </td>
-                    <td className={`${user.subscriptiontype === 'Annual' ? 'text-cyan-500' : 'text-[#68DE50]'} p-4 font-semibold group-hover:bg-gray-50 text-center`}>
+                    <td
+                      className={`${
+                        user.subscriptiontype === "year"
+                          ? "text-cyan-500"
+                          : "text-[#68DE50]"
+                      } p-4 font-semibold group-hover:bg-gray-50 text-center`}
+                    >
                       {user.subscriptiontype === undefined
                         ? "--"
-                        : user.subscriptiontype}
+                        : user.subscriptiontype == "year"
+                        ? "Annual"
+                        : "Monthly"}
                     </td>
-                    <td className={`${user.subscriptionexpirydate === undefined ? 'text-[#FF6B6B]' : 'text-[#68DE50]'} p-4 font-semibold  group-hover:bg-gray-50 text-center`}>
-                      {user.subscriptionexpirydate === undefined ? 'Pending' : 'Paid'}
+                    <td
+                      className={`${
+                        user.subscriptionid !== undefined &&
+                        user.subscriptionid != null
+                          ? "text-[#68DE50]"
+                          : "text-[#FF6B6B]"
+                      } p-4 font-semibold  group-hover:bg-gray-50 text-center`}
+                    >
+                      {user.subscriptionid !== undefined &&
+                      user.subscriptionid != null
+                        ? "Paid"
+                        : "Pending"}
                     </td>
-                    <td className="p-4 whitespace-nowrap rounded-r-full group-hover:bg-gray-50">
+                    {/* <td className="p-4 whitespace-nowrap rounded-r-full group-hover:bg-gray-50">
                       {moment(user.subscriptionexpirydate).format("DD-MM-YYYY")}
-                    </td>
+                    </td> */}
                   </motion.tr>
                 ))}
               </tbody>
