@@ -18,7 +18,8 @@ import {
   ReceiptText,
   Store,
   LogOut,
-  ChartBarStacked
+  ChartBarStacked,
+  CalendarCheck2
 } from "lucide-react";
 
 // ✅ Menu Items Array with Multiple Paths
@@ -48,6 +49,14 @@ const menuItems = [
       "/dashboard/recipies",
       "/dashboard/recipes-detail",
       "/dashboard/add-recipies"
+    ] 
+  },
+  { 
+    title: "Weekly Menu", 
+    icon: CalendarCheck2, 
+    paths: [
+      "/dashboard/weekly-menu",
+      "/dashboard/add-weekly-menu"
     ] 
   },
   { 
