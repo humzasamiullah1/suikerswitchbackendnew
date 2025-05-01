@@ -347,6 +347,22 @@ export const getProductById = async (id) => {
   }
 };
 
+export const getWeeklyMenuById = async (id) => {
+  try {
+    const menuRef = doc(firestored, "weeklymenu", id);
+    const menuSnap = await getDoc(menuRef);
+
+    if (menuSnap.exists()) {
+      return { id: menuSnap.id, ...menuSnap.data() };
+    } else {
+      throw new Error("menu not found");
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
 export const getCategoryById = async (id) => {
   try {
     const categoryRef = doc(firestored, "categories", id);
@@ -481,6 +497,66 @@ export const updateCategoryToFirebase = async (id, formData, newImageFiles) => {
   }
 };
 
+export const updateWeeklyMenuToFirebase = async (id, formData, newImageFiles) => {
+  try {
+    // 1. Fetch existing document
+    const docRef = doc(firestored, "weeklymenu", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("❌ Document not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    let imageURLs = data.images || [];
+
+    // 2. If new image is uploaded
+    if (newImageFiles.length > 0) {
+      const oldImageURL = imageURLs[0];
+
+      // 2.a. Delete old image from storage
+      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        try {
+          const filePath = decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0]);
+          const oldImageRef = ref(storage, filePath);
+          await deleteObject(oldImageRef);
+          console.log("✅ Old image deleted:", filePath);
+        } catch (deleteErr) {
+          console.warn("⚠️ Could not delete old image:", deleteErr.message);
+        }
+      }
+
+      // 2.b. Upload new image with unique name
+      const newImageFile = newImageFiles[0];
+      const uniqueName = `${Date.now()}-${newImageFile.name}`;
+      const storagePath = `supermarket-logos/${id}/${uniqueName}`;
+      const newImageRef = ref(storage, storagePath);
+
+      console.log("📤 Uploading image to:", storagePath);
+      await uploadBytes(newImageRef, newImageFile);
+
+      const newImageURL = await getDownloadURL(newImageRef);
+      console.log("✅ New image URL:", newImageURL);
+
+      // Replace image URL in array
+      imageURLs = [newImageURL];
+    }
+
+    // 3. Update Firestore
+    await updateDoc(docRef, {
+      title: formData.title,
+      WeeklyMenu: formData.WeeklyMenu,
+      images: imageURLs,
+      timestamp: formData.timestamp,
+    });
+
+    console.log("✅ Category updated successfully");
+  } catch (error) {
+    console.error("❌ Error updating category:", error.message);
+  }
+};
+
 
 export const deleteProduct = async (id) => {
   try {
@@ -596,6 +672,19 @@ export const addWeeklyMenu = async (menuData, imageFiles) => {
 
 export const getProducts = async () => {
   const productsRef = collection(firestored, "products");
+  const q = query(productsRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
+
+  const querySnapshot = await getDocs(q);
+  const products = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return products;
+};
+
+export const getWeeklyMenu = async () => {
+  const productsRef = collection(firestored, "weeklymenu");
   const q = query(productsRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
 
   const querySnapshot = await getDocs(q);
@@ -1015,6 +1104,39 @@ export const deleteRecipe = async (id) => {
     console.log("Recipe deleted successfully");
   } catch (error) {
     console.error("Error deleting Recipe:", error);
+  }
+};
+
+export const deleteWeeklyMenu = async (id) => {
+  try {
+    // Pehle document fetch kren
+    const docRef = doc(firestored, "weeklymenu", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.log("Recipe not found");
+      return;
+    }
+
+    const data = docSnap.data();
+    const imageURLs = data.images || [];
+
+    // Firebase Storage se sabhi images delete karna
+    for (const imageURL of imageURLs) {
+      if (imageURL.startsWith("https://firebasestorage.googleapis.com")) {
+        const imagePath = decodeURIComponent(
+          imageURL.split("/o/")[1].split("?alt=")[0]
+        );
+        const imageRef = ref(storage, imagePath);
+        await deleteObject(imageRef);
+      }
+    }
+
+    // Firestore se document delete karna
+    await deleteDoc(docRef);
+    console.log("menu deleted successfully");
+  } catch (error) {
+    console.error("Error deleting menu:", error);
   }
 };
 

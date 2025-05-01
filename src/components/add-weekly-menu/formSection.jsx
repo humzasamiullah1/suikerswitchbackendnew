@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
@@ -13,7 +13,12 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { IoClose } from "react-icons/io5";
-import { getRecipe, addWeeklyMenu } from "../utils/firebasefunctions";
+import {
+  getRecipe,
+  addWeeklyMenu,
+  updateWeeklyMenuToFirebase,
+  getWeeklyMenuById
+} from "../utils/firebasefunctions";
 
 const daysOfWeek = [
   "Maandag",
@@ -43,7 +48,10 @@ const FormSection = () => {
   const [title, setTitle] = useState("");
   const [recipeData, setRecipeData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const id = searchParams.get("id");
+
   const [expandedDays, setExpandedDays] = useState(() => {
     const init = {};
     daysOfWeek.forEach((day) => {
@@ -52,6 +60,25 @@ const FormSection = () => {
     return init;
   });
   const [expandedMenus, setExpandedMenus] = useState({});
+
+  const fetchMenuDetails = async (menuId) => {
+    try {
+      const menuData = await getWeeklyMenuById(menuId);
+      if (menuData) {
+        setTitle(menuData.title)
+        setImages(menuData.images || []);
+        setFormData(menuData.WeeklyMenu || {});
+      }
+    } catch (error) {
+      toast.error("Error fetching product details");
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchMenuDetails(id); // ✅ Fetch product if editing
+    }
+  }, [id]);
 
   const fetchData = async () => {
     const data = await getRecipe();
@@ -190,7 +217,9 @@ const FormSection = () => {
           typeof entry.recipe !== "object" ||
           !entry.recipe.id
         ) {
-          toast.error(`Recipe is missing or invalid in ${day}, menu ${index + 1}`);
+          toast.error(
+            `Recipe is missing or invalid in ${day}, menu ${index + 1}`
+          );
           return;
         }
 
@@ -198,7 +227,9 @@ const FormSection = () => {
           !entry.ingredients.length ||
           entry.ingredients.some((ing) => !ing.trim())
         ) {
-          toast.error(`One or more ingredients are empty in ${day}, menu ${index + 1}`);
+          toast.error(
+            `One or more ingredients are empty in ${day}, menu ${index + 1}`
+          );
           return;
         }
       }
@@ -210,26 +241,24 @@ const FormSection = () => {
       title,
       timestamp: Date.now(),
       images,
-      WeeklyMenu: formData
+      WeeklyMenu: formData,
     };
+
     try {
-      // if (id) {
-
-        // ✅ Update existing product
-        // await updateCategoryToFirebase(id, categoryData, imageFiles);
-        // toast.success("Category updated successfully!");
-        // setTimeout(() => {
-        //   navigate("/dashboard/category");
-        // }, 1000);
-      // } else {
-
+      if (id) {
+        await updateWeeklyMenuToFirebase(id, weeklyMenu, imageFiles);
+        toast.success("Weekly Menu updated successfully!");
+        setTimeout(() => {
+          navigate("/dashboard/weekly-menu");
+        }, 1000);
+      } else {
         // ✅ Add new product
         await addWeeklyMenu(weeklyMenu, imageFiles);
         toast.success("Weekly Menu added successfully!");
         setTimeout(() => {
           navigate("/dashboard/weekly-menu");
         }, 1000);
-      // }
+      }
     } catch (error) {
       toast.error("Error processing request");
     }
@@ -245,7 +274,7 @@ const FormSection = () => {
       {/* Image Upload */}
       <div className="px-2 pt-2">
         <h2 className="text-base font-HelveticaNeueMedium pb-2">
-          Upload Image
+          {id ? "Update Image" : "Upload Image"}
         </h2>
         <div className="flex space-x-2">
           {images.length > 0 ? (
@@ -470,7 +499,7 @@ const FormSection = () => {
           type="submit"
           className="border text-xs rounded-full px-4 py-2 flex items-center font-HelveticaNeueMedium text-white bg-gkRedColor hover:bg-gkRedColor/90"
         >
-          Proceed
+          {id ? "Update" : "Proceed"}
           {loading && (
             <div role="status" className="pl-3">
               <svg

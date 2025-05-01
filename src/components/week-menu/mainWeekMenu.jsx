@@ -1,17 +1,49 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import { Plus, CircleArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-// import { getBlogs, deleteBlog } from "../utils/firebasefunctions";
-// import WarningPopup from "../popup/warning";
-// import NoData from "../reuseable/noData";
-// import MyLoader from "../reuseable/myLoader";
-// import { toast } from "react-toastify";
 
-// import ReactPaginate from "react-paginate";
+import NoData from "../reuseable/noData";
+import MyLoader from "../reuseable/myLoader";
+import WarningPopup from "../popup/warning"
+
+import { toast } from "react-toastify";
+
+import MenuCard from "./menuCard";
+
+import { getWeeklyMenu, deleteWeeklyMenu } from "../utils/firebasefunctions";
 
 const MainWeekMenu = () => {
   //   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [menu, setMenu] = useState(true);
+  const [warning, setWarning] = useState(false);
+  const [onDeleteId, setOnDeleteId] = useState("");
+
+  const fetchData = async () => {
+    const data = await getWeeklyMenu();
+    console.log(data);
+    setMenu(data);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+  }, []);
+
+  const openConfirmPopup = (id) => {
+    setOnDeleteId(id);
+    setWarning(true);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteWeeklyMenu(id);
+    setWarning(false);
+    toast.success("Menu Deleted Successfully");
+    fetchData();
+  };
 
   return (
     <motion.div
@@ -49,11 +81,11 @@ const MainWeekMenu = () => {
           </Link>
         </div>
       </div>
-      {/* {!loading ? (
+      {!loading ? (
         <>
           <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll">
-            {currentProducts.length > 0 ? (
-              currentProducts.map((item, index) => (
+            {menu.length > 0 ? (
+              menu.map((item, index) => (
                 <motion.div
                   key={index}
                   className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
@@ -65,9 +97,8 @@ const MainWeekMenu = () => {
                     delay: index * 0.1,
                   }}
                 >
-                  <BlogCard
+                  <MenuCard
                     data={item}
-                    isShow={true}
                     onDelete={() => openConfirmPopup(item.id)}
                   />
                 </motion.div>
@@ -78,41 +109,20 @@ const MainWeekMenu = () => {
               </div>
             )}
           </div>
-          {pageCount > 1 && (
-            <div className="lg:h-[10%] pb-5 lg:pb-0">
-              <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={
-                  "pagination flex justify-center mt-4 space-x-2 font-HelveticaNeueMedium text-sm"
-                }
-                pageClassName={"px-3 py-2 bg-gray-200 rounded-md"}
-                activeClassName={"!bg-gkRedColor !text-white"}
-                previousClassName={"px-4 py-2 bg-gray-300 rounded-md"}
-                nextClassName={"px-4 py-2 bg-gray-300 rounded-md"}
-                disabledClassName={"opacity-50 cursor-not-allowed"}
-              />
-            </div>
-          )}
         </>
       ) : (
         <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">
           <MyLoader />
         </div>
-      )} */}
-      {/* {warning && (
+      )}
+       {warning && (
         <WarningPopup
-          name="blog"
+          name="menu"
           itemId={onDeleteId}
           onClose={() => setWarning(false)}
           onDelete={(id) => handleDelete(id)}
         />
-      )} */}
+      )}
     </motion.div>
   );
 };
