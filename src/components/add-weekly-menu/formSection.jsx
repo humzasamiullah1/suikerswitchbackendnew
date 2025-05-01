@@ -1,6 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { X, Plus, Trash } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { toast } from "react-toastify";
+
+import {
+  X,
+  Plus,
+  Trash2,
+  PlusCircle,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { IoClose } from "react-icons/io5";
+import { getRecipe, addWeeklyMenu } from "../utils/firebasefunctions";
 
 const daysOfWeek = [
   "Maandag",
@@ -28,6 +41,26 @@ const FormSection = () => {
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [title, setTitle] = useState("");
+  const [recipeData, setRecipeData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [expandedDays, setExpandedDays] = useState(() => {
+    const init = {};
+    daysOfWeek.forEach((day) => {
+      init[day] = true; // default to open
+    });
+    return init;
+  });
+  const [expandedMenus, setExpandedMenus] = useState({});
+
+  const fetchData = async () => {
+    const data = await getRecipe();
+    setRecipeData(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const removeImage = () => {
     setImages([]);
@@ -38,13 +71,13 @@ const FormSection = () => {
     const files = Array.from(e.target.files);
     const imageUrls = files.map((file) => URL.createObjectURL(file));
 
-    setImages([...imageUrls]); // Replace existing image
-    setImageFiles([...files]); // Replace image file
+    setImages([...imageUrls]);
+    setImageFiles([...files]);
   };
 
   const [formData, setFormData] = useState(() => {
     const initialData = {};
-    daysOfWeek.forEach((day) => {
+    daysOfWeek.forEach((day, i) => {
       initialData[day] = [
         {
           category: "",
@@ -53,20 +86,30 @@ const FormSection = () => {
         },
       ];
     });
+
     return initialData;
   });
 
   const handleDayRowAdd = (day) => {
-    setFormData((prev) => ({
+    const newFormData = { ...formData };
+    newFormData[day].push({ category: "", recipe: "", ingredients: [""] });
+    setFormData(newFormData);
+
+    const newIndex = newFormData[day].length - 1;
+    const key = `${day}-${newIndex}`;
+
+    // 👉 Expand the newly added menu section by default
+    setExpandedMenus((prev) => ({
       ...prev,
-      [day]: [...prev[day], { category: "", recipe: "", ingredients: [""] }],
+      [key]: true,
     }));
   };
 
   const handleDayRowDelete = (day, rowIndex) => {
+    const updated = formData[day].filter((_, idx) => idx !== rowIndex);
     setFormData((prev) => ({
       ...prev,
-      [day]: prev[day].filter((_, idx) => idx !== rowIndex),
+      [day]: updated,
     }));
   };
 
@@ -106,16 +149,102 @@ const FormSection = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const toggleDayExpand = (day) => {
+    setExpandedDays((prev) => ({
+      ...prev,
+      [day]: !prev[day],
+    }));
+  };
+
+  const toggleMenuExpand = (day, index) => {
+    const key = `${day}-${index}`;
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Basic validations
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+
+    if (images.length === 0) {
+      toast.error("Please upload at least one image.Title is required");
+      return;
+    }
+
+    for (const day of daysOfWeek) {
+      for (const [index, entry] of formData[day].entries()) {
+        if (!entry.category) {
+          toast.error(`Category is missing in ${day}, menu ${index + 1}`);
+          return;
+        }
+
+        if (
+          !entry.recipe ||
+          typeof entry.recipe !== "object" ||
+          !entry.recipe.id
+        ) {
+          toast.error(`Recipe is missing or invalid in ${day}, menu ${index + 1}`);
+          return;
+        }
+
+        if (
+          !entry.ingredients.length ||
+          entry.ingredients.some((ing) => !ing.trim())
+        ) {
+          toast.error(`One or more ingredients are empty in ${day}, menu ${index + 1}`);
+          return;
+        }
+      }
+    }
+
+    setLoading(true);
+
+    const weeklyMenu = {
+      title,
+      timestamp: Date.now(),
+      images,
+      WeeklyMenu: formData
+    };
+    try {
+      // if (id) {
+
+        // ✅ Update existing product
+        // await updateCategoryToFirebase(id, categoryData, imageFiles);
+        // toast.success("Category updated successfully!");
+        // setTimeout(() => {
+        //   navigate("/dashboard/category");
+        // }, 1000);
+      // } else {
+
+        // ✅ Add new product
+        await addWeeklyMenu(weeklyMenu, imageFiles);
+        toast.success("Weekly Menu added successfully!");
+        setTimeout(() => {
+          navigate("/dashboard/weekly-menu");
+        }, 1000);
+      // }
+    } catch (error) {
+      toast.error("Error processing request");
+    }
+    setLoading(false);
     console.log("Final Form Data:", formData);
   };
 
   return (
-    <form className="border-2 border-gray-100 rounded-2xl w-full px-3 py-4 mt-3">
+    <form
+      onSubmit={handleSubmit}
+      className="border-2 border-gray-100 rounded-2xl w-full px-3 py-4 mt-3"
+    >
+      {/* Image Upload */}
       <div className="px-2 pt-2">
         <h2 className="text-base font-HelveticaNeueMedium pb-2">
-          {/* {id ? "Update Category" : "Upload Logo"} */}
           Upload Image
         </h2>
         <div className="flex space-x-2">
@@ -147,106 +276,224 @@ const FormSection = () => {
           )}
         </div>
       </div>
+
+      {/* Title */}
       <div className="pt-5">
         <label className="text-sm">Title</label>
         <input
           type="text"
           placeholder="Enter category name"
-          className={`w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700`}
+          className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
+
+      {/* Days */}
       {daysOfWeek.map((day) => (
-        <div key={day} className="mb-8 border p-4 rounded-lg shadow">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-bold">{day}</h2>
-            <button
-              type="button"
-              onClick={() => handleDayRowAdd(day)}
-              className="bg-gkRedColor text-white p-2 rounded-full hover:bg-gkRedColor/90"
-            >
-              <Plus />
-            </button>
-          </div>
-
-          {formData[day].map((row, rowIndex) => (
-            <div key={rowIndex} className="border p-3 mb-4 rounded bg-gray-50">
-              <div className="">
-                <button
-                  type="button"
-                  onClick={() => handleDayRowDelete(day, rowIndex)}
-                  className="text-red-600 border border-red-600 px-2 py-1 rounded hover:bg-red-100"
-                >
-                  <Trash className="size-5"/>
-                </button>
-              </div>
-              <div className="flex flex-col md:flex-row gap-4 mb-2">
-                <select
-                  className="border p-2 rounded w-full md:w-1/4"
-                  value={row.category}
-                  onChange={(e) =>
-                    handleChange(day, rowIndex, "category", e.target.value)
-                  }
-                >
-                  <option value="">Select Category</option>
-                  {categoryOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Recipe"
-                  className="border p-2 rounded w-full md:w-1/2"
-                  value={row.recipe}
-                  onChange={(e) =>
-                    handleChange(day, rowIndex, "recipe", e.target.value)
-                  }
-                />
-              </div>
-
-              {row.ingredients.map((ing, ingIndex) => (
-                <div
-                  key={ingIndex}
-                  className="flex items-center gap-2 mb-2 ml-4"
-                >
-                  <input
-                    type="text"
-                    placeholder="Ingredient"
-                    className="border p-2 rounded w-full md:w-1/2"
-                    value={ing}
-                    onChange={(e) =>
-                      handleIngredientChange(
-                        day,
-                        rowIndex,
-                        ingIndex,
-                        e.target.value
-                      )
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => deleteIngredient(day, rowIndex, ingIndex)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    ❌
-                  </button>
-                </div>
-              ))}
-
+        <div key={day} className="mb-8 mt-5 border p-4 rounded-lg shadow">
+          <div
+            className="flex items-center justify-between mb-2 cursor-pointer"
+            onClick={() => toggleDayExpand(day)}
+          >
+            <div className="">
+              <h2 className="text-xl font-bold">{day}</h2>
+            </div>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => addIngredient(day, rowIndex)}
-                className="ml-4 text-blue-600 text-sm hover:underline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDayRowAdd(day); // 👈 Add Menu
+                }}
+                className="bg-gkRedColor text-white p-2 rounded-full hover:bg-gkRedColor/90"
               >
-                + Add Ingredient
+                <Plus />
               </button>
+              {expandedDays[day] ? <ChevronUp /> : <ChevronDown />}
             </div>
-          ))}
+          </div>
+
+          {expandedDays[day] &&
+            formData[day].map((row, rowIndex) => {
+              const key = `${day}-${rowIndex}`;
+              return (
+                <div
+                  key={rowIndex}
+                  className="border p-3 mb-4 rounded bg-gray-50"
+                >
+                  <div
+                    className="flex justify-between mb-3 cursor-pointer"
+                    onClick={() => toggleMenuExpand(day, rowIndex)}
+                  >
+                    <p className="font-HelveticaNeueMedium">
+                      Menu {rowIndex + 1}.
+                    </p>
+                    <div className="flex gap-2 items-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDayRowDelete(day, rowIndex);
+                        }}
+                        className="bg-gkRedColor text-white p-2 rounded-full hover:bg-gkRedColor/90"
+                      >
+                        <Trash2 className="size-5" />
+                      </button>
+                      {expandedMenus[key] ? <ChevronUp /> : <ChevronDown />}
+                    </div>
+                  </div>
+                  <hr />
+
+                  {expandedMenus[key] && (
+                    <>
+                      {/* Category & Recipe Select */}
+                      <div className="flex flex-col md:flex-row gap-4 my-4">
+                        <div className="w-[49%]">
+                          <select
+                            className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
+                            value={row.category}
+                            onChange={(e) =>
+                              handleChange(
+                                day,
+                                rowIndex,
+                                "category",
+                                e.target.value
+                              )
+                            }
+                          >
+                            <option value="">Select Category</option>
+                            {categoryOptions.map((opt) => (
+                              <option key={opt} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="w-[49%]">
+                          <select
+                            className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
+                            value={row.recipe.id}
+                            onChange={(e) => {
+                              // Find selected option based on the id
+                              const selectedOption = recipeData
+                                .map((opt) => ({
+                                  id: opt.id,
+                                  description: opt.description,
+                                })) // Extracting only id and description
+                                .find((opt) => opt.id === e.target.value); // Find the selected one
+
+                              handleChange(
+                                day,
+                                rowIndex,
+                                "recipe",
+                                selectedOption
+                              ); // Pass the selected object to handleChange
+                            }}
+                          >
+                            <option value="">Select Recipe</option>
+                            {recipeData.map((opt) => (
+                              <option key={opt.id} value={opt.id}>
+                                {opt.description}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Ingredients */}
+                      <hr />
+                      <div className="flex flex-wrap gap-[2%] mt-5">
+                        {row.ingredients.map((ing, ingIndex) => (
+                          <div
+                            key={ingIndex}
+                            className="flex items-center gap-2 w-[32%] mt-4"
+                          >
+                            <p className="font-HelveticaNeueMedium">
+                              {ingIndex + 1}.
+                            </p>
+                            <div className="relative w-full">
+                              <input
+                                type="text"
+                                placeholder="Ingredient"
+                                className="w-full text-sm rounded-md bg-gray-100 pl-3 pr-7 py-2 text-gray-700"
+                                value={ing}
+                                onChange={(e) =>
+                                  handleIngredientChange(
+                                    day,
+                                    rowIndex,
+                                    ingIndex,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  deleteIngredient(day, rowIndex, ingIndex)
+                                }
+                                className="text-red-600 hover:text-red-700 text-xl absolute top-2 right-1"
+                              >
+                                <IoClose />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div
+                        onClick={() => addIngredient(day, rowIndex)}
+                        className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
+                      >
+                        <PlusCircle size={35} className=" text-gkRedColor" />
+                        <span className="font-HelveticaNeueMedium text-darkColor text-base">
+                          Add Ingredient
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
         </div>
       ))}
+      <div className="flex items-center justify-center gap-2 mt-7">
+        <Link to="/dashboard/weekly-menu">
+          <button
+            type="button"
+            className="border text-xs rounded-full px-8 py-2 bg-gray-200 hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </Link>
+        <button
+          type="submit"
+          className="border text-xs rounded-full px-4 py-2 flex items-center font-HelveticaNeueMedium text-white bg-gkRedColor hover:bg-gkRedColor/90"
+        >
+          Proceed
+          {loading && (
+            <div role="status" className="pl-3">
+              <svg
+                aria-hidden="true"
+                class="w-5 h-5 text-gray-200 animate-spin dark:text-white fill-gkRedColor"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+              <span class="sr-only">Loading...</span>
+            </div>
+          )}
+        </button>
+      </div>
     </form>
   );
 };

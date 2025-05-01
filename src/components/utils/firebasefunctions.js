@@ -566,6 +566,34 @@ export const addCategoryToFirebase = async (categoryData, imageFiles) => {
   }
 };
 
+
+export const addWeeklyMenu = async (menuData, imageFiles) => {
+  try {
+    // Sare images upload karo aur unke URLs le lo
+    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+    const imageUrls = await Promise.all(imageUploadPromises);
+
+    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    const docRef = doc(collection(firestored, "weeklymenu"));
+    const docId = docRef.id; // Yeh document ki generated ID hai
+
+    // Firestore me data save karo
+    await setDoc(docRef, {
+      ...menuData,
+      id: docId,
+      images: imageUrls, // Firebase se milne wale URLs yahan save honge
+      createdAt: new Date(),
+    });
+
+    return { success: true, id: docId };
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    return { success: false, error: error.message };
+  }
+};
+
+
+
 export const getProducts = async () => {
   const productsRef = collection(firestored, "products");
   const q = query(productsRef, orderBy("timestamp", "desc")); // Sorting by timestamp (latest first)
