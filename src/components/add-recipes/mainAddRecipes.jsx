@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
+import Select from "react-select";
 import {
   uploadImageToRecipeFirebase,
   saveRecipeToFirestore,
@@ -13,7 +14,18 @@ import BreadCrumbs from "../reuseable/breadCrumbs";
 
 import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
-import { serverTimestamp } from "firebase/firestore";
+
+const recipeCategory = [
+  { label: "Zoet ontbijt", value: "Zoet ontbijt" },
+  { label: "Hartig ontbijt", value: "Hartig ontbijt" },
+  { label: "Lunch", value: "Lunch" },
+  { label: "Diner", value: "Diner" },
+  { label: "Snack", value: "Snack" },
+  { label: "Smoothies", value: "Smoothies" },
+  { label: "Zoete baksels", value: "Zoete baksels" },
+  { label: "Brunch", value: "Brunch" },
+  { label: "Feestelijk", value: "Feestelijk" },
+];
 
 const RichTextEditor = () => {
   const [searchParams] = useSearchParams();
@@ -21,12 +33,15 @@ const RichTextEditor = () => {
   const [imageFiles, setImageFiles] = useState([]);
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  // const [category, setCategory] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailURL, setThumbnailURL] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingRichText, setLoadingRichText] = useState(false);
   const [isCheckTitle, setIsCheckTitle] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [category, setCategory] = useState([]);
+
   const [{ user }] = useStateValue();
 
   const navigate = useNavigate();
@@ -58,6 +73,7 @@ const RichTextEditor = () => {
     }
   };
 
+
   useEffect(() => {
     if (id) {
       fetchRecipeData(id);
@@ -71,7 +87,12 @@ const RichTextEditor = () => {
       if (data) {
         setContent(data.content);
         setDescription(data.description);
-        setCategory(data.category);
+        setSelectedCategory(
+          data.category.map((sup) => ({
+            label: sup,
+            value: sup,
+          }))
+        );
         setImages(data.images || []);
       }
     } catch (error) {
@@ -110,7 +131,7 @@ const RichTextEditor = () => {
     const recipeData = {
       content,
       description,
-      category,
+      category: selectedCategory.map((sup) => sup.value),
       userId: user?.id || "Unknown",
       userType: user?.usertype || "Guest",
       createdAt: Date.now(),
@@ -150,11 +171,16 @@ const RichTextEditor = () => {
     }
   };
 
+  const handleSelectChange = (selectedOption) => {
+    console.log("Selected Category:", selectedOption); // Debugging log
+    setSelectedCategory(selectedOption); // Set the selected category
+  };
+
   return (
     <div className="bg-white rounded-[30px] shadow-md px-5 mb-5 lg:mb-0 h-full flex flex-col">
       <div className="h-[85%] overflow-y-scroll panelScroll">
         <div className="pt-3 border-b-2 border-gray-100 pb-2">
-        <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
             Add Recipies
           </p>
           <BreadCrumbs
@@ -214,22 +240,13 @@ const RichTextEditor = () => {
             </div>
             <div className="w-full lg:w-[49%] mb-5 lg:mb-0">
               <label className="text-sm">Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm !border !border-[#6b7280]"
-              >
-                <option value="">Select Category</option>
-                <option value="Zoet ontbijt">Zoet ontbijt</option>
-                <option value="Hartig ontbijt">Hartig ontbijt</option>
-                <option value="Lunch">Lunch</option>
-                <option value="Diner">Diner</option>
-                <option value="Snack">Snack</option>
-                <option value="Smoothies">Smoothies</option>
-                <option value="Zoete baksels">Zoete baksels</option>
-                <option value="Brunch">Brunch</option>
-                <option value="Feestelijk">Feestelijk</option>
-              </select>
+              <Select
+                isMulti
+                value={selectedCategory} // Set value to selectedCategory
+                onChange={handleSelectChange} // Handle change
+                options={recipeCategory} // Set options here
+                className="w-full z-[9999]"
+              />
             </div>
           </div>
 

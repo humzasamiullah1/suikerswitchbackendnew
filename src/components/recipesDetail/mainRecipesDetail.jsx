@@ -59,6 +59,10 @@ const MainRecipiesDetail = () => {
   const [onDeleteId, setOnDeleteId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setIsLoading] = useState(false);
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [userData, setUserData] = useState({
     firstname: "",
     lastname: "",
@@ -103,6 +107,23 @@ const MainRecipiesDetail = () => {
     }
   };
 
+  const startDrag = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX || e.touches[0].pageX);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleDrag = (e) => {
+    if (!isDragging) return;
+    const x = e.pageX || e.touches[0].pageX;
+    const walk = (x - startX) * -1; // Reverse scroll
+    scrollRef.current.scrollLeft = scrollLeft + walk;
+  };
+
+  const stopDrag = () => {
+    setIsDragging(false);
+  };
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -122,11 +143,11 @@ const MainRecipiesDetail = () => {
 
   const timeAgo = (timestamp) => {
     if (!timestamp || !timestamp.seconds) return "Invalid date";
-  
+
     const createdAt = new Date(timestamp.seconds * 1000); // Convert Firebase Timestamp to JavaScript Date
     const now = new Date();
     const diffInSeconds = Math.floor((now - createdAt) / 1000);
-  
+
     const intervals = [
       { label: "year", seconds: 31536000 },
       { label: "month", seconds: 2592000 },
@@ -136,14 +157,14 @@ const MainRecipiesDetail = () => {
       { label: "minute", seconds: 60 },
       { label: "second", seconds: 1 },
     ];
-  
+
     for (const interval of intervals) {
       const count = Math.floor(diffInSeconds / interval.seconds);
       if (count >= 1) {
         return `${count} ${interval.label}${count !== 1 ? "s" : ""} ago`;
       }
     }
-  
+
     return "Just now";
   };
 
@@ -281,8 +302,27 @@ const MainRecipiesDetail = () => {
                   )}
                 </div>
               </div>
-              <div className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white w-fit text-sm mt-3">
-                <p>{recipe?.category}</p>
+              <div
+                ref={scrollRef}
+                className="overflow-hidden cursor-grab active:cursor-grabbing"
+                onMouseDown={startDrag}
+                onMouseMove={handleDrag}
+                onMouseUp={stopDrag}
+                onMouseLeave={stopDrag}
+                onTouchStart={startDrag}
+                onTouchMove={handleDrag}
+                onTouchEnd={stopDrag}
+              >
+                <div className="flex space-x-3 w-max px-4 py-2 select-none">
+                  {recipe?.category.map((item, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white text-sm shrink-0"
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             {/* <div

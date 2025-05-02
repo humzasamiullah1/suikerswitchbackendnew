@@ -70,6 +70,28 @@ const RecipiesCard = ({
   const dropdownRef = useRef(null);
   const [loading, setIsLoading] = useState(false);
 
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const startDrag = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX || e.touches[0].pageX);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleDrag = (e) => {
+    if (!isDragging) return;
+    const x = e.pageX || e.touches[0].pageX;
+    const walk = (x - startX) * -1; // Reverse scroll
+    scrollRef.current.scrollLeft = scrollLeft + walk;
+  };
+
+  const stopDrag = () => {
+    setIsDragging(false);
+  };
+
   // Function to toggle menu
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -175,8 +197,27 @@ const RecipiesCard = ({
             </div>
           )}
         </div>
-        <div className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white w-fit text-sm mt-3">
-          <p>{data.category}</p>
+        <div
+          ref={scrollRef}
+          className="overflow-hidden cursor-grab active:cursor-grabbing"
+          onMouseDown={startDrag}
+          onMouseMove={handleDrag}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
+          onTouchStart={startDrag}
+          onTouchMove={handleDrag}
+          onTouchEnd={stopDrag}
+        >
+          <div className="flex space-x-3 w-max px-4 py-2 select-none">
+            {data.category.map((item, index) => (
+              <div
+                key={index}
+                className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white text-sm shrink-0"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <Link to={`/dashboard/recipes-detail/${data.id}`}>
