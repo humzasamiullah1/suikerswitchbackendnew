@@ -28,6 +28,7 @@ import AddCategory from "./addCategory";
 import Category from "./Category";
 import WeeklyMenu from "./WeeklyMenu"
 import AddWeeklyMenu from "./AddWeeklyMenu"
+import WeeklyMenuDetail from "./WeeklyMenuDetail"
 
 
 function Dashboard() {
@@ -98,6 +99,7 @@ function Dashboard() {
           <Route path="/add-category" element={<AddCategory />} />
           <Route path="/weekly-menu" element={<WeeklyMenu />} />
           <Route path="/add-weekly-menu" element={<AddWeeklyMenu />} />
+          <Route path="/weekly-menu-detail/:id" element={<WeeklyMenuDetail />} />
         </Routes>
         <ToastContainer
           position="top-right"

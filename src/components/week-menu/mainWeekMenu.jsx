@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 
 import NoData from "../reuseable/noData";
 import MyLoader from "../reuseable/myLoader";
-import WarningPopup from "../popup/warning"
+import WarningPopup from "../popup/warning";
+import ViewIngrediants from "../popup/view-ingrediants"
 
 import { toast } from "react-toastify";
 
@@ -19,6 +20,8 @@ const MainWeekMenu = () => {
   const [loading, setLoading] = useState(true);
   const [menu, setMenu] = useState(true);
   const [warning, setWarning] = useState(false);
+  const [isViewIngrediants, setIsViewIngrediants] = useState(false);
+  const [selectedIngredients,setSelectedIngredients] = useState('')
   const [onDeleteId, setOnDeleteId] = useState("");
 
   const fetchData = async () => {
@@ -36,6 +39,12 @@ const MainWeekMenu = () => {
   const openConfirmPopup = (id) => {
     setOnDeleteId(id);
     setWarning(true);
+  };
+
+  const handleViewIngredients = (ingredients) => {
+    console.log('ingredients', ingredients)
+    setSelectedIngredients(ingredients);
+    setIsViewIngrediants(true)
   };
 
   const handleDelete = async (id) => {
@@ -75,7 +84,7 @@ const MainWeekMenu = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <p className="text-sm pr-3">Add Weekly Menu</p>
+              <p className="text-sm pr-3">Add New Weekly Menu</p>
               <CircleArrowDown className="h-4 w-4" />
             </motion.button>
           </Link>
@@ -100,6 +109,7 @@ const MainWeekMenu = () => {
                   <MenuCard
                     data={item}
                     onDelete={() => openConfirmPopup(item.id)}
+                    onViewIngrediant={handleViewIngredients}
                   />
                 </motion.div>
               ))
@@ -123,6 +133,9 @@ const MainWeekMenu = () => {
           onDelete={(id) => handleDelete(id)}
         />
       )}
+      { isViewIngrediants &&
+        <ViewIngrediants data={selectedIngredients} onClose={()=> setIsViewIngrediants(false)}/>
+      }
     </motion.div>
   );
 };

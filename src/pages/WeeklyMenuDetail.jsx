@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 import HeaderBar from "../components/reuseable/headerBar";
-import MainWeekMenu from "../components/week-menu/mainWeekMenu"
 import MainSearch from "../components/global-searchbar/mainSearch";
+import MainMenuDetail from "../components/week-menu-detail/mainWeekMEnu"
 
-function WeeklyMenu() {
+function WeeklyMenuDetail() {
 
   const [isGlobalSearch, setIsGlobalSearch] = useState(false);
   
@@ -31,7 +31,7 @@ function WeeklyMenu() {
         />
       </div>
       <div className="h-[85%] pt-5 lg:pt-0 lg:pb-2">
-       <MainWeekMenu/>
+       <MainMenuDetail/>
       </div>
       </>
       ) : (
@@ -41,4 +41,4 @@ function WeeklyMenu() {
   );
 }
 
-export default WeeklyMenu;
+export default WeeklyMenuDetail;
