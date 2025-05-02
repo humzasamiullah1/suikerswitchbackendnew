@@ -89,16 +89,15 @@ const MainRecipies = () => {
     const matchesSearch =
       recipe.description.toLowerCase().includes(search.toLowerCase()) ||
       recipe.content.toLowerCase().includes(search.toLowerCase());
-
-      console.log('selectedCategory', selectedCategory)
-
+  
     const matchesCategory =
       selectedCategory.length > 0
-        ? selectedCategory.includes(recipe.category)
+        ? recipe.category.some((cat) => selectedCategory.includes(cat))
         : true;
-
+  
     return matchesSearch && matchesCategory;
   });
+  
 
   const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
   const currentProducts = searchedProducts.slice(
