@@ -47,6 +47,7 @@ function Dashboard() {
   useEffect(() => {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 1024);
+      setIsMobileMenuOpen(false)
     };
 
     window.addEventListener("resize", handleResize);

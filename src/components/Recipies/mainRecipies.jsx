@@ -43,7 +43,7 @@ const MainRecipies = () => {
 
   const fetchData = async () => {
     const data = await getRecipe();
-    console.log('recipe', data)
+    console.log("recipe", data);
     setRecipeData(data);
     setLoading(false);
     console.log(recipeData);
@@ -89,15 +89,14 @@ const MainRecipies = () => {
     const matchesSearch =
       recipe.description.toLowerCase().includes(search.toLowerCase()) ||
       recipe.content.toLowerCase().includes(search.toLowerCase());
-  
+
     const matchesCategory =
       selectedCategory.length > 0
         ? recipe.category.some((cat) => selectedCategory.includes(cat))
         : true;
-  
+
     return matchesSearch && matchesCategory;
   });
-  
 
   const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
   const currentProducts = searchedProducts.slice(
@@ -111,7 +110,7 @@ const MainRecipies = () => {
 
   const handleCategory = (item) => {
     if (!item.label) return; // safeguard
-  
+
     setSelectedCategory((prevSelected) => {
       if (prevSelected.includes(item.label)) {
         return prevSelected.filter((category) => category !== item.label);
@@ -129,57 +128,59 @@ const MainRecipies = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       {/* Header Section */}
-      <div className="flex lg:flex-row flex-col justify-between items-center pt-5 lg:h-[12%]">
-        <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
-          <p className="font-HelveticaNeueMedium text-darkColor text-lg">
-            All Recipes
-          </p>
-          <motion.div
-            className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Plus size={20} />
-          </motion.div>
-        </div>
-        <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
-          <div className="flex items-center gap-2 mt-3 md:mt-0">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
+      <div className="lg:h-[20%]">
+        <div className="flex lg:flex-row flex-col justify-between items-center pt-5">
+          <div className="flex justify-between w-full items-center lg:w-[30%] xl:w-[50%]">
+            <p className="font-HelveticaNeueMedium text-darkColor text-lg">
+              All Recipes
+            </p>
+            <motion.div
+              className="bg-gkRedColor md:hidden size-10 rounded-full text-white flex justify-center items-center"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Plus size={20} />
+            </motion.div>
+          </div>
+          <div className="flex items-center lg:w-[70%] xl:w-[50%] justify-end">
+            <div className="flex items-center gap-2 mt-3 md:mt-0">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="border bg-gray-200 font-HelveticaNeueRegular placeholder:text-darkColor text-darkColor rounded-full py-2 pl-5 focus:outline-none"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Search className="absolute right-3 top-3 h-4 w-4 text-darkColor" />
+              </div>
+              <Link to={"/dashboard/add-recipies"}>
+                <motion.button
+                  className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <p className="text-sm pr-3">Add New Recipes</p>
+                  <CircleArrowDown className="h-4 w-4" />
+                </motion.button>
+              </Link>
             </div>
-            <Link to={"/dashboard/add-recipies"}>
-              <motion.button
-                className="border hidden rounded-full px-4 w-full py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <p className="text-sm pr-3">Add New Recipes</p>
-                <CircleArrowDown className="h-4 w-4" />
-              </motion.button>
-            </Link>
           </div>
         </div>
-      </div>
-      <div className="flex justify-between my-5">
-        <div className="w-[85%] sm:w-[90%] md:w-[92%] lg:w-[91%] xl:w-[94%]">
-          <DraggableScrollablePills
-            items={categoryItems}
-            onPillClick={(updatedIds, item) => handleCategory(item)}
-            isActive={selectedCategory} // 👈 ab yeh array h
-          />
+        <div className="flex justify-between py-5">
+          <div className="w-[85%] sm:w-[90%] md:w-[92%] lg:w-[91%] xl:w-[94%]">
+            <DraggableScrollablePills
+              items={categoryItems}
+              onPillClick={(updatedIds, item) => handleCategory(item)}
+              isActive={selectedCategory} // 👈 ab yeh array h
+            />
+          </div>
         </div>
       </div>
       {!loading ? (
         <>
           {/* Blog List Section */}
-          <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll pb-8">
+          <div className="lg:h-[68%] lg:overflow-y-scroll panelScroll pb-8">
             {currentProducts.length > 0 ? (
               currentProducts.map((item, index) => (
                 <motion.div

@@ -187,7 +187,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
               {menuItems.map((item) => (
                 <div
                   key={item.title}
-                  className="w-[95%] md:w-[40%] lg:w-full mx-auto"
+                  className="w-[60%] sm:w-[35%] md:w-[40%] lg:w-full mx-auto"
                 >
                   <Link
                     to={item.paths[0]}
