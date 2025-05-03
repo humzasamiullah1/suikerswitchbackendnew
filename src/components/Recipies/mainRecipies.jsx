@@ -98,16 +98,6 @@ const MainRecipies = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
-  const currentProducts = searchedProducts.slice(
-    currentPage * productsPerPage,
-    (currentPage + 1) * productsPerPage
-  );
-
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
-  };
-
   const handleCategory = (item) => {
     if (!item.label) return; // safeguard
 
@@ -180,9 +170,9 @@ const MainRecipies = () => {
       {!loading ? (
         <>
           {/* Blog List Section */}
-          <div className="lg:h-[68%] lg:overflow-y-scroll panelScroll pb-8">
-            {currentProducts.length > 0 ? (
-              currentProducts.map((item, index) => (
+          <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll pb-8">
+            {searchedProducts.length > 0 ? (
+              searchedProducts.map((item, index) => (
                 <motion.div
                   key={index}
                   className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
@@ -213,27 +203,6 @@ const MainRecipies = () => {
               </div>
             )}
           </div>
-          {pageCount > 1 && (
-            <div className="lg:h-[10%] pb-5 lg:pb-0">
-              <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={
-                  "pagination flex justify-center mt-4 space-x-2 font-HelveticaNeueMedium text-sm"
-                }
-                pageClassName={"px-3 py-2 bg-gray-200 rounded-md"}
-                activeClassName={"!bg-gkRedColor !text-white"}
-                previousClassName={"px-4 py-2 bg-gray-300 rounded-md"}
-                nextClassName={"px-4 py-2 bg-gray-300 rounded-md"}
-                disabledClassName={"opacity-50 cursor-not-allowed"}
-              />
-            </div>
-          )}
         </>
       ) : (
         <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">

@@ -97,7 +97,7 @@ const MainWeekMenu = () => {
               menu.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
+                  className="w-full md:w-[85%] lg:w-[75%] mx-auto"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
