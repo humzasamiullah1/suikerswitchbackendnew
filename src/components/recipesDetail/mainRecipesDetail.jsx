@@ -59,6 +59,10 @@ const MainRecipiesDetail = () => {
   const [onDeleteId, setOnDeleteId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setIsLoading] = useState(false);
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [userData, setUserData] = useState({
     firstname: "",
     lastname: "",
@@ -103,6 +107,28 @@ const MainRecipiesDetail = () => {
     }
   };
 
+  // Start dragging
+  const startDrag = (e) => {
+    setIsDragging(true);
+    const pageX = e.pageX || e.touches[0].pageX;
+    setStartX(pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeft(scrollRef.current?.scrollLeft || 0);
+  };
+
+  // Stop dragging
+  const stopDrag = () => {
+    setIsDragging(false);
+  };
+
+  // Handle drag movement
+  const handleDrag = (e) => {
+    if (!isDragging || !scrollRef.current) return;
+    const pageX = e.pageX || e.touches[0].pageX;
+    const x = pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // scroll speed multiplier
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -121,8 +147,10 @@ const MainRecipiesDetail = () => {
   };
 
   const timeAgo = (timestamp) => {
+    if (!timestamp || !timestamp.seconds) return "Invalid date";
+
+    const createdAt = new Date(timestamp.seconds * 1000); // Convert Firebase Timestamp to JavaScript Date
     const now = new Date();
-    const createdAt = new Date(timestamp);
     const diffInSeconds = Math.floor((now - createdAt) / 1000);
 
     const intervals = [
@@ -259,16 +287,17 @@ const MainRecipiesDetail = () => {
                     onClick={toggleMenu}
                   />
                   {isOpen && (
-                    <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
-                      <ul className="py-2 pl-4 w-full">
+                    <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
+                      <ul className="py-2 w-full">
                         <Link to={`/dashboard/add-recipies?id=${recipe.id}`}>
-                          <li className=" text-blue-500 border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
+                          <li className=" text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
                             <Pencil size={18} />
                             <span className="pl-3">Edit</span>
                           </li>
                         </Link>
+                        <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
                         <li
-                          className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                          className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
                           onClick={() => openConfirmPopup(recipe.id)}
                         >
                           <Trash2 size={18} />
@@ -279,14 +308,37 @@ const MainRecipiesDetail = () => {
                   )}
                 </div>
               </div>
-              <div className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white w-fit text-sm mt-3">
-                <p>{recipe?.category}</p>
+              <div
+                ref={scrollRef}
+                className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing select-none scrollbar-hide panelScroll"
+                onMouseDown={startDrag}
+                onMouseMove={handleDrag}
+                onMouseUp={stopDrag}
+                onMouseLeave={stopDrag}
+                onTouchStart={startDrag}
+                onTouchMove={handleDrag}
+                onTouchEnd={stopDrag}
+              >
+                <div className="flex space-x-3 w-max px-4 py-2">
+                  {recipe?.category.map((item, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white text-sm shrink-0"
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-            {/* <div
-              className="font-HelveticaNeueRegular text-darkColor text-sm pt-4 px-2"
-              dangerouslySetInnerHTML={{ __html: recipe?.content }}
-            ></div> */}
+            <div className="rounded-md my-4">
+              <h2 className="font-HelveticaNeueRegular text-base">{recipe?.description}</h2>
+              <img
+                src={recipe?.images[0]}
+                alt=""
+                className="w-full h-60 object-cover rounded-md"
+              />
+            </div>
             <div id="gk-text">
               <SunEditor
                 setContents={recipe?.content}

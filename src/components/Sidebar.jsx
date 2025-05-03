@@ -18,7 +18,8 @@ import {
   ReceiptText,
   Store,
   LogOut,
-  ChartBarStacked
+  ChartBarStacked,
+  CalendarCheck2
 } from "lucide-react";
 
 // ✅ Menu Items Array with Multiple Paths
@@ -48,6 +49,14 @@ const menuItems = [
       "/dashboard/recipies",
       "/dashboard/recipes-detail",
       "/dashboard/add-recipies"
+    ] 
+  },
+  { 
+    title: "Weekly Menu", 
+    icon: CalendarCheck2, 
+    paths: [
+      "/dashboard/weekly-menu",
+      "/dashboard/add-weekly-menu"
     ] 
   },
   { 
@@ -102,6 +111,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
   useEffect(() => {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 1024);
+      setIsOpen(true)
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -178,7 +188,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
               {menuItems.map((item) => (
                 <div
                   key={item.title}
-                  className="w-[95%] md:w-[40%] lg:w-full mx-auto"
+                  className="lg:w-full mx-auto"
                 >
                   <Link
                     to={item.paths[0]}
@@ -192,7 +202,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen, isCollapse }) => {
                     }
                   >
                     <item.icon className="h-5 w-5 min-w-[20px]" />
-                    {isOpen && (
+                    {(isOpen || !isLargeScreen) && (
                       <motion.span
                         variants={menuItemVariants}
                         className="pl-3"

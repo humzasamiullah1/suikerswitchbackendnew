@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router-dom"; // ✅ Import useRouter for query params
-import SunEditor from "suneditor-react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom"; 
 import "suneditor/dist/css/suneditor.min.css";
 import Select from "react-select";
-import { serverTimestamp } from "firebase/firestore";
-import { PlusCircle, Trash2 } from "lucide-react";
 import {
   uploadImageToBlogFirebase,
   getCategoriesFromFirebase,

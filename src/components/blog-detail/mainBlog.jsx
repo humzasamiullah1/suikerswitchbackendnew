@@ -261,16 +261,17 @@ const MainBlogDetail = () => {
                   onClick={toggleMenu}
                 />
                 {isOpen && (
-                  <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
-                    <ul className="py-2 pl-4 w-full">
+                  <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
+                    <ul className="py-2 w-full">
                       <Link to={`/dashboard/add-blog?id=${blog.id}`}>
-                        <li className=" text-blue-500 border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
+                        <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
                           <Pencil size={18} />
                           <span className="pl-3">Edit</span>
                         </li>
                       </Link>
+                      <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
                       <li
-                        className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                        className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
                         onClick={() => openConfirmPopup(blog.id)}
                       >
                         <Trash2 size={18} />
@@ -281,19 +282,14 @@ const MainBlogDetail = () => {
                 )}
               </div>
             </div>
-            {/* <div
-            id="editor-content"
-              style={{
-                fontFamily: "",
-                color: "darkColor",
-                fontSize: "0.875rem",
-                paddingTop: "1rem",
-                paddingLeft: "0.5rem",
-                paddingRight: "0.5rem",
-                lineHeight: "1.5",
-              }}
-              dangerouslySetInnerHTML={{ __html: blog?.content }}
-            ></div> */}
+            <div className="rounded-md my-4">
+              <h2 className="font-HelveticaNeueRegular text-base">{blog?.description}</h2>
+              <img
+                src={blog?.images[0]}
+                alt=""
+                className="w-full h-60 object-cover rounded-md"
+              />
+            </div>
             <div id="gk-text">
               <SunEditor
                 setContents={blog?.content}

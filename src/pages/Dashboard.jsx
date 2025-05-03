@@ -1,5 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
+
+import { Menu } from "lucide-react";
+import { motion } from "framer-motion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 import Sidebar from "../components/Sidebar"; // ✅ Ensure this is correct
 import Home from "./Home";
 import Product from "./Product";
@@ -19,10 +26,10 @@ import AddRecipes from "./AddRecipes";
 import HelpDetail from "./HelpDetail";
 import AddCategory from "./addCategory";
 import Category from "./Category";
-import { Menu } from "lucide-react";
-import { motion } from "framer-motion";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import WeeklyMenu from "./WeeklyMenu"
+import AddWeeklyMenu from "./AddWeeklyMenu"
+import WeeklyMenuDetail from "./WeeklyMenuDetail"
+
 
 function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,6 +47,7 @@ function Dashboard() {
   useEffect(() => {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 1024);
+      setIsMobileMenuOpen(false)
     };
 
     window.addEventListener("resize", handleResize);
@@ -90,6 +98,9 @@ function Dashboard() {
           <Route path="/account-settings" element={<Settings />} />
           <Route path="/category" element={<Category />} />
           <Route path="/add-category" element={<AddCategory />} />
+          <Route path="/weekly-menu" element={<WeeklyMenu />} />
+          <Route path="/add-weekly-menu" element={<AddWeeklyMenu />} />
+          <Route path="/weekly-menu-detail/:id" element={<WeeklyMenuDetail />} />
         </Routes>
         <ToastContainer
           position="top-right"
