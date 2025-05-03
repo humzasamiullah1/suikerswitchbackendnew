@@ -105,13 +105,7 @@ const FormSection = () => {
   const [formData, setFormData] = useState(() => {
     const initialData = {};
     daysOfWeek.forEach((day, i) => {
-      initialData[day] = [
-        {
-          category: "",
-          recipe: "",
-          ingredients: [""],
-        },
-      ];
+      initialData[day] = [];
     });
 
     return initialData;
@@ -409,6 +403,7 @@ const FormSection = () => {
                                 .map((opt) => ({
                                   id: opt.id,
                                   description: opt.description,
+                                  image: opt.images
                                 })) // Extracting only id and description
                                 .find((opt) => opt.id === e.target.value); // Find the selected one
 

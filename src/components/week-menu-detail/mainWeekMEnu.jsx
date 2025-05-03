@@ -6,17 +6,12 @@ import {
   CircleArrowDown,
   Plus,
   Ellipsis,
-  Send,
-  Paperclip,
-  Reply,
-  ThumbsUp,
-  MessageCircle,
+  ChevronRight,
+  ChevronLeft,
   Trash2,
   Pencil,
 } from "lucide-react";
 import ImageTag from "../reuseable/imageTag";
-import LikePopup from "../../components/popup/like";
-import CommentsPopup from "../../components/popup/comments";
 import { useParams } from "react-router-dom";
 import {
   getWeeklyMenuById,
@@ -30,11 +25,9 @@ import BreadCrumbs from "../reuseable/breadCrumbs";
 const MainMenuDetail = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
-  const [commentText, setCommentText] = useState("");
   const [warning, setWarning] = useState(false);
   const [onDeleteId, setOnDeleteId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setIsLoading] = useState(false);
 
   const { id } = useParams(); // URL se id get krni
   const [menu, setMenu] = useState(null);
@@ -135,7 +128,7 @@ const MainMenuDetail = () => {
           viewport={{ once: true }}
         >
           <div className=" mt-2">
-            <div className="border-b border-darkColor/20  py-3 px-2">
+            <div className="border-b border-darkColor/20  py-3 px-2 mb-4">
               <div className="flex justify-between items-center">
                 <div className="w-[60%] flex items-center">
                   <p className="font-HelveticaNeueMedium text-lg">
@@ -152,16 +145,17 @@ const MainMenuDetail = () => {
                     onClick={toggleMenu}
                   />
                   {isOpen && (
-                    <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-black rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
-                      <ul className="py-2 pl-4 w-full">
+                    <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
+                      <ul className="py-2 w-full">
                         <Link to={`/dashboard/add-weekly-menu?id=${menu.id}`}>
-                          <li className=" text-white border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
+                          <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
                             <Pencil size={18} />
                             <span className="pl-3">Edit</span>
                           </li>
                         </Link>
+                        <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
                         <li
-                          className="cursor-pointer pt-2 w-full flex items-center text-white font-HelveticaNeueMedium"
+                          className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
                           onClick={() => openConfirmPopup(menu.id)}
                         >
                           <Trash2 size={18} />
@@ -173,11 +167,13 @@ const MainMenuDetail = () => {
                 </div>
               </div>
             </div>
-            <ImageTag
-              path={menu?.images[0]}
-              classes="w-full h-60 rounded-2xl object-cover"
-              altText="logo"
-            />
+            <div className="rounded-md">
+              <img
+                src={menu?.images[0]}
+                alt=""
+                className="w-full h-60 object-cover rounded-md"
+              />
+            </div>
             <div className="my-5">
               {menu?.WeeklyMenu?.Maandag.length > 0 && (
                 <div>
@@ -185,340 +181,284 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Maandag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item?.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}
                 </div>
               )}
               {menu?.WeeklyMenu?.Dinsdag.length > 0 && (
-                <div>
+                <div className="mt-6">
                   <h3 className="font-HelveticaNeueMedium text-xl">Dinsdag</h3>
                   <hr />
                   {menu?.WeeklyMenu?.Dinsdag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item?.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}
                 </div>
               )}
               {menu?.WeeklyMenu?.Woensdag.length > 0 && (
-                <div>
+                <div className="mt-6">
                   <h3 className="font-HelveticaNeueMedium text-xl">Woensdag</h3>
                   <hr />
                   {menu?.WeeklyMenu?.Woensdag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}
                 </div>
               )}
               {menu?.WeeklyMenu?.Donderdag?.length > 0 && (
-                <div>
+                <div className="mt-6">
                   <h3 className="font-HelveticaNeueMedium text-xl">
                     Donderdag
                   </h3>
                   <hr />
                   {menu?.WeeklyMenu?.Donderdag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item?.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}
                 </div>
               )}
               {menu?.WeeklyMenu?.Vrijdag.length > 0 && (
-                <div>
+                <div className="mt-6">
                   <h3 className="font-HelveticaNeueMedium text-xl">Vrijdag</h3>
                   <hr />
                   {menu?.WeeklyMenu?.Vrijdag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item?.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}
                 </div>
               )}
               {menu?.WeeklyMenu?.Zaterdag.length > 0 && (
-                <div>
+                <div className="mt-6">
                   <h3 className="font-HelveticaNeueMedium text-xl">Zaterdag</h3>
                   <hr />
                   {menu?.WeeklyMenu?.Zaterdag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item?.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}
                 </div>
               )}
               {menu?.WeeklyMenu?.Zondag.length > 0 && (
-                <div>
+                <div className="mt-6">
                   <h3 className="font-HelveticaNeueMedium text-xl">Zondag</h3>
                   <hr />
                   {menu?.WeeklyMenu?.Zondag.map((item, index) => (
                     <>
-                      <h4 className="font-HelveticaNeueMedium text-base mt-4">
-                        Menu {index + 1}.
-                      </h4>
-                      <div className="flex justify-between mt-3">
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Category:
-                          </p>
-                          <p className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1">
-                            {item?.category}
-                          </p>
-                        </div>
-                        <div className="flex w-[49%]">
-                          <p className="font-HelveticaNeueMedium text-sm">
-                            Recipe:
-                          </p>
-                          <Link
-                            to={`/dashboard/recipes-detail/${item?.recipe?.id}`}
-                            className="font-HelveticaNeueRegular text-sm pl-2 line-clamp-1 hover:text-gkRedColor"
-                          >
-                            {item?.recipe?.description}
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mt-3">
-                        <h4 className="font-HelveticaNeueMedium text-base">
-                          Ingrediants
-                        </h4>
-                        {item.ingredients.map((ing, i) => (
-                          <div className="flex mt-2">
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {i + 1}.
-                            </p>
-                            <p className="font-HelveticaNeueMedium text-sm">
-                              {ing}
-                            </p>
+                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                            <img
+                              src={item.recipe.image}
+                              alt=""
+                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                            />
                           </div>
-                        ))}
+                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                              {item.category}
+                            </p>
+                            <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            >
+                              {item.recipe.description}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="mt-4 pl-4">
+                          {item.ingredients.map((ing, i) => (
+                            <div className="flex mt-2">
+                              <ul className="list-disc">
+                                <li>{ing}</li>
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   ))}

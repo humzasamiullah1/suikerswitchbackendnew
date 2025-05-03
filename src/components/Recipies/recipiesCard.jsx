@@ -75,21 +75,26 @@ const RecipiesCard = ({
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
+  // Start dragging
   const startDrag = (e) => {
     setIsDragging(true);
-    setStartX(e.pageX || e.touches[0].pageX);
-    setScrollLeft(scrollRef.current.scrollLeft);
+    const pageX = e.pageX || e.touches[0].pageX;
+    setStartX(pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeft(scrollRef.current?.scrollLeft || 0);
   };
 
-  const handleDrag = (e) => {
-    if (!isDragging) return;
-    const x = e.pageX || e.touches[0].pageX;
-    const walk = (x - startX) * -1; // Reverse scroll
-    scrollRef.current.scrollLeft = scrollLeft + walk;
-  };
-
+  // Stop dragging
   const stopDrag = () => {
     setIsDragging(false);
+  };
+
+  // Handle drag movement
+  const handleDrag = (e) => {
+    if (!isDragging || !scrollRef.current) return;
+    const pageX = e.pageX || e.touches[0].pageX;
+    const x = pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // scroll speed multiplier
+    scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
   // Function to toggle menu
@@ -175,17 +180,17 @@ const RecipiesCard = ({
                 onClick={toggleMenu}
               />
               {isOpen && (
-                <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 font-popinsMedium text-sm">
-                  <ul className="py-2 pl-4 w-full">
+                <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
+                  <ul className="py-2 w-full">
                     <Link to={`/dashboard/add-recipies?id=${data.id}`}>
-                      <li className=" text-blue-500 border-b border-gray-200 pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center">
+                      <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
                         <Pencil size={18} />
                         <span className="pl-3">Edit</span>
                       </li>
                     </Link>
-
+                    <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
                     <li
-                      className="cursor-pointer pt-2 w-full flex items-center text-red-500 font-HelveticaNeueMedium"
+                      className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
                       onClick={onDelete}
                     >
                       <Trash2 size={18} />
@@ -199,7 +204,7 @@ const RecipiesCard = ({
         </div>
         <div
           ref={scrollRef}
-          className="overflow-hidden cursor-grab active:cursor-grabbing"
+          className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing select-none scrollbar-hide panelScroll"
           onMouseDown={startDrag}
           onMouseMove={handleDrag}
           onMouseUp={stopDrag}
@@ -208,7 +213,7 @@ const RecipiesCard = ({
           onTouchMove={handleDrag}
           onTouchEnd={stopDrag}
         >
-          <div className="flex space-x-3 w-max px-4 py-2 select-none">
+          <div className="flex space-x-3 w-max px-4 py-2">
             {data.category.map((item, index) => (
               <div
                 key={index}
