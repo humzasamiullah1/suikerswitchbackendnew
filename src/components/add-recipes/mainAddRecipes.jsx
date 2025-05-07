@@ -276,7 +276,7 @@ const RichTextEditor = () => {
           </div>
 
           {/* 🔹 Rich Text Editor */}
-          <div className="flex-1 h-full overflow-hidden relative">
+          <div className="flex-1 h-full relative">
             {loadingRichText && (
               <main className="w-full h-screen backdrop-blur-sm bg-black/40 absolute inset-0 z-50 flex items-center justify-center">
                 <section className="w-[90%] sm:w-[65%] md:w-[50%] lg:w-[40%] xl:w-[30%] bg-texture myshades rounded-[31px] mx-auto">
