@@ -332,7 +332,9 @@ const MainRecipiesDetail = () => {
               </div>
             </div>
             <div className="rounded-md my-4">
-              <h2 className="font-HelveticaNeueRegular text-base">{recipe?.description}</h2>
+              <h2 className="font-HelveticaNeueRegular text-base">
+                {recipe?.description}
+              </h2>
               <img
                 src={recipe?.images[0]}
                 alt=""
@@ -360,6 +362,15 @@ const MainRecipiesDetail = () => {
                 }}
                 className="h-full no-border-editor"
               />
+            </div>
+            <div className="mt-4 mb-6 pl-4">
+              {recipe?.ingredients.map((ing, i) => (
+                <div className="flex mt-2">
+                  <ul className="list-disc">
+                    <li>{ing}</li>
+                  </ul>
+                </div>
+              ))}
             </div>
 
             {recipe?.isLike && (

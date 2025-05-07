@@ -12,7 +12,8 @@ import { useStateValue } from "../../context/StateProvider";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import BreadCrumbs from "../reuseable/breadCrumbs";
 
-import { Plus, X } from "lucide-react";
+import { Plus, X, PlusCircle } from "lucide-react";
+import { IoClose } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 const recipeCategory = [
@@ -41,6 +42,22 @@ const RichTextEditor = () => {
   const [isCheckTitle, setIsCheckTitle] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [category, setCategory] = useState([]);
+  const [ingredients, setIngredients] = useState([""]);
+
+  const handleIngredientChange = (index, value) => {
+    const updated = [...ingredients];
+    updated[index] = value;
+    setIngredients(updated);
+  };
+
+  const addIngredient = () => {
+    setIngredients([...ingredients, ""]);
+  };
+
+  const deleteIngredient = (index) => {
+    const updated = ingredients.filter((_, i) => i !== index);
+    setIngredients(updated);
+  };
 
   const [{ user }] = useStateValue();
 
@@ -73,7 +90,6 @@ const RichTextEditor = () => {
     }
   };
 
-
   useEffect(() => {
     if (id) {
       fetchRecipeData(id);
@@ -94,6 +110,7 @@ const RichTextEditor = () => {
           }))
         );
         setImages(data.images || []);
+        setIngredients(data.ingredients || [""]);
       }
     } catch (error) {
       console.error("Error fetching supermarket data:", error);
@@ -126,11 +143,18 @@ const RichTextEditor = () => {
       return;
     }
 
+    const hasEmptyIngredient = ingredients.some((ing) => !ing.trim());
+    if (hasEmptyIngredient) {
+      toast.warning("Please fill in all ingredient fields");
+      return;
+    }
+
     setIsCheckTitle(false);
     setLoading(true); // Start Loading
     const recipeData = {
       content,
       description,
+      ingredients,
       category: selectedCategory.map((sup) => sup.value),
       userId: user?.id || "Unknown",
       userType: user?.usertype || "Guest",
@@ -153,6 +177,7 @@ const RichTextEditor = () => {
         toast.success("Recipe posted successfully!");
         setContent("");
         setDescription("");
+        setIngredients([""]);
         setThumbnail(null);
         setThumbnailURL("");
         setCategory("");
@@ -322,6 +347,42 @@ const RichTextEditor = () => {
               }}
               className="h-full"
             />
+          </div>
+
+          <div className="flex flex-wrap gap-[2%] mt-5">
+            {ingredients.map((ing, index) => (
+              <div key={index} className="flex items-center gap-2 w-[32%] mt-4">
+                <p className="font-HelveticaNeueMedium">{index + 1}.</p>
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Ingredient"
+                    className="w-full text-sm rounded-md bg-gray-100 pl-3 pr-7 py-2 text-gray-700"
+                    value={ing}
+                    onChange={(e) =>
+                      handleIngredientChange(index, e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => deleteIngredient(index)}
+                    className="text-red-600 hover:text-red-700 text-xl absolute top-2 right-1"
+                  >
+                    <IoClose />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            onClick={addIngredient}
+            className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
+          >
+            <PlusCircle size={35} className=" text-gkRedColor" />
+            <span className="font-HelveticaNeueMedium text-darkColor text-base">
+              Add Ingredient
+            </span>
           </div>
         </div>
       </div>

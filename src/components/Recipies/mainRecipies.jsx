@@ -81,7 +81,7 @@ const MainRecipies = () => {
   const handleDelete = async (id) => {
     await deleteRecipe(id);
     setWarning(false);
-    toast.success("Blog Deleted Successfully");
+    toast.success("Recipe Deleted Successfully");
     fetchData();
   };
 
