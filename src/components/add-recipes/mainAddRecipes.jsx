@@ -351,7 +351,7 @@ const RichTextEditor = () => {
 
           <div className="flex flex-wrap gap-[2%] mt-5">
             {ingredients.map((ing, index) => (
-              <div key={index} className="flex items-center gap-2 w-[32%] mt-4">
+              <div key={index} className="flex items-center gap-2 w-full md:w-[49%] lg:w-[32%] mt-4">
                 <p className="font-HelveticaNeueMedium">{index + 1}.</p>
                 <div className="relative w-full">
                   <input
