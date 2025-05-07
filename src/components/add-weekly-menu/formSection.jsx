@@ -113,7 +113,7 @@ const FormSection = () => {
 
   const handleDayRowAdd = (day) => {
     const newFormData = { ...formData };
-    newFormData[day].push({ category: "", recipe: "", ingredients: [""] });
+    newFormData[day].push({ category: "", recipe: ""});
     setFormData(newFormData);
 
     const newIndex = newFormData[day].length - 1;
@@ -143,32 +143,32 @@ const FormSection = () => {
     }));
   };
 
-  const handleIngredientChange = (day, rowIndex, ingIndex, value) => {
-    const updatedDay = [...formData[day]];
-    updatedDay[rowIndex].ingredients[ingIndex] = value;
-    setFormData((prev) => ({
-      ...prev,
-      [day]: updatedDay,
-    }));
-  };
+  // const handleIngredientChange = (day, rowIndex, ingIndex, value) => {
+  //   const updatedDay = [...formData[day]];
+  //   updatedDay[rowIndex].ingredients[ingIndex] = value;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [day]: updatedDay,
+  //   }));
+  // };
 
-  const addIngredient = (day, rowIndex) => {
-    const updatedDay = [...formData[day]];
-    updatedDay[rowIndex].ingredients.push("");
-    setFormData((prev) => ({
-      ...prev,
-      [day]: updatedDay,
-    }));
-  };
+  // const addIngredient = (day, rowIndex) => {
+  //   const updatedDay = [...formData[day]];
+  //   updatedDay[rowIndex].ingredients.push("");
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [day]: updatedDay,
+  //   }));
+  // };
 
-  const deleteIngredient = (day, rowIndex, ingIndex) => {
-    const updatedDay = [...formData[day]];
-    updatedDay[rowIndex].ingredients.splice(ingIndex, 1);
-    setFormData((prev) => ({
-      ...prev,
-      [day]: updatedDay,
-    }));
-  };
+  // const deleteIngredient = (day, rowIndex, ingIndex) => {
+  //   const updatedDay = [...formData[day]];
+  //   updatedDay[rowIndex].ingredients.splice(ingIndex, 1);
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [day]: updatedDay,
+  //   }));
+  // };
 
   const toggleDayExpand = (day) => {
     setExpandedDays((prev) => ({
@@ -217,15 +217,15 @@ const FormSection = () => {
           return;
         }
 
-        if (
-          !entry.ingredients.length ||
-          entry.ingredients.some((ing) => !ing.trim())
-        ) {
-          toast.error(
-            `One or more ingredients are empty in ${day}, menu ${index + 1}`
-          );
-          return;
-        }
+        // if (
+        //   !entry.ingredients.length ||
+        //   entry.ingredients.some((ing) => !ing.trim())
+        // ) {
+        //   toast.error(
+        //     `One or more ingredients are empty in ${day}, menu ${index + 1}`
+        //   );
+        //   return;
+        // }
       }
     }
 
@@ -426,7 +426,7 @@ const FormSection = () => {
                       </div>
 
                       {/* Ingredients */}
-                      <hr />
+                      {/* <hr />
                       <div className="flex flex-wrap gap-[2%] mt-5">
                         {row.ingredients.map((ing, ingIndex) => (
                           <div
@@ -473,7 +473,7 @@ const FormSection = () => {
                         <span className="font-HelveticaNeueMedium text-darkColor text-base">
                           Add Ingredient
                         </span>
-                      </div>
+                      </div> */}
                     </>
                   )}
                 </div>

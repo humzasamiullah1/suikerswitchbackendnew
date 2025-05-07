@@ -181,8 +181,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Maandag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full cursor-pointer">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -190,27 +191,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 "
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
@@ -222,8 +216,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Dinsdag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -231,27 +226,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
@@ -263,8 +251,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Woensdag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -272,27 +261,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
@@ -306,8 +288,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Donderdag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -315,27 +298,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
@@ -347,8 +323,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Vrijdag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -356,27 +333,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
@@ -388,8 +358,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Zaterdag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -397,27 +368,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
@@ -429,8 +393,9 @@ const MainMenuDetail = () => {
                   <hr />
                   {menu?.WeeklyMenu?.Zondag.map((item, index) => (
                     <>
-                      <div className="border border-gray-200 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
+                        <Link
+                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
                           <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                             <img
                               src={item.recipe.image}
@@ -438,27 +403,20 @@ const MainMenuDetail = () => {
                               className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
                             />
                           </div>
-                          <div className="w-[66%] sm:w-[70%] xl:w-[85%] pl-2 lg:pl-5">
+                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
                             <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                               {item.category}
                             </p>
-                            <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                              className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
+                            <p
+                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
                             >
                               {item.recipe.description}
-                            </Link>
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4 pl-4">
-                          {item.ingredients.map((ing, i) => (
-                            <div className="flex mt-2">
-                              <ul className="list-disc">
-                                <li>{ing}</li>
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                          <div className="w-[8%] flex justify-end">
+                            <ChevronRight className="cursor-pointer" />
+                          </div>
+                        </Link>
                       </div>
                     </>
                   ))}
