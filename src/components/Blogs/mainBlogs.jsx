@@ -53,15 +53,15 @@ const MainBlogs = () => {
       blog?.content?.toLowerCase()?.includes(search.toLowerCase())
   );
 
-  const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
-  const currentProducts = searchedProducts.slice(
-    currentPage * productsPerPage,
-    (currentPage + 1) * productsPerPage
-  );
+  // const pageCount = Math.ceil(searchedProducts.length / productsPerPage);
+  // const currentProducts = searchedProducts.slice(
+  //   currentPage * productsPerPage,
+  //   (currentPage + 1) * productsPerPage
+  // );
 
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
-  };
+  // const handlePageClick = ({ selected }) => {
+  //   setCurrentPage(selected);
+  // };
 
   return (
     <motion.div
@@ -113,9 +113,9 @@ const MainBlogs = () => {
       </div>
       {!loading ? (
         <>
-          <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll">
-            {currentProducts.length > 0 ? (
-              currentProducts.map((item, index) => (
+          <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+            {searchedProducts.length > 0 ? (
+              searchedProducts.map((item, index) => (
                 <motion.div
                   key={index}
                   className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
@@ -140,7 +140,7 @@ const MainBlogs = () => {
               </div>
             )}
           </div>
-          {pageCount > 1 && (
+          {/* {pageCount > 1 && (
             <div className="lg:h-[10%] pb-5 lg:pb-0">
               <ReactPaginate
                 previousLabel={"Previous"}
@@ -160,7 +160,7 @@ const MainBlogs = () => {
                 disabledClassName={"opacity-50 cursor-not-allowed"}
               />
             </div>
-          )}
+          )} */}
         </>
       ) : (
         <div className="flex w-full h-[350px] md:h-[400px] lg:h-full items-center justify-center">

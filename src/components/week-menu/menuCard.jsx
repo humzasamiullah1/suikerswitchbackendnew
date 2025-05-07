@@ -3,7 +3,7 @@ import ImageTag from "../../components/reuseable/imageTag";
 import { Ellipsis, Trash2, Pencil, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
+const MenuCard = ({ data, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
