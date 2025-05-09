@@ -233,7 +233,7 @@ const RichTextEditor = () => {
               </section>
             </main>
           )}
-          <SunEditor
+          {/* <SunEditor
             setContents={content}
             onChange={setContent}
             placeholder="Write something here..."
@@ -258,7 +258,54 @@ const RichTextEditor = () => {
               return false; // 🔥 Prevent default base64 upload
             }}
             className="h-full"
-          />
+          /> */}
+           <SunEditor
+              setContents={content}
+              onChange={setContent}
+              placeholder="Write something here..."
+              setOptions={{
+                minHeight: "100%",
+                height: "100%",
+                imageUploadUrl: null,
+                imageGalleryUrl: null,
+                buttonList: [
+                  [
+                    "formatBlock",
+                    "fontSize", // 👈 Font size button
+                    "bold",
+                    "underline",
+                    "italic",
+                    "strike",
+                    "list",
+                    "align",
+                    "link",
+                    "image",
+                    "video",
+                    "fullScreen",
+                    "undo",
+                    "redo",
+                  ],
+                ],
+                formats: [
+                  "p",
+                  "h1",
+                  "h2",
+                  "h3",
+                  "h4",
+                  "h5",
+                  "h6",
+                  "blockquote",
+                  "pre",
+                ],
+                fontSize: [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 36, 48], // ✅ Limit font sizes
+                callBackSave: (content) => setContent(content),
+              }}
+              onImageUploadBefore={(files, _, uploadHandler) => {
+                handleImageUpload(files[0], {}, uploadHandler);
+                return false;
+              }}
+              className="h-full"
+            />
         </div>
       </div>
 
