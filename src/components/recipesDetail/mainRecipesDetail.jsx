@@ -81,7 +81,7 @@ const MainRecipiesDetail = () => {
     const blogData = await getRecipeById(id); // Function call
     setRecipe(blogData);
     fetchUserData(blogData.userId);
-    console.log("recipe", recipe);
+    console.log("recipe", blogData);
   };
 
   useEffect(() => {
@@ -363,9 +363,10 @@ const MainRecipiesDetail = () => {
                 className="h-full no-border-editor"
               />
             </div>
-            <div className="mt-4 mb-6 pl-4">
+            <div className="mt-5 mb-14">
+              <h4 className="font-HelveticaNeueMedium text-xl">Ingrediant</h4>
               {recipe?.ingredients.map((ing, i) => (
-                <div className="flex mt-2">
+                <div className="flex mt-2 pl-4">
                   <ul className="list-disc">
                     <li>{ing}</li>
                   </ul>

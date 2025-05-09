@@ -220,7 +220,7 @@ const MainBlogDetail = () => {
       {/* Blog List Section */}
       <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
         <motion.div
-          className=""
+          className="pb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut", delay: 1 * 0.1 }}
