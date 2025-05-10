@@ -20,8 +20,6 @@ const MainWeekMenu = () => {
   const [loading, setLoading] = useState(true);
   const [menu, setMenu] = useState(true);
   const [warning, setWarning] = useState(false);
-  const [isViewIngrediants, setIsViewIngrediants] = useState(false);
-  const [selectedIngredients,setSelectedIngredients] = useState('')
   const [onDeleteId, setOnDeleteId] = useState("");
 
   const fetchData = async () => {
@@ -39,12 +37,6 @@ const MainWeekMenu = () => {
   const openConfirmPopup = (id) => {
     setOnDeleteId(id);
     setWarning(true);
-  };
-
-  const handleViewIngredients = (ingredients) => {
-    console.log('ingredients', ingredients)
-    setSelectedIngredients(ingredients);
-    setIsViewIngrediants(true)
   };
 
   const handleDelete = async (id) => {
@@ -92,7 +84,7 @@ const MainWeekMenu = () => {
       </div>
       {!loading ? (
         <>
-          <div className="lg:h-[78%] lg:overflow-y-scroll panelScroll">
+          <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
             {menu.length > 0 ? (
               menu.map((item, index) => (
                 <motion.div
@@ -109,7 +101,6 @@ const MainWeekMenu = () => {
                   <MenuCard
                     data={item}
                     onDelete={() => openConfirmPopup(item.id)}
-                    onViewIngrediant={handleViewIngredients}
                   />
                 </motion.div>
               ))
@@ -133,9 +124,6 @@ const MainWeekMenu = () => {
           onDelete={(id) => handleDelete(id)}
         />
       )}
-      { isViewIngrediants &&
-        <ViewIngrediants data={selectedIngredients} onClose={()=> setIsViewIngrediants(false)}/>
-      }
     </motion.div>
   );
 };

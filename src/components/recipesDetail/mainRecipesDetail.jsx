@@ -81,7 +81,7 @@ const MainRecipiesDetail = () => {
     const blogData = await getRecipeById(id); // Function call
     setRecipe(blogData);
     fetchUserData(blogData.userId);
-    console.log("recipe", recipe);
+    console.log("recipe", blogData);
   };
 
   useEffect(() => {
@@ -332,7 +332,9 @@ const MainRecipiesDetail = () => {
               </div>
             </div>
             <div className="rounded-md my-4">
-              <h2 className="font-HelveticaNeueRegular text-base">{recipe?.description}</h2>
+              <h2 className="font-HelveticaNeueRegular text-base">
+                {recipe?.description}
+              </h2>
               <img
                 src={recipe?.images[0]}
                 alt=""
@@ -360,6 +362,16 @@ const MainRecipiesDetail = () => {
                 }}
                 className="h-full no-border-editor"
               />
+            </div>
+            <div className="mt-5 mb-14">
+              <h4 className="font-HelveticaNeueMedium text-xl">Ingrediant</h4>
+              {recipe?.ingredients.map((ing, i) => (
+                <div className="flex mt-2 pl-4">
+                  <ul className="list-disc">
+                    <li>{ing}</li>
+                  </ul>
+                </div>
+              ))}
             </div>
 
             {recipe?.isLike && (

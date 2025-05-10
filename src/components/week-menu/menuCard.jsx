@@ -3,7 +3,7 @@ import ImageTag from "../../components/reuseable/imageTag";
 import { Ellipsis, Trash2, Pencil, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
+const MenuCard = ({ data, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -75,10 +75,12 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
       <div className="my-5 h-[350px] overflow-y-scroll panelScroll">
         {data.WeeklyMenu.Maandag.length > 0 && (
           <div>
-            <h3 className="font-HelveticaNeueMedium text-lg  md:text-xl">Maandag</h3>
+            <h3 className="font-HelveticaNeueMedium text-lg  md:text-xl">
+              Maandag
+            </h3>
             <hr />
             {data.WeeklyMenu.Maandag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between mt-4 cursor-pointer">
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-2 lg:p-4 shadow">
                   <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
                     <img
@@ -91,21 +93,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-sm lg:text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 ">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[8%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                      <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -114,7 +110,7 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
             <h3 className="font-HelveticaNeueMedium text-xl">Dinsdag</h3>
             <hr />
             {data.WeeklyMenu.Dinsdag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between mt-4 cursor-pointer">
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-4 shadow">
                   <div className="w-[15%]">
                     <img
@@ -127,21 +123,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-base line-clamp-2 ">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[5%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                      <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -150,7 +140,7 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
             <h3 className="font-HelveticaNeueMedium text-xl">Woensdag</h3>
             <hr />
             {data.WeeklyMenu.Woensdag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between mt-4 cursor-pointer">
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-4 shadow">
                   <div className="w-[15%]">
                     <img
@@ -163,21 +153,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-base line-clamp-2 ">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[5%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                      <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -186,7 +170,7 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
             <h3 className="font-HelveticaNeueMedium text-xl">Donderdag</h3>
             <hr />
             {data.WeeklyMenu.Donderdag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between mt-4 cursor-pointer">
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-4 shadow">
                   <div className="w-[15%]">
                     <img
@@ -199,21 +183,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-base line-clamp-2">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[5%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                    <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -222,7 +200,10 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
             <h3 className="font-HelveticaNeueMedium text-xl">Vrijdag</h3>
             <hr />
             {data.WeeklyMenu.Vrijdag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link
+                to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                className="flex justify-between mt-4 cursor-pointer"
+              >
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-4 shadow">
                   <div className="w-[15%]">
                     <img
@@ -235,21 +216,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-base line-clamp-2">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[5%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                    <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -258,7 +233,10 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
             <h3 className="font-HelveticaNeueMedium text-xl">Zaterdag</h3>
             <hr />
             {data.WeeklyMenu.Zaterdag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link
+                to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                className="flex justify-between mt-4 cursor-pointer"
+              >
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-4 shadow">
                   <div className="w-[15%]">
                     <img
@@ -271,21 +249,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-base line-clamp-2 ">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[5%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                    <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -294,7 +266,10 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
             <h3 className="font-HelveticaNeueMedium text-xl">Zondag</h3>
             <hr />
             {data.WeeklyMenu.Zondag.map((item, index) => (
-              <div className="flex justify-between mt-4">
+              <Link
+                to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                className="flex justify-between mt-4 cursor-pointer"
+              >
                 <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-4 shadow">
                   <div className="w-[15%]">
                     <img
@@ -307,21 +282,15 @@ const MenuCard = ({ data, onDelete, onViewIngrediant }) => {
                     <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                       {item.category}
                     </p>
-                    <Link
-                      to={`/dashboard/recipes-detail/${item.recipe.id}`}
-                      className="font-HelveticaNeueMedium pt-1 text-base line-clamp-2 hover:text-gkRedColor"
-                    >
+                    <p className="font-HelveticaNeueMedium text-base line-clamp-2">
                       {item.recipe.description}
-                    </Link>
+                    </p>
                   </div>
                   <div className="w-[5%] flex justify-end">
-                    <ChevronRight
-                      onClick={() => onViewIngrediant(item)}
-                      className="cursor-pointer"
-                    />
+                    <ChevronRight className="cursor-pointer" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
