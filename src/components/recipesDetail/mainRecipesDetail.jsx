@@ -364,7 +364,7 @@ const MainRecipiesDetail = () => {
               />
             </div>
             <div className="mt-5 mb-14">
-              <h4 className="font-HelveticaNeueMedium text-xl">Ingrediant</h4>
+              <h4 className="font-HelveticaNeueMedium text-xl">ingredients</h4>
               {recipe?.ingredients.map((ing, i) => (
                 <div className="flex mt-2 pl-4">
                   <ul className="list-disc">
