@@ -5,6 +5,7 @@ import MainSearch from "../components/global-searchbar/mainSearch";
 
 function AddRecipes() {
   const [isGlobalSearch, setIsGlobalSearch] = useState(false);
+  const [bulkenabled, setbulkenabled] = useState(false);
 
   const handleSearch = (value) => {
     setIsGlobalSearch(value);
@@ -28,7 +29,12 @@ function AddRecipes() {
             />
           </div>
           <div className="h-[85%] pt-5 lg:pt-0 pb-5">
-            <RichTextEditor />
+            <RichTextEditor
+              bulkenabled={bulkenabled}
+              onClick={() => {
+                setbulkenabled(!bulkenabled);
+              }}
+            />
           </div>
         </>
       ) : (

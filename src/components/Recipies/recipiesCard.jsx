@@ -65,6 +65,7 @@ const RecipiesCard = ({
   onCommentPopup,
   highlightSearchTerm,
   isShow = false,
+  hideuserdata,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -145,63 +146,67 @@ const RecipiesCard = ({
   return (
     <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
       <div className="border-b-2 border-darkColor/20 pb-3">
-        <div className="flex justify-between items-center">
-          <div className={`${isShow ? "w-full" : "w-[60%]"} flex items-center`}>
-            {loading && (
-              <>
-                <ImageTag
-                  path={
-                    userData.profilePicture !== ""
-                      ? userData.profilePicture
-                      : "/assets/images/default-image.png"
-                  }
-                  classes="size-10 rounded-full object-cover"
-                  altText="logo"
-                />
-                <div className="pl-3">
-                  <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                    {userData.firstname} {userData.lastname}
-                  </p>
-                  <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
-                    {timeAgo(data.createdAt)}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-          {isShow && (
+        {!hideuserdata && (
+          <div className="flex justify-between items-center">
             <div
-              className="w-[40%] flex justify-end text-darkColor relative"
-              ref={dropdownRef}
+              className={`${isShow ? "w-full" : "w-[60%]"} flex items-center`}
             >
-              <Ellipsis
-                size={30}
-                className="cursor-pointer"
-                onClick={toggleMenu}
-              />
-              {isOpen && (
-                <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
-                  <ul className="py-2 w-full">
-                    <Link to={`/dashboard/add-recipies?id=${data.id}`}>
-                      <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
-                        <Pencil size={18} />
-                        <span className="pl-3">Edit</span>
-                      </li>
-                    </Link>
-                    <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
-                    <li
-                      className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
-                      onClick={onDelete}
-                    >
-                      <Trash2 size={18} />
-                      <span className="pl-3">Delete</span>
-                    </li>
-                  </ul>
-                </div>
+              {loading && (
+                <>
+                  <ImageTag
+                    path={
+                      userData.profilePicture !== ""
+                        ? userData.profilePicture
+                        : "/assets/images/default-image.png"
+                    }
+                    classes="size-10 rounded-full object-cover"
+                    altText="logo"
+                  />
+                  <div className="pl-3">
+                    <p className="font-HelveticaNeueMedium text-darkColor text-base">
+                      {userData.firstname} {userData.lastname}
+                    </p>
+                    <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
+                      {timeAgo(data.createdAt)}
+                    </p>
+                  </div>
+                </>
               )}
             </div>
-          )}
-        </div>
+            {isShow && (
+              <div
+                className="w-[40%] flex justify-end text-darkColor relative"
+                ref={dropdownRef}
+              >
+                <Ellipsis
+                  size={30}
+                  className="cursor-pointer"
+                  onClick={toggleMenu}
+                />
+                {isOpen && (
+                  <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
+                    <ul className="py-2 w-full">
+                      <Link to={`/dashboard/add-recipies?id=${data.id}`}>
+                        <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
+                          <Pencil size={18} />
+                          <span className="pl-3">Edit</span>
+                        </li>
+                      </Link>
+                      <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
+                      <li
+                        className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
+                        onClick={onDelete}
+                      >
+                        <Trash2 size={18} />
+                        <span className="pl-3">Delete</span>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         <div
           ref={scrollRef}
           className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing select-none scrollbar-hide panelScroll"
