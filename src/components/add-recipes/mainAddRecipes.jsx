@@ -44,6 +44,7 @@ const RichTextEditor = (props) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [category, setCategory] = useState([]);
   const [ingredients, setIngredients] = useState([""]);
+  const [tags, settags] = useState([""]);
 
   const handleIngredientChange = (index, value) => {
     const updated = [...ingredients];
@@ -51,13 +52,28 @@ const RichTextEditor = (props) => {
     setIngredients(updated);
   };
 
+  const handletagChange = (index, value) => {
+    const updated = [...tags];
+    updated[index] = value;
+    settags(updated);
+  };
+
   const addIngredient = () => {
     setIngredients([...ingredients, ""]);
+  };
+
+  const addTags = () => {
+    settags([...tags, ""]);
   };
 
   const deleteIngredient = (index) => {
     const updated = ingredients.filter((_, i) => i !== index);
     setIngredients(updated);
+  };
+
+  const deletetags = (index) => {
+    const updated = tags.filter((_, i) => i !== index);
+    settags(updated);
   };
 
   const [{ user }] = useStateValue();
@@ -112,6 +128,7 @@ const RichTextEditor = (props) => {
         );
         setImages(data.images || []);
         setIngredients(data.ingredients || [""]);
+        settags(data.tags || [""]);
       }
     } catch (error) {
       console.error("Error fetching supermarket data:", error);
@@ -156,6 +173,7 @@ const RichTextEditor = (props) => {
       content,
       description,
       ingredients,
+      tags,
       category: selectedCategory.map((sup) => sup.value),
       userId: user?.id || "Unknown",
       userType: user?.usertype || "Guest",
@@ -450,6 +468,43 @@ const RichTextEditor = (props) => {
               <PlusCircle size={35} className=" text-gkRedColor" />
               <span className="font-HelveticaNeueMedium text-darkColor text-base">
                 Add Ingredient
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-[2%] mt-5">
+              {tags.map((ing, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 w-full md:w-[49%] lg:w-[32%] mt-4"
+                >
+                  <p className="font-HelveticaNeueMedium">{index + 1}.</p>
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Tags"
+                      className="w-full text-sm rounded-md bg-gray-100 pl-3 pr-7 py-2 text-gray-700"
+                      value={ing}
+                      onChange={(e) => handletagChange(index, e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => deletetags(index)}
+                      className="text-red-600 hover:text-red-700 text-xl absolute top-2 right-1"
+                    >
+                      <IoClose />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div
+              onClick={addTags}
+              className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
+            >
+              <PlusCircle size={35} className=" text-gkRedColor" />
+              <span className="font-HelveticaNeueMedium text-darkColor text-base">
+                Add Tags
               </span>
             </div>
           </div>

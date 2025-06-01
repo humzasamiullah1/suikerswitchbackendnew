@@ -50,14 +50,14 @@ const BulkFormSection = () => {
         if (item?.Logurl != undefined) {
           imageurls.push(item?.Logurl);
         }
-        const categories = item?.Category ? item?.Category?.split(",") : [];
-        const Tags = item?.Tags ? item?.Tags?.split(",") : [];
-        const Ingredients = item?.Ingredients
+        let categories = item?.Category ? item?.Category?.split(",") : [];
+        let Tags = item?.Tags ? item?.Tags?.split(",") : [];
+        let Ingredients = item?.Ingredients
           ? item?.Ingredients?.split(",")
           : [];
 
         let datset = {
-          category: categories.map((cat) => cat.trim()),
+          category: categories.map((cat) => cat.toString().trim()),
           content: item?.Htmltext ? item?.Htmltext : "",
           description: item?.Shortdescription ? item?.Shortdescription : "",
           images: imageurls,

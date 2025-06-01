@@ -436,7 +436,6 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
   }
 };
 
-
 export const updateCategoryToFirebase = async (id, formData, newImageFiles) => {
   try {
     // 1. Fetch existing document
@@ -456,9 +455,14 @@ export const updateCategoryToFirebase = async (id, formData, newImageFiles) => {
       const oldImageURL = imageURLs[0];
 
       // 2.a. Delete old image from storage
-      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+      if (
+        oldImageURL &&
+        oldImageURL.startsWith("https://firebasestorage.googleapis.com")
+      ) {
         try {
-          const filePath = decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0]);
+          const filePath = decodeURIComponent(
+            oldImageURL.split("/o/")[1].split("?alt=")[0]
+          );
           const oldImageRef = ref(storage, filePath);
           await deleteObject(oldImageRef);
           console.log("✅ Old image deleted:", filePath);
@@ -497,7 +501,11 @@ export const updateCategoryToFirebase = async (id, formData, newImageFiles) => {
   }
 };
 
-export const updateWeeklyMenuToFirebase = async (id, formData, newImageFiles) => {
+export const updateWeeklyMenuToFirebase = async (
+  id,
+  formData,
+  newImageFiles
+) => {
   try {
     // 1. Fetch existing document
     const docRef = doc(firestored, "weeklymenu", id);
@@ -516,9 +524,14 @@ export const updateWeeklyMenuToFirebase = async (id, formData, newImageFiles) =>
       const oldImageURL = imageURLs[0];
 
       // 2.a. Delete old image from storage
-      if (oldImageURL && oldImageURL.startsWith("https://firebasestorage.googleapis.com")) {
+      if (
+        oldImageURL &&
+        oldImageURL.startsWith("https://firebasestorage.googleapis.com")
+      ) {
         try {
-          const filePath = decodeURIComponent(oldImageURL.split("/o/")[1].split("?alt=")[0]);
+          const filePath = decodeURIComponent(
+            oldImageURL.split("/o/")[1].split("?alt=")[0]
+          );
           const oldImageRef = ref(storage, filePath);
           await deleteObject(oldImageRef);
           console.log("✅ Old image deleted:", filePath);
@@ -556,7 +569,6 @@ export const updateWeeklyMenuToFirebase = async (id, formData, newImageFiles) =>
     console.error("❌ Error updating category:", error.message);
   }
 };
-
 
 export const deleteProduct = async (id) => {
   try {
@@ -642,7 +654,6 @@ export const addCategoryToFirebase = async (categoryData, imageFiles) => {
   }
 };
 
-
 export const addWeeklyMenu = async (menuData, imageFiles) => {
   try {
     // Sare images upload karo aur unke URLs le lo
@@ -667,8 +678,6 @@ export const addWeeklyMenu = async (menuData, imageFiles) => {
     return { success: false, error: error.message };
   }
 };
-
-
 
 export const getProducts = async () => {
   const productsRef = collection(firestored, "products");
@@ -1043,6 +1052,7 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
       content: formData.content,
       description: formData.description,
       ingredients: formData.ingredients,
+      tags: formData.tags,
       category: formData.category,
       images: imageURLs,
     });
@@ -1160,7 +1170,7 @@ export const getRecipe = async () => {
   try {
     const recipeQuery = query(
       collection(firestored, "recipe"),
-      orderBy("createdAt", "desc")  // sorting by Firestore Timestamp field
+      orderBy("createdAt", "desc") // sorting by Firestore Timestamp field
     );
 
     const querySnapshot = await getDocs(recipeQuery);
