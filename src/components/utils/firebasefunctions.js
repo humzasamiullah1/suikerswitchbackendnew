@@ -421,6 +421,7 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
     // Update Firestore document
     await updateDoc(docRef, {
       productName: formData.productName,
+      productNameLowercase: formData.productName?.toLowerCase(),
       description: formData.description,
       // content: formData.content,
       selectedCategories: formData.selectedCategories,
@@ -616,6 +617,7 @@ export const addProductToFirebase = async (productData, imageFiles) => {
     // Firestore me data save karo
     await setDoc(docRef, {
       ...productData,
+      productNameLowercase: productData.productName?.toLowerCase(),
       id: docId,
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
@@ -743,6 +745,9 @@ export const saveBlogToFirestore = async (formData, imageFiles) => {
     // Firestore me data save karo
     await setDoc(docRef, {
       ...formData,
+      descriptionLowercase: formData.description
+        ? formData.description.toLowerCase()
+        : "",
       id: docId, // Document ki ID bhi save ho rahi hai
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
@@ -834,6 +839,9 @@ export const updateBlogs = async (id, formData, newImageFiles) => {
     await updateDoc(docRef, {
       content: formData.content,
       description: formData.description,
+      descriptionLowercase: formData.description
+        ? formData.description.toLowerCase()
+        : "",
       images: imageURLs,
     });
 
@@ -991,6 +999,9 @@ export const saveRecipeToFirestore = async (formData, imageFiles) => {
     // Firestore me data save karo
     await setDoc(docRef, {
       ...formData,
+      descriptionLowercase: formData.description
+        ? formData.description.toLowerCase()
+        : "",
       id: docId, // Document ki ID bhi save ho rahi hai
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
@@ -1051,6 +1062,9 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
     await updateDoc(docRef, {
       content: formData.content,
       description: formData.description,
+      descriptionLowercase: formData.description
+        ? formData.description.toLowerCase()
+        : "",
       ingredients: formData.ingredients,
       tags: formData.tags,
       category: formData.category,

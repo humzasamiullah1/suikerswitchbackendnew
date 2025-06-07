@@ -58,6 +58,7 @@ const BulkFormSection = () => {
         imageurls.push(item?.Imageurl);
         let datset = {
           productName: item?.ProductName,
+          productNameLowercase: item?.ProductName?.toLowerCase(),
           selectedCategories: categories.map((cat) => cat.trim()),
           selectedSubCategories: subcategories.map((subcat) => subcat.trim()),
           selectedSupermarkets: supermarkets.map((sup) => sup.trim()),

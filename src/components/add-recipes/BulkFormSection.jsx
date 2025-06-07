@@ -60,6 +60,9 @@ const BulkFormSection = () => {
           category: categories.map((cat) => cat.toString().trim()),
           content: item?.Htmltext ? item?.Htmltext : "",
           description: item?.Shortdescription ? item?.Shortdescription : "",
+          descriptionLowercase: item?.Shortdescription
+            ? item?.Shortdescription.toLowerCase()
+            : "",
           images: imageurls,
           ingredients: Ingredients.map((cat) => cat.trim()),
           tags: Tags.map((cat) => cat.trim()),
@@ -96,6 +99,7 @@ const BulkFormSection = () => {
 
         const datset = {
           ...item,
+          bulkupload: true,
           id: docId,
           // categories: item?.Category?.split(",") || [],
           // supermarkets: item?.Supermarket?.split(",") || [],
