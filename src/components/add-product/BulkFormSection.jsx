@@ -26,6 +26,42 @@ const BulkFormSection = () => {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
+  function generateSearchKeywords(text) {
+    const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+    const MAX_KEYWORDS = 300; // limit total count
+
+    const keywords = new Set();
+    const words = text.toLowerCase().split(/\s+/);
+
+    for (const word of words) {
+      for (let i = 0; i < word.length; i++) {
+        for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+          keywords.add(word.slice(i, j));
+        }
+      }
+    }
+
+    // Add full-word combinations
+    for (let i = 0; i < words.length; i++) {
+      let combo = words[i];
+      keywords.add(combo);
+      for (let j = i + 1; j < words.length; j++) {
+        combo += " " + words[j];
+        keywords.add(combo);
+      }
+    }
+
+    const fullText = words.join(" ");
+    for (let i = 1; i <= fullText.length; i++) {
+      const prefix = fullText.slice(0, i);
+      if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+        keywords.add(prefix);
+      }
+    }
+
+    return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+  }
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -59,6 +95,7 @@ const BulkFormSection = () => {
         let datset = {
           productName: item?.ProductName,
           productNameLowercase: item?.ProductName?.toLowerCase(),
+          productsearcharray: generateSearchKeywords(item?.ProductName),
           selectedCategories: categories.map((cat) => cat.trim()),
           selectedSubCategories: subcategories.map((subcat) => subcat.trim()),
           selectedSupermarkets: supermarkets.map((sup) => sup.trim()),

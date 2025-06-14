@@ -381,6 +381,41 @@ export const getCategoryById = async (id) => {
 
 export const updateProductToFirebase = async (id, formData, newImageFiles) => {
   try {
+    function generateSearchKeywords(text) {
+      const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+      const MAX_KEYWORDS = 300; // limit total count
+
+      const keywords = new Set();
+      const words = text.toLowerCase().split(/\s+/);
+
+      for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+          for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+            keywords.add(word.slice(i, j));
+          }
+        }
+      }
+
+      // Add full-word combinations
+      for (let i = 0; i < words.length; i++) {
+        let combo = words[i];
+        keywords.add(combo);
+        for (let j = i + 1; j < words.length; j++) {
+          combo += " " + words[j];
+          keywords.add(combo);
+        }
+      }
+
+      const fullText = words.join(" ");
+      for (let i = 1; i <= fullText.length; i++) {
+        const prefix = fullText.slice(0, i);
+        if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+          keywords.add(prefix);
+        }
+      }
+
+      return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+    }
     // Fetch existing document data
     const docRef = doc(firestored, "products", id);
     const docSnap = await getDoc(docRef);
@@ -422,6 +457,7 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
     await updateDoc(docRef, {
       productName: formData.productName,
       productNameLowercase: formData.productName?.toLowerCase(),
+      productsearcharray: generateSearchKeywords(formData.productName),
       description: formData.description,
       // content: formData.content,
       selectedCategories: formData.selectedCategories,
@@ -606,6 +642,41 @@ export const deleteProduct = async (id) => {
 
 export const addProductToFirebase = async (productData, imageFiles) => {
   try {
+    function generateSearchKeywords(text) {
+      const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+      const MAX_KEYWORDS = 300; // limit total count
+
+      const keywords = new Set();
+      const words = text.toLowerCase().split(/\s+/);
+
+      for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+          for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+            keywords.add(word.slice(i, j));
+          }
+        }
+      }
+
+      // Add full-word combinations
+      for (let i = 0; i < words.length; i++) {
+        let combo = words[i];
+        keywords.add(combo);
+        for (let j = i + 1; j < words.length; j++) {
+          combo += " " + words[j];
+          keywords.add(combo);
+        }
+      }
+
+      const fullText = words.join(" ");
+      for (let i = 1; i <= fullText.length; i++) {
+        const prefix = fullText.slice(0, i);
+        if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+          keywords.add(prefix);
+        }
+      }
+
+      return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+    }
     // Sare images upload karo aur unke URLs le lo
     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
     const imageUrls = await Promise.all(imageUploadPromises);
@@ -618,6 +689,7 @@ export const addProductToFirebase = async (productData, imageFiles) => {
     await setDoc(docRef, {
       ...productData,
       productNameLowercase: productData.productName?.toLowerCase(),
+      productsearcharray: generateSearchKeywords(productData.productName),
       id: docId,
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
@@ -734,6 +806,41 @@ export const uploadImageToBlogFirebase = async (file, folder) => {
 
 export const saveBlogToFirestore = async (formData, imageFiles) => {
   try {
+    function generateSearchKeywords(text) {
+      const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+      const MAX_KEYWORDS = 300; // limit total count
+
+      const keywords = new Set();
+      const words = text.toLowerCase().split(/\s+/);
+
+      for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+          for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+            keywords.add(word.slice(i, j));
+          }
+        }
+      }
+
+      // Add full-word combinations
+      for (let i = 0; i < words.length; i++) {
+        let combo = words[i];
+        keywords.add(combo);
+        for (let j = i + 1; j < words.length; j++) {
+          combo += " " + words[j];
+          keywords.add(combo);
+        }
+      }
+
+      const fullText = words.join(" ");
+      for (let i = 1; i <= fullText.length; i++) {
+        const prefix = fullText.slice(0, i);
+        if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+          keywords.add(prefix);
+        }
+      }
+
+      return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+    }
     // Sare images upload karo aur unke URLs le lo
     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
     const imageUrls = await Promise.all(imageUploadPromises);
@@ -748,6 +855,7 @@ export const saveBlogToFirestore = async (formData, imageFiles) => {
       descriptionLowercase: formData.description
         ? formData.description.toLowerCase()
         : "",
+      descriptionsearcharray: generateSearchKeywords(formData.description),
       id: docId, // Document ki ID bhi save ho rahi hai
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
@@ -795,6 +903,41 @@ export const deleteBlog = async (id) => {
 
 export const updateBlogs = async (id, formData, newImageFiles) => {
   try {
+    function generateSearchKeywords(text) {
+      const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+      const MAX_KEYWORDS = 300; // limit total count
+
+      const keywords = new Set();
+      const words = text.toLowerCase().split(/\s+/);
+
+      for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+          for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+            keywords.add(word.slice(i, j));
+          }
+        }
+      }
+
+      // Add full-word combinations
+      for (let i = 0; i < words.length; i++) {
+        let combo = words[i];
+        keywords.add(combo);
+        for (let j = i + 1; j < words.length; j++) {
+          combo += " " + words[j];
+          keywords.add(combo);
+        }
+      }
+
+      const fullText = words.join(" ");
+      for (let i = 1; i <= fullText.length; i++) {
+        const prefix = fullText.slice(0, i);
+        if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+          keywords.add(prefix);
+        }
+      }
+
+      return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+    }
     // Fetch existing document data
     const docRef = doc(firestored, "blogs", id);
     const docSnap = await getDoc(docRef);
@@ -842,6 +985,7 @@ export const updateBlogs = async (id, formData, newImageFiles) => {
       descriptionLowercase: formData.description
         ? formData.description.toLowerCase()
         : "",
+      descriptionsearcharray: generateSearchKeywords(formData.description),
       images: imageURLs,
     });
 
@@ -988,6 +1132,41 @@ export const uploadImageToRecipeFirebase = async (file, folder) => {
 
 export const saveRecipeToFirestore = async (formData, imageFiles) => {
   try {
+    function generateSearchKeywords(text) {
+      const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+      const MAX_KEYWORDS = 300; // limit total count
+
+      const keywords = new Set();
+      const words = text.toLowerCase().split(/\s+/);
+
+      for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+          for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+            keywords.add(word.slice(i, j));
+          }
+        }
+      }
+
+      // Add full-word combinations
+      for (let i = 0; i < words.length; i++) {
+        let combo = words[i];
+        keywords.add(combo);
+        for (let j = i + 1; j < words.length; j++) {
+          combo += " " + words[j];
+          keywords.add(combo);
+        }
+      }
+
+      const fullText = words.join(" ");
+      for (let i = 1; i <= fullText.length; i++) {
+        const prefix = fullText.slice(0, i);
+        if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+          keywords.add(prefix);
+        }
+      }
+
+      return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+    }
     // Sare images upload karo aur unke URLs le lo
     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
     const imageUrls = await Promise.all(imageUploadPromises);
@@ -1002,6 +1181,7 @@ export const saveRecipeToFirestore = async (formData, imageFiles) => {
       descriptionLowercase: formData.description
         ? formData.description.toLowerCase()
         : "",
+      descriptionsearcharray: generateSearchKeywords(formData.description),
       id: docId, // Document ki ID bhi save ho rahi hai
       images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
@@ -1018,6 +1198,41 @@ export const saveRecipeToFirestore = async (formData, imageFiles) => {
 
 export const updateRecipe = async (id, formData, newImageFiles) => {
   try {
+    function generateSearchKeywords(text) {
+      const MIN_SUBSTRING_LENGTH = 2; // skip single letters
+      const MAX_KEYWORDS = 300; // limit total count
+
+      const keywords = new Set();
+      const words = text.toLowerCase().split(/\s+/);
+
+      for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+          for (let j = i + MIN_SUBSTRING_LENGTH; j <= word.length; j++) {
+            keywords.add(word.slice(i, j));
+          }
+        }
+      }
+
+      // Add full-word combinations
+      for (let i = 0; i < words.length; i++) {
+        let combo = words[i];
+        keywords.add(combo);
+        for (let j = i + 1; j < words.length; j++) {
+          combo += " " + words[j];
+          keywords.add(combo);
+        }
+      }
+
+      const fullText = words.join(" ");
+      for (let i = 1; i <= fullText.length; i++) {
+        const prefix = fullText.slice(0, i);
+        if (prefix.length >= MIN_SUBSTRING_LENGTH && prefix.includes(" ")) {
+          keywords.add(prefix);
+        }
+      }
+
+      return Array.from(keywords).slice(0, MAX_KEYWORDS); // cap at 100
+    }
     // Fetch existing document data
     const docRef = doc(firestored, "recipe", id);
     const docSnap = await getDoc(docRef);
@@ -1065,6 +1280,7 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
       descriptionLowercase: formData.description
         ? formData.description.toLowerCase()
         : "",
+      descriptionsearcharray: generateSearchKeywords(formData.description),
       ingredients: formData.ingredients,
       tags: formData.tags,
       category: formData.category,
