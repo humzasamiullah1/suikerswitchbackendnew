@@ -22,6 +22,7 @@ import {
 import { saveuserdata } from "../utils/firebasefunctions";
 import ImageTag from "../../components/reuseable/imageTag";
 import { actionType } from "../../context/reducer";
+import LabelTag from "../reuseable/label";
 // App.jsx
 const StripeForm = () => {
   const [{ loginData }, dispatch] = useStateValue();
@@ -350,8 +351,25 @@ const CheckoutForm = (props) => {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <PaymentElement />
-        <div className="flex justify-end mt-10">
+        <LabelTag name="Email" classes="text-md font-medium w-full " />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setemail(e.target.value)}
+          required
+          placeholder="Email (required)"
+          className="w-full mb-3 mt-1 text-sm font-popinsRegular rounded-md bg-white px-3 py-2 text-darkColor"
+        />
+
+        <LabelTag name="Payment" classes="text-md font-medium  w-full " />
+        <PaymentElement
+          className="mt-1"
+          options={{
+            fields: { billingDetails: { name: "auto", email: "never" } },
+          }}
+        />
+
+        <div className="flex justify-end mt-5">
           {loading ? (
             <div className="mr-[90px]">
               <div role="status">
@@ -376,7 +394,7 @@ const CheckoutForm = (props) => {
             </div>
           ) : (
             <button
-              className="w-[300px] max-w-sm py-2 text-sm bg-gkRedColor text-white rounded-md font-semibold"
+              className="w-full md:w-[300px]  py-2 text-sm bg-gkRedColor text-white rounded-md font-semibold"
               type="submit"
               disabled={!stripe || !elements}
             >
@@ -384,6 +402,7 @@ const CheckoutForm = (props) => {
             </button>
           )}
         </div>
+
         {/* {errorMessage && <div>{errorMessage}</div>} */}
       </form>
     </ParentComponent>
