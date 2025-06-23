@@ -5,7 +5,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // import Loader from "../Components/Loader/Loader";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -34,6 +34,7 @@ const StripeForm = () => {
   const [username, setusername] = useState("");
   const [errormessage, seterrormessage] = useState("");
   // const email = searchParams.get("email");
+  const dummyemail = "a@gmail.com";
   const subscriptiontypeindex = searchParams.get("type");
   // const username = email.substring(0, email.indexOf("@"));
   const [subscriptiondata, setsubscriptiondata] = useState([
@@ -62,7 +63,18 @@ const StripeForm = () => {
       productid: "price_1RI94BAdN8nseiVbY31wyDgD",
     },
   ]);
+  const emailRef = useRef(null);
 
+  useEffect(() => {
+    emailRef.current.focus();
+    setusername("a");
+    fetchDummyPaymentIntent(
+      dummyemail,
+      dummyemail.substring(0, dummyemail.indexOf("@"))
+    );
+    seterrormessage("");
+    setvalidemail(true);
+  }, []);
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (email.includes("@") && isValidEmail(email)) {
@@ -73,11 +85,10 @@ const StripeForm = () => {
       } else {
         if (email != "") {
           seterrormessage("Invalid Email");
+          setvalidemail(false);
         }
-
-        setvalidemail(false);
       }
-    }, 300);
+    }, 900);
     return () => clearTimeout(delayDebounceFn);
   }, [email]);
 
@@ -116,9 +127,50 @@ const StripeForm = () => {
     setclientdata(customer);
   };
 
+  const fetchDummyPaymentIntent = async (dummyemail, dummyusername) => {
+    const res = await fetch(
+      `https://us-central1-suiker-switch.cloudfunctions.net/api/payment-intent/v2`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: subscriptiondata[subscriptiontypeindex || 0].value,
+          currency: subscriptiondata[subscriptiontypeindex || 0].currency,
+          email: dummyemail,
+          name: dummyusername,
+          priceId: subscriptiondata[subscriptiontypeindex || 0].productid,
+          // amount: 9.99,
+          // currency: 'gbp',
+          // email: 'cs1712148@szabist.pk',
+          // name: 'humzasamiullah',
+        }),
+      }
+    );
+
+    const { paymentIntent, ephemeralKey, customer } = await res.json();
+    console.log("paymentIntent " + JSON.stringify(paymentIntent));
+    console.log("ephemeralKey " + JSON.stringify(ephemeralKey));
+    console.log("customer " + JSON.stringify(customer));
+    setClientSecret(paymentIntent);
+    setclientdata(customer);
+  };
+
   const stripePromise = loadStripe(
     "pk_test_51NfVkoAdN8nseiVbFQG16E8QRBvJxD2ZMHPcdpYEmVOAeOkiYYk8yeVIqXk8M3jjlXCiB34jiPSI9ZTKLi76n5VW00sSVl4Phs"
   );
+
+  const handleBlur = () => {
+    if (!isValidEmail(email)) {
+      //   setIsValid(false);
+      //   // Refocus the input
+      emailRef.current.focus();
+      toast.warn("Enter email before procedding to payment!");
+    } else {
+      setvalidemail(true);
+    }
+  };
 
   return (
     // <ParentComponent>
@@ -152,7 +204,9 @@ const StripeForm = () => {
         />
         <p class="text-sm w-full text-[12px] text-red-500">{errormessage}</p>
         <input
+          ref={emailRef}
           type="email"
+          onBlur={handleBlur}
           value={email}
           onChange={(e) => setemail(e.target.value)}
           required
