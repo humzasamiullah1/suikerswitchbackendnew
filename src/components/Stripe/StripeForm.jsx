@@ -175,7 +175,7 @@ const StripeForm = () => {
   return (
     // <ParentComponent>
     <div className="w-full bg-white flex justify-center items-center h-screen overflow-scroll ">
-      <div className=" bg-white w-full max-h-full max-w-[500px] px-[10px] rounded-lg shadow-md flex flex-col items-center py-[50px] my-[10px] overflow-scroll">
+      <div className=" bg-white w-full max-h-full max-w-[500px] px-[10px] rounded-lg  flex flex-col items-center py-[50px] my-[10px] overflow-scroll panelScroll">
         <div className="flex w-full items-center justify-center  pb-[20px]">
           <ImageTag
             path="/assets/images/paymentlogo.jpeg"
