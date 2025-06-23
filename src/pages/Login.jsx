@@ -22,7 +22,7 @@ function Login() {
         <div className=" w-full h-screen lg:h-full my-auto flex flex-col items-center justify-center bg-white">
           <div className="w-[80%] mx-auto flex flex-col items-center justify-center">
             <ImageTag
-              path="/assets/images/paymentlogo.jpeg"
+              path="/assets/images/round-logo.png"
               classes="w-[80%] h-[140px] object-contain "
               altText="logo"
             />

@@ -166,7 +166,7 @@ const StripeForm = () => {
       //   setIsValid(false);
       //   // Refocus the input
       emailRef.current.focus();
-      toast.warn("Enter email before procedding to payment!");
+      // toast.warn("Enter email before procedding to payment!");
     } else {
       setvalidemail(true);
     }
@@ -178,7 +178,7 @@ const StripeForm = () => {
       <div className=" bg-white w-full max-h-full max-w-[500px] px-[10px] rounded-lg  flex flex-col items-center py-[50px] my-[10px] overflow-scroll panelScroll">
         <div className="flex w-full items-center justify-center  pb-[20px]">
           <ImageTag
-            path="/assets/images/paymentlogo.jpeg"
+            path="/assets/images/round-logo.png"
             classes="w-[100%] h-[150px] object-contain "
             altText="logo"
           />
