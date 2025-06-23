@@ -132,14 +132,14 @@ const StripeForm = () => {
           />
         </div>
         <div className="flex flex-row justify-center ">
-          <p class="text-sm  text-[12px] text-black">{"Subscription Type:"}</p>
-          <p class=" ml-[5px] text-sm  font-bold text-black text-[12px] ">
+          <p class="text-sm  text-[18px] text-black">{"Subscription Type:"}</p>
+          <p class=" ml-[5px] text-sm  font-bold text-black text-[18px] ">
             {subscriptiondata[subscriptiontypeindex || 0].type}
           </p>
         </div>
         <div className="flex flex-row justify-center ">
-          <p class="text-sm text-[12px] text-black">Amount: </p>
-          <p class="ml-[5px] text-sm  font-bold text-[12px] text-black">
+          <p class="text-sm text-[18px] text-black">Amount: </p>
+          <p class="ml-[5px] text-sm  font-bold text-[18px] text-black">
             $ {subscriptiondata[subscriptiontypeindex || 0].value / 100}
           </p>
         </div>
