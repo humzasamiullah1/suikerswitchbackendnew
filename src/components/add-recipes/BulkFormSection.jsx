@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom"; // ✅ Import useRouter for query params
 import Select from "react-select";
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, setDoc } from "firebase/firestore";
 import {
   getCategoriesFromFirebase,
   getSupermarkets,
   addProductToFirebase,
   getProductById, // ✅ New function to get product by ID
-  updateProductToFirebase, // ✅ New function to update product
+  updateProductToFirebase,
+  saveuserdata, // ✅ New function to update product
 } from "../utils/firebasefunctions";
 import { toast } from "react-toastify";
+import emailjs from "emailjs-com";
 import { Plus, X } from "lucide-react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { useStateValue } from "../../context/StateProvider";
 import { collection, writeBatch, doc } from "firebase/firestore";
-import { firestored } from "../../firebase/firebaseConfig";
+import { auth, firestored } from "../../firebase/firebaseConfig";
 import BulkConfirmation from "../BulkConfirmation";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 
 const BulkFormSection = () => {
   const [loading, setLoading] = useState(false);
@@ -119,6 +122,124 @@ const BulkFormSection = () => {
     };
     reader.readAsBinaryString(file);
   };
+
+  function getUsernameFromEmail(email) {
+    if (typeof email !== "string") return "";
+    const atIndex = email.indexOf("@");
+    return atIndex !== -1 ? email.substring(0, atIndex) : "";
+  }
+
+  // const handleFileUpload = async (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
+
+  //   const reader = new FileReader();
+  //   reader.onload = async (e) => {
+  //     const binaryStr = e.target.result;
+  //     const workbook = XLSX.read(binaryStr, { type: "binary" });
+
+  //     // Read first sheet
+  //     const sheetName = workbook.SheetNames[0];
+  //     const sheet = workbook.Sheets[sheetName];
+
+  //     // Convert to JSON
+  //     const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+  //     let newdata = [];
+
+  //     jsonData.forEach((item) => {
+  //       let datset = {
+  //         email: item?.email?.trim(),
+  //         username: getUsernameFromEmail(item?.email?.trim()),
+  //         subscriptionid: item?.id,
+  //       };
+  //       newdata.push(datset);
+  //     });
+
+  //     console.log(JSON.stringify(newdata));
+  //     try {
+  //       for (const user of newdata) {
+  //         const email = user.email;
+  //         const username = user.username;
+
+  //         const subscriptionid = user.subscriptionid;
+  //         if (!email) continue;
+
+  //         const charset =
+  //           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  //         let password = "";
+
+  //         for (let i = 0; i < 8; i++) {
+  //           const randomIndex = Math.floor(Math.random() * charset.length);
+  //           password += charset[randomIndex];
+  //         }
+
+  //         try {
+  //           await createUserWithEmailAndPassword(auth, email, password)
+  //             .then(async (userCredential) => {
+  //               const user = userCredential.user;
+
+  //               // Profile picture as empty string
+  //               let data = {
+  //                 id: user?.uid,
+  //                 username: username,
+  //                 email: email,
+  //                 subscriptionid: subscriptionid,
+  //                 createdAt: Date.now(),
+  //                 generatedPassword: password,
+  //                 olderuser: true,
+  //                 usertype: "Client",
+  //               };
+
+  //               await saveuserdata(data, user?.uid).then(async (response) => {
+  //                 console.log("User data response: ", response);
+  //                 if (response === "success") {
+  //                   const templateParams = {
+  //                     email: email,
+  //                     message: `email: ${data.email} password: ${password}`,
+  //                   };
+
+  //                   await emailjs
+  //                     .send(
+  //                       "service_5z77uef", // Replace with your Service ID
+  //                       "template_felqroq", // Replace with your Template ID
+  //                       templateParams,
+  //                       "reWowgm4fTZaLSeML" // Replace with your User ID
+  //                     )
+  //                     .then((response) => {
+  //                       console.log("SUCCESS!", response.status, response.text);
+  //                     })
+  //                     .catch((err) => {
+  //                       console.error("FAILED...", err);
+  //                     });
+
+  //                   console.log(`✅ Created user: ${email}`);
+
+  //                   // navigate("/");
+  //                 } else {
+  //                   toast.error(response);
+  //                 }
+  //               });
+  //             })
+  //             .catch((error) => {
+  //               toast.error(error.message);
+  //             });
+  //         } catch (error) {
+  //           console.error(`❌ Failed to create user ${email}:`, error.message);
+  //         }
+  //       }
+
+  //       console.log("✅ All users processed.");
+  //       toast.success("users uploaded successfully!");
+  //     } catch (error) {
+  //       console.error("Error uploading data:", error);
+  //       toast.error("Error uploading users");
+  //       setIsUploading(false);
+  //       setmodal(false);
+  //     }
+  //   };
+  //   reader.readAsBinaryString(file);
+  // };
 
   const bulkUpload = async () => {
     setIsUploading(true);
