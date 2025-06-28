@@ -9,7 +9,7 @@ import {
   getUser,
   getRecipe,
 } from "../components/utils/firebasefunctions";
-import MainSearch from "../components/global-searchbar/mainSearch"
+import MainSearch from "../components/global-searchbar/mainSearch";
 
 function Home() {
   const [CountData, setCountData] = useState([]);
@@ -32,7 +32,7 @@ function Home() {
   const fetchUserData = async () => {
     const data = await getUser();
     const filterUser = data.filter(
-      (user) => user.usertype.toLowerCase() === "client"
+      (user) => user?.usertype?.toLowerCase() === "client"
     );
     setUserClient(filterUser);
     setCountData((prevData) => [
@@ -41,7 +41,10 @@ function Home() {
         name: "Total Users",
         value: filterUser.length,
         image: "/assets/images/user.png",
-        profilePicture: filterUser.profilePicture,
+        profilePicture:
+          filterUser?.profilePicture != undefined
+            ? filterUser?.profilePicture
+            : "",
       },
     ]);
   };
@@ -70,8 +73,8 @@ function Home() {
   };
 
   const handleGlobalSearch = (value) => {
-    setIsGlobalSearch(value)
-  }
+    setIsGlobalSearch(value);
+  };
 
   return (
     <div className="w-[95%] mx-auto lg:h-screen pt-12 lg:pt-0 panelScroll">
@@ -108,7 +111,7 @@ function Home() {
           </div>
         </>
       ) : (
-        <MainSearch onEmptyBlur={(value)=> handleGlobalSearch(value)}/>
+        <MainSearch onEmptyBlur={(value) => handleGlobalSearch(value)} />
       )}
     </div>
   );

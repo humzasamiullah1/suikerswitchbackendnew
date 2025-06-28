@@ -72,8 +72,9 @@ export default function ResponsiveTable({ data }) {
                         {/* {data.length > 0 && */}
                         <ImageTag
                           path={
-                            user.profilepicture !== ""
-                              ? user.profilepicture
+                            user?.profilepicture !== "" &&
+                            user?.profilepicture !== undefined
+                              ? user?.profilepicture
                               : "/assets/images/default-image.png"
                           }
                           classes="size-10 rounded-full object-cover"
