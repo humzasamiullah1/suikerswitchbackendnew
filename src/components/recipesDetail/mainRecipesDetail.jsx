@@ -374,6 +374,17 @@ const MainRecipiesDetail = () => {
               ))}
             </div>
 
+            <div className="mt-5 mb-14">
+              <h4 className="font-HelveticaNeueMedium text-xl">Tag's</h4>
+              {recipe?.tags.map((ing, i) => (
+                <div className="flex mt-2 pl-4">
+                  <ul className="list-disc">
+                    <li>{ing}</li>
+                  </ul>
+                </div>
+              ))}
+            </div>
+
             {recipe?.isLike && (
               <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex mt-5">
                 <div

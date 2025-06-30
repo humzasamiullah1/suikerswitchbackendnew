@@ -3,9 +3,10 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import BreadCrumbs from "../reuseable/breadCrumbs";
-import FormSection from "./formSection"
+import FormSection from "./formSection";
+import BulkFormSection from "./BulkFormSection";
 
-const MainAddWeekMenu = () => {
+const MainAddWeekMenu = (props) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} // Pehle invisible aur neeche se aayega
@@ -24,10 +25,17 @@ const MainAddWeekMenu = () => {
             secondLink="Add Weekly Menu"
           />
         </div>
-
-        
+        <button
+          onClick={props.onClick}
+          className="border hidden rounded-full px-4  py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
+        >
+          <p className="text-sm ">
+            {props.bulkenabled ? "Add Weekly Menu" : "Bulk Upload"}
+          </p>
+        </button>
       </div>
-       <FormSection />
+
+      {props.bulkenabled ? <BulkFormSection /> : <FormSection />}
     </motion.div>
   );
 };

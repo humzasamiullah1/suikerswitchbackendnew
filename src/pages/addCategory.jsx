@@ -4,12 +4,14 @@ import {
   getCategoriesFromFirebase,
   deleteCategoryFromFirebase,
 } from "../components/utils/firebasefunctions";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PlusCircle, Trash2 } from "lucide-react";
 import HeaderBar from "../components/reuseable/headerBar";
 import { motion } from "framer-motion";
 import MainCategory from "../components/add-category/addCategory"
 import MainSearch from "../components/global-searchbar/mainSearch";
+
 
 const AddCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -38,7 +40,10 @@ const AddCategory = () => {
 
   // ✅ Naya category input field add karne ka function
   const addCategory = () => {
-    setCategories([...categories, { id: null, name: "" }]);
+let data = [...categories]
+
+data.unshift({ id: null, name: "", image: "" });
+    setCategories(data);
   };
 
   // ✅ Category ko Firestore mein bulk save/update karne ka function
@@ -127,6 +132,8 @@ const AddCategory = () => {
             <h2 className="text-xl font-HelveticaNeueMedium text-center mb-4">
               Add Categories
             </h2>
+
+
           </div>
           <div className="lg:h-[88%] w-full">
             <div className="h-[70%] lg:overflow-y-scroll panelScroll w-full pt-3 px-3">

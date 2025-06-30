@@ -1,20 +1,19 @@
-
 export const initialState = {
-    user: [],
-    employees:[],
-    clients:[],
-    tasks: [],
-    jobs: [],
-    assignedjobs: [],
-    checkinstatus: [],
-    blogs: [],
-    users: [],
-    leaves: [],
-    projects: [],
-    projectemployees: [],
-    selectedtile: "Dashboard",
-    projectsupervisors: [],
-    allclients: []
-
-}
-
+  user: [],
+  employees: [],
+  clients: [],
+  tasks: [],
+  jobs: [],
+  assignedjobs: [],
+  checkinstatus: [],
+  blogs: [],
+  users: [],
+  leaves: [],
+  projects: [],
+  projectemployees: [],
+  selectedtile: "Dashboard",
+  projectsupervisors: [],
+  allclients: [],
+  stripename: "",
+  stripeemail: "",
+};

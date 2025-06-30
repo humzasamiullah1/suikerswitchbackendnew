@@ -28,7 +28,7 @@ const FormSection = () => {
     e.preventDefault();
     if (email === "") {
       toast.warn("Please enter your email");
-      setIsCheckEmail(true)
+      setIsCheckEmail(true);
       return;
     }
     if (password === "") {
@@ -37,7 +37,7 @@ const FormSection = () => {
       return;
     }
 
-    setIsCheckEmail(false)
+    setIsCheckEmail(false);
     setIsCheckPassword(false);
     setlaoding(true);
 
@@ -81,14 +81,16 @@ const FormSection = () => {
   };
 
   return (
-    <form onSubmit={proceedhandler}>
+    <form className="w-[40%]" onSubmit={proceedhandler}>
       <div className="w-full mt-3">
         <input
           type="text"
           value={email}
           onChange={(e) => setemail(e.target.value)}
           placeholder="Enter your email.."
-          className={`w-full mt-1 ${isCheckEmail ? 'border-2 border-red-600': ''} text-sm rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50`}
+          className={`w-full mt-1 ${
+            isCheckEmail ? "border-2 border-red-600" : ""
+          } text-sm rounded-full bg-bgColor px-3 py-2 text-darkColor placeholder:text-zinc-700/50`}
         />
       </div>
       <div className="w-full mt-3">
@@ -98,7 +100,9 @@ const FormSection = () => {
             value={password}
             onChange={(e) => setpassword(e.target.value)}
             placeholder="Password here.."
-            className={`w-full ${isCheckPassword ? 'border-2 border-red-600': ''} mt-1 text-sm bg-bgColor px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50`}
+            className={`w-full ${
+              isCheckPassword ? "border-2 border-red-600" : ""
+            } mt-1 text-sm bg-bgColor px-3 py-2 rounded-full text-darkColor placeholder:text-zinc-700/50`}
           />
           <div
             title="Show password"
@@ -117,13 +121,13 @@ const FormSection = () => {
           />
           <p className="font-HelveticaNeueMedium text-darkColor text-xs pl-3">Remember me</p>
         </div> */}
-        <Link to={"/forget-password"} className="w-full flex justify-end">
+        {/* <Link to={"/forget-password"} className="w-full flex justify-end">
           <p className="text-btnColor">Forget Password</p>
-        </Link>
+        </Link> */}
       </div>
       <button
         type="submit"
-        className="text-base font-HelveticaNeueMedium bg-btnColor hover:bg-btnColor/90 mt-3 flex justify-center items-center text-white rounded-full py-2 w-full"
+        className="text-base font-HelveticaNeueMedium  bg-gkRedColor hover:bg-gkRedColor/90 mt-3 flex justify-center items-center text-white rounded-full py-2 w-full"
       >
         <span>Log In</span>
         {laoding && (
@@ -148,7 +152,7 @@ const FormSection = () => {
           </div>
         )}
       </button>
-      <div className="flex items-center my-2">
+      {/* <div className="flex items-center my-2">
         <div className="w-[15%] lg:w-[30%] 2xl:w-[35%] bg-[#1A1A1A]/30 h-[1px]"></div>
         <div className="w-[70%] lg:w-[40%] 2xl:w-[30%] flex justify-center">
           <p className="font-HelveticaNeueRegular text-xs">Do you have account?</p>
@@ -162,7 +166,7 @@ const FormSection = () => {
         >
           Sign Up
         </button>
-      </Link>
+      </Link> */}
       <ToastContainer />
     </form>
   );

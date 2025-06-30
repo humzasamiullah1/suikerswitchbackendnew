@@ -17,7 +17,7 @@ import {
   getRecipe,
   addWeeklyMenu,
   updateWeeklyMenuToFirebase,
-  getWeeklyMenuById
+  getWeeklyMenuById,
 } from "../utils/firebasefunctions";
 
 const daysOfWeek = [
@@ -65,7 +65,7 @@ const FormSection = () => {
     try {
       const menuData = await getWeeklyMenuById(menuId);
       if (menuData) {
-        setTitle(menuData.title)
+        setTitle(menuData.title);
         setImages(menuData.images || []);
         setFormData(menuData.WeeklyMenu || {});
       }
@@ -305,7 +305,7 @@ const FormSection = () => {
         <label className="text-sm">Title</label>
         <input
           type="text"
-          placeholder="Enter category name"
+          placeholder="Enter Weekly Menu Title..."
           className="w-full mt-1 text-sm rounded-md bg-gray-100 px-3 py-2 text-gray-700"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -403,7 +403,7 @@ const FormSection = () => {
                                 .map((opt) => ({
                                   id: opt.id,
                                   description: opt.description,
-                                  image: opt.images
+                                  image: opt.images,
                                 })) // Extracting only id and description
                                 .find((opt) => opt.id === e.target.value); // Find the selected one
 

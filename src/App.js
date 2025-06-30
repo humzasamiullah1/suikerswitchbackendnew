@@ -3,7 +3,8 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate
+  useNavigate,
+  useLocation,
 } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,10 +24,13 @@ import Signup from "./pages/Signup";
 import Verification from "./pages/Verification";
 import Dashboard from "./pages/Dashboard";
 import ForgetPassword from "./pages/ForgetPass";
-
+import StripeForm from "./components/Stripe/StripeForm";
 import { useStateValue } from "./context/StateProvider";
 import { actionType } from "./context/reducer";
 import { getuserinformation } from "./components/utils/firebasefunctions"; // Ensure this function fetches user details
+import PaymentComplete from "./pages/PaymentComplete";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
   const navigate = useNavigate();
@@ -34,7 +38,9 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [{ userDetails }, dispatch] = useStateValue();
   const [isNewUser, setIsNewUser] = useState(false);
-
+  const stripePromise = loadStripe(
+    "pk_test_51NfVkoAdN8nseiVbFQG16E8QRBvJxD2ZMHPcdpYEmVOAeOkiYYk8yeVIqXk8M3jjlXCiB34jiPSI9ZTKLi76n5VW00sSVl4Phs"
+  );
   // ✅ Handle Logout
   const handleLogout = async () => {
     try {
@@ -68,7 +74,6 @@ function App() {
       setLoading(false);
     });
   }, []);
-  
 
   if (loading) {
     return (
@@ -79,13 +84,36 @@ function App() {
   }
 
   // 🔒 Protect Private Routes
+  // const PublicRoute = ({ children }) => {
+
+  //   return user && !isNewUser ? <Navigate to="/dashboard" replace /> : children;
+  // };
   const PublicRoute = ({ children }) => {
-    
-      return user && !isNewUser ? <Navigate to="/dashboard" replace /> : children;
+    const loc = useLocation();
+    if (
+      user &&
+      !isNewUser &&
+      loc.pathname !== "/PaymentComplete" &&
+      loc.pathname !== "/subscription-requests"
+    )
+      return <Navigate to="/dashboard" replace />;
+    return children;
   };
 
+  // const PrivateRoute = ({ children }) => {
+  //   return user ? children : <Navigate to="/" replace />;
+  // };
+
   const PrivateRoute = ({ children }) => {
-    return user ? children : <Navigate to="/" replace />;
+    const loc = useLocation();
+    if (
+      user &&
+      !isNewUser &&
+      loc.pathname !== "/PaymentComplete" &&
+      loc.pathname !== "/subscription-requests"
+    )
+      return user ? children : <Navigate to="/" replace />;
+    return children;
   };
 
   // 🚧 Handle Invalid Routes
@@ -124,6 +152,25 @@ function App() {
           element={
             <PublicRoute>
               <ForgetPassword />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/subscription-requests"
+          element={
+            <PublicRoute>
+              <StripeForm />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/PaymentComplete"
+          element={
+            <PublicRoute>
+              <Elements stripe={stripePromise}>
+                <PaymentComplete />
+              </Elements>
             </PublicRoute>
           }
         />

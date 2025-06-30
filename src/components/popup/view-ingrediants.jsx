@@ -13,7 +13,7 @@ const ViewIngrediants = ({ data, onClose }) => {
         <div class="bg-white py-8 lg:py-5 rounded-xl justify-center items-center flex flex-col">
           <div className="flex justify-center w-[90%] pb-2 mx-auto border-b-2 border-gray-100 relative">
             <h1 className="font-HelveticaNeueMedium text-center text-darkColor text-lg">
-              Manu Deal
+              Menu Deal
             </h1>
             <div
               className="absolute top-[-10px] right-[-10px] cursor-pointer"

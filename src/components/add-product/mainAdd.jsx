@@ -28,7 +28,7 @@ const MainAddProucts = (props) => {
           onClick={props.onClick}
           className="border hidden rounded-full px-4  py-2 md:flex items-center font-HelveticaNeueRegular text-white bg-gkRedColor hover:bg-gkRedColor/90"
         >
-          <p className="text-sm pr-3">
+          <p className="text-sm ">
             {props.bulkenabled ? "Add Product" : "Bulk Upload"}
           </p>
         </button>
