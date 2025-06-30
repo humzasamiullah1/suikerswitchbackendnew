@@ -113,12 +113,12 @@ const MainBlogs = () => {
       </div>
       {!loading ? (
         <>
-          <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+          <div className="flex flex-wrap gap-1 lg:gap-3 lg:h-[88%] lg:overflow-y-scroll panelScroll pt-6">
             {searchedProducts.length > 0 ? (
               searchedProducts.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto"
+                  className="w-[49%] md:w-[32%] xl:w-[23%]"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{

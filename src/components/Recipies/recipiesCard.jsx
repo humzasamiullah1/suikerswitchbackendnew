@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ImageTag from "../../components/reuseable/imageTag";
 import { fetchUserById } from "../utils/firebasefunctions";
-import {
-  Ellipsis,
-  Trash2,
-  Pencil,
-  ThumbsUp,
-  MessageCircle,
-} from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const timeAgo = (timestamp) => {
@@ -66,6 +60,7 @@ const RecipiesCard = ({
   highlightSearchTerm,
   isShow = false,
   hideuserdata,
+  hidebutton,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -116,6 +111,7 @@ const RecipiesCard = ({
       if (!data?.userId) return;
 
       const userData = await fetchUserById(data.userId);
+      console.log("user", data);
 
       if (userData) {
         setUserData({
@@ -128,9 +124,10 @@ const RecipiesCard = ({
         });
         setIsLoading(true);
       }
+      console.log("hassan", userData);
     };
     fetchUserData();
-  }, [data?.userId]);
+  }, [data, data.userId]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -144,72 +141,52 @@ const RecipiesCard = ({
     };
   }, []);
   return (
-    <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
-      <div className="border-b-2 border-darkColor/20 pb-3">
-        {!hideuserdata && (
-          <div className="flex justify-between items-center">
-            <div
-              className={`${isShow ? "w-full" : "w-[60%]"} flex items-center`}
-            >
-              {loading && (
-                <>
-                  <ImageTag
-                    path={
-                      userData.profilePicture !== ""
-                        ? userData.profilePicture
-                        : "/assets/images/default-image.png"
-                    }
-                    classes="size-10 rounded-full object-cover"
-                    altText="logo"
-                  />
-                  <div className="pl-3">
-                    <p className="font-HelveticaNeueMedium text-darkColor text-base">
-                      {userData.firstname} {userData.lastname}
-                    </p>
-                    <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
-                      {timeAgo(data.createdAt)}
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
-            {isShow && (
-              <div
-                className="w-[40%] flex justify-end text-darkColor relative"
-                ref={dropdownRef}
-              >
-                <Ellipsis
-                  size={30}
-                  className="cursor-pointer"
-                  onClick={toggleMenu}
-                />
-                {isOpen && (
-                  <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
-                    <ul className="py-2 w-full">
-                      <Link to={`/dashboard/add-recipies?id=${data.id}`}>
-                        <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
-                          <Pencil size={18} />
-                          <span className="pl-3">Edit</span>
-                        </li>
-                      </Link>
-                      <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
-                      <li
-                        className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
-                        onClick={onDelete}
-                      >
-                        <Trash2 size={18} />
-                        <span className="pl-3">Delete</span>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+    <div className="border-2 border-gray-200 h-[420px] rounded-xl w-full px-4 py-3 mt-3 relative">
+      {isShow && (
+        <div
+          className="bg-gkRedColor rounded-full cursor-pointer flex justify-center items-center w-7 h-7 absolute right-[-7px] top-[-15px]"
+          onClick={onDelete}
+        >
+          <Trash2 className="text-white" size={18} />
+        </div>
+      )}
+      <div className="h-[90%]">
+        <Link
+          to={`/dashboard/recipes-detail/${data.id}`}
+          className="flex justify-center"
+        >
+          <ImageTag
+            path={data?.images}
+            classes="w-full h-52 object-cover rounded-lg"
+            altText="logo"
+          />
+        </Link>
+        {loading && (
+          <>
+            <div className="flex mt-3">
+              <ImageTag
+                path={
+                  userData.profilePicture !== ""
+                    ? userData.profilePicture
+                    : "/assets/images/default-image.png"
+                }
+                classes="size-9 rounded-full object-cover"
+                altText="logo"
+              />
+              <div className="pl-3">
+                <p className="font-HelveticaNeueMedium text-darkColor text-sm">
+                  {userData.firstname} {userData.lastname}
+                </p>
+                <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
+                  {timeAgo(data.createdAt)}
+                </p>
               </div>
-            )}
-          </div>
+            </div>
+          </>
         )}
         <div
           ref={scrollRef}
-          className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing select-none scrollbar-hide panelScroll"
+          className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing select-none scrollbar-hide panelScroll mt-2"
           onMouseDown={startDrag}
           onMouseMove={handleDrag}
           onMouseUp={stopDrag}
@@ -218,63 +195,179 @@ const RecipiesCard = ({
           onTouchMove={handleDrag}
           onTouchEnd={stopDrag}
         >
-          <div className="flex space-x-3 w-max px-4 py-2">
+          <div className="flex space-x-2 w-max py-2">
             {data.category.map((item, index) => (
               <div
                 key={index}
-                className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white text-sm shrink-0"
+                className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white text-[13px] shrink-0"
               >
                 {item}
               </div>
             ))}
           </div>
         </div>
-      </div>
-      <Link to={`/dashboard/recipes-detail/${data.id}`}>
-        <p className="font-HelveticaNeueRegular text-darkColor text-sm py-4">
-          <HighlightedText
-            text={data.description}
-            searchTerm={highlightSearchTerm}
-          />
-        </p>
-        <ImageTag
-          path={data.images}
-          classes="w-full h-60 rounded-2xl object-cover"
-          altText="logo"
-        />
-      </Link>
-      {data.IsLike && (
-        <div className="flex pt-10">
-          <div className="w-[20%] flex text-darkColor">
-            <ThumbsUp size={20} />
-            <MessageCircle size={20} className="ml-6" />
-          </div>
-          <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex justify-end">
-            <div
-              className="flex items-center pr-5 cursor-pointer"
-              onClick={onLikePopup}
-            >
-              <ThumbsUp size={18} />
-              <p className="pl-2 text-sm">{data.like} Likes</p>
-            </div>
-            <div
-              className="flex items-center pr-5 cursor-pointer"
-              onClick={onCommentPopup}
-            >
-              <MessageCircle size={18} />
-              <p className="pl-2 text-sm">{data.comments} Comments</p>
-            </div>
-          </div>
-          <div>
-            <ImageTag
-              path="/assets/images/userprofile.png"
-              classes="size-8 rounded-full object-cover"
-              altText="logo"
+        <Link to={`/dashboard/recipes-detail/${data.id}`}>
+          <p className="font-HelveticaNeueMedium text-darkColor text-base pt-2 line-clamp-1">
+            <HighlightedText
+              text={data.description}
+              searchTerm={highlightSearchTerm}
             />
-          </div>
-        </div>
+          </p>
+        </Link>
+      </div>
+      {!hidebutton && (
+        <Link
+          to={
+            isShow
+              ? `/dashboard/add-recipies?id=${data.id}`
+              : `/dashboard/recipes-detail/${data.id}`
+          }
+          className="h-[10%] flex items-center"
+        >
+          <button className="bg-gkRedColor py-2 mt-2 text-white rounded-full w-full text-sm font-HelveticaNeueRegular flex justify-center items-center">
+            {isShow ? (
+              <>
+                <Pencil size={15} />
+                <span className="pl-2">Edit Recipe</span>
+              </>
+            ) : (
+              <span className="pl-2">Show Recipe</span>
+            )}
+          </button>
+        </Link>
       )}
     </div>
+    // <div className="border-2 border-gray-200 rounded-xl w-full px-4 py-3 mt-3">
+    //   <div className="border-b-2 border-darkColor/20 pb-3">
+    //     {!hideuserdata && (
+    //       <div className="flex justify-between items-center">
+    //         <div
+    //           className={`${isShow ? "w-full" : "w-[60%]"} flex items-center`}
+    //         >
+    //           {loading && (
+    //             <>
+    //               <ImageTag
+    //                 path={
+    //                   userData.profilePicture !== ""
+    //                     ? userData.profilePicture
+    //                     : "/assets/images/default-image.png"
+    //                 }
+    //                 classes="size-10 rounded-full object-cover"
+    //                 altText="logo"
+    //               />
+    //               <div className="pl-3">
+    //                 <p className="font-HelveticaNeueMedium text-darkColor text-base">
+    //                   {userData.firstname} {userData.lastname}
+    //                 </p>
+    //                 <p className="font-HelveticaNeueMedium text-darkColor/60 text-xs">
+    //                   {timeAgo(data.createdAt)}
+    //                 </p>
+    //               </div>
+    //             </>
+    //           )}
+    //         </div>
+    //         {isShow && (
+    //           <div
+    //             className="w-[40%] flex justify-end text-darkColor relative"
+    //             ref={dropdownRef}
+    //           >
+    //             <Ellipsis
+    //               size={30}
+    //               className="cursor-pointer"
+    //               onClick={toggleMenu}
+    //             />
+    //             {isOpen && (
+    //               <div className="absolute z-20 right-[-10px] top-[18px] mt-2 w-28 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 font-popinsMedium text-sm px-2">
+    //                 <ul className="py-2 w-full">
+    //                   <Link to={`/dashboard/add-recipies?id=${data.id}`}>
+    //                     <li className="text-darkColor pb-1 font-HelveticaNeueMedium cursor-pointer flex items-center hover:bg-gkRedColor hover:text-white rounded-md px-1 py-1">
+    //                       <Pencil size={18} />
+    //                       <span className="pl-3">Edit</span>
+    //                     </li>
+    //                   </Link>
+    //                   <div className="h-[1px] w-full bg-gray-300 my-[6px]"></div>
+    //                   <li
+    //                     className="cursor-pointer w-full px-1 py-1 flex items-center text-darkColor hover:bg-gkRedColor hover:text-white font-HelveticaNeueMedium rounded-md"
+    //                     onClick={onDelete}
+    //                   >
+    //                     <Trash2 size={18} />
+    //                     <span className="pl-3">Delete</span>
+    //                   </li>
+    //                 </ul>
+    //               </div>
+    //             )}
+    //           </div>
+    //         )}
+    //       </div>
+    //     )}
+    //     <div
+    //       ref={scrollRef}
+    //       className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing select-none scrollbar-hide panelScroll"
+    //       onMouseDown={startDrag}
+    //       onMouseMove={handleDrag}
+    //       onMouseUp={stopDrag}
+    //       onMouseLeave={stopDrag}
+    //       onTouchStart={startDrag}
+    //       onTouchMove={handleDrag}
+    //       onTouchEnd={stopDrag}
+    //     >
+    //       <div className="flex space-x-3 w-max px-4 py-2">
+    //         {data.category.map((item, index) => (
+    //           <div
+    //             key={index}
+    //             className="px-3 py-1 rounded-full bg-gkRedColor font-HelveticaNeueMedium text-white text-sm shrink-0"
+    //           >
+    //             {item}
+    //           </div>
+    //         ))}
+    //       </div>
+    //     </div>
+    //   </div>
+    //   <Link to={`/dashboard/recipes-detail/${data.id}`}>
+    //     <p className="font-HelveticaNeueRegular text-darkColor text-sm py-4">
+    //       <HighlightedText
+    //         text={data.description}
+    //         searchTerm={highlightSearchTerm}
+    //       />
+    //     </p>
+    //     <ImageTag
+    //       path={data.images}
+    //       classes="w-full h-60 rounded-2xl object-cover"
+    //       altText="logo"
+    //     />
+    //   </Link>
+    //   {data.IsLike && (
+    //     <div className="flex pt-10">
+    //       <div className="w-[20%] flex text-darkColor">
+    //         <ThumbsUp size={20} />
+    //         <MessageCircle size={20} className="ml-6" />
+    //       </div>
+    //       <div className="w-[80%] font-HelveticaNeueRegular text-darkColor flex justify-end">
+    //         <div
+    //           className="flex items-center pr-5 cursor-pointer"
+    //           onClick={onLikePopup}
+    //         >
+    //           <ThumbsUp size={18} />
+    //           <p className="pl-2 text-sm">{data.like} Likes</p>
+    //         </div>
+    //         <div
+    //           className="flex items-center pr-5 cursor-pointer"
+    //           onClick={onCommentPopup}
+    //         >
+    //           <MessageCircle size={18} />
+    //           <p className="pl-2 text-sm">{data.comments} Comments</p>
+    //         </div>
+    //       </div>
+    //       <div>
+    //         <ImageTag
+    //           path="/assets/images/userprofile.png"
+    //           classes="size-8 rounded-full object-cover"
+    //           altText="logo"
+    //         />
+    //       </div>
+    //     </div>
+    //   )}
+    // </div>
   );
 };
 

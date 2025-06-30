@@ -325,7 +325,7 @@ const MainSearch = ({ onEmptyBlur }) => {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <RecipiesCard data={item} />
+                        <RecipiesCard data={item} highlightSearchTerm={searchTerm}/>
                       </motion.div>
                     ))}
                 </AnimatePresence>
