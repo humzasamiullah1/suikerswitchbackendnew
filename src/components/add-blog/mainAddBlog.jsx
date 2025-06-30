@@ -274,6 +274,7 @@ const RichTextEditor = () => {
                     "fontSize", // 👈 Font size button
                     "bold",
                     "underline",
+                    "lineHeight",
                     "italic",
                     "strike",
                     "list",
