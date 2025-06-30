@@ -11,6 +11,7 @@ import {
   saveuserdata, // ✅ New function to update product
 } from "../utils/firebasefunctions";
 import { toast } from "react-toastify";
+import moment from "moment";
 import emailjs from "emailjs-com";
 import { Plus, X } from "lucide-react";
 import Papa from "papaparse";
@@ -129,6 +130,21 @@ const BulkFormSection = () => {
     return atIndex !== -1 ? email.substring(0, atIndex) : "";
   }
 
+  function gettimestamp(datedata) {
+    const utc_days = Math.floor(datedata - 25569); // 25569 = days between 1 Jan 1900 and 1 Jan 1970
+    const utc_value = utc_days * 86400; // seconds in a day
+    const date_info = new Date(utc_value * 1000); // convert to milliseconds
+    // return date_info;
+    let newdatedata = moment(date_info).format("DD-MM-YYYY");
+
+    const [day, month, year] = newdatedata.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // month is 0-based in JS
+
+    const timestamp = date.getTime();
+
+    console.log("Timestamp:", timestamp);
+    return timestamp;
+  }
   // const handleFileUpload = async (event) => {
   //   const file = event.target.files[0];
   //   if (!file) return;
@@ -152,15 +168,20 @@ const BulkFormSection = () => {
   //         email: item?.email?.trim(),
   //         username: getUsernameFromEmail(item?.email?.trim()),
   //         subscriptionid: item?.id,
+  //         subscriptionexpirydate: gettimestamp(item?.expirydate),
+  //         subscriptiontype: item?.type == 0 ? "month" : "year",
   //       };
   //       newdata.push(datset);
   //     });
 
   //     console.log(JSON.stringify(newdata));
+
   //     try {
   //       for (const user of newdata) {
   //         const email = user.email;
   //         const username = user.username;
+  //         const subscriptionexpirydate = user.subscriptionexpirydate;
+  //         const subscriptiontype = user.subscriptiontype;
 
   //         const subscriptionid = user.subscriptionid;
   //         if (!email) continue;
@@ -189,6 +210,8 @@ const BulkFormSection = () => {
   //                 generatedPassword: password,
   //                 olderuser: true,
   //                 usertype: "Client",
+  //                 subscriptionexpirydate: subscriptionexpirydate,
+  //                 subscriptiontype: subscriptiontype,
   //               };
 
   //               await saveuserdata(data, user?.uid).then(async (response) => {
