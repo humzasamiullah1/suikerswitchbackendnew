@@ -166,7 +166,7 @@ const BlogCard = ({
         <Link
           to={
             isShow
-              ? `//dashboard/add-blog?id=${data.id}`
+              ? `/dashboard/add-blog?id=${data.id}`
               : `/dashboard/blogs-detail/${data.id}`
           }
           className="h-[10%] flex items-center"
