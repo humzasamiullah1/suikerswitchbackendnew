@@ -465,6 +465,7 @@ export const updateProductToFirebase = async (id, formData, newImageFiles) => {
       selectedSubCategories: formData.selectedSubCategories,
       ingredients: formData.ingredients,
       images: imageURLs,
+      timestamp: formData?.timestamp,
     });
 
     console.log("products updated successfully");
@@ -1285,7 +1286,7 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
       tags: formData.tags,
       category: formData.category,
       images: imageURLs,
-      userId: formData.userId
+      userId: formData.userId,
     });
 
     console.log("recipe updated successfully");

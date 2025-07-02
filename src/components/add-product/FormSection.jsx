@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router-dom"; 
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import "suneditor/dist/css/suneditor.min.css";
 import Select from "react-select";
 import {
@@ -54,21 +54,30 @@ const FormSection = () => {
   const fetchCategories = async (product) => {
     try {
       const data = await getCategoriesFromFirebase();
-      setallCategory(data)
+      setallCategory(data);
       if (product) {
         setSelectedCategories(
           product.selectedCategories.map((cat) => ({ label: cat, value: cat }))
         );
-        setSelectedSubCategories(product.selectedSubCategories.map((sub) => ({ label: sub, value: sub })))
+        setSelectedSubCategories(
+          product.selectedSubCategories.map((sub) => ({
+            label: sub,
+            value: sub,
+          }))
+        );
         setTimeout(() => {
           if (product.selectedCategories.length > 0) {
-            const subCategoryData = product.selectedCategories.flatMap((sel) => {
-              const matchData = data.find((x) => x.categoryName === sel);
-              return matchData?.subCategory?.map((sub) => ({
-                label: sub.name,
-                value: sub.name,
-              })) || [];
-            });
+            const subCategoryData = product.selectedCategories.flatMap(
+              (sel) => {
+                const matchData = data.find((x) => x.categoryName === sel);
+                return (
+                  matchData?.subCategory?.map((sub) => ({
+                    label: sub.name,
+                    value: sub.name,
+                  })) || []
+                );
+              }
+            );
 
             setSubCategoryOptions(subCategoryData);
             setIsLoad(false);
@@ -77,7 +86,6 @@ const FormSection = () => {
             setIsLoad(false);
           }
         }, 500);
-
       }
       setCategories(
         data.map((category) => ({
@@ -86,19 +94,17 @@ const FormSection = () => {
         }))
       );
       // for (let i = 0; data.selectedSubCategories.length > ; i++) {
-        // setSubCategoryOptions(
-        //   data.selectedSubCategories.map((subcategory) => ({
-        //     label: subcategory,
-        //     value: subcategory,
-        //   }))
-        // );
+      // setSubCategoryOptions(
+      //   data.selectedSubCategories.map((subcategory) => ({
+      //     label: subcategory,
+      //     value: subcategory,
+      //   }))
+      // );
       // }
     } catch (error) {
       toast.error("Error fetching categories");
     }
   };
-
-
 
   const handleCategoryChange = (selected) => {
     setIsLoad(true);
@@ -107,19 +113,19 @@ const FormSection = () => {
     if (selected && selected.length > 0) {
       const data = selected.flatMap((sel) => {
         const matchData = allCategory.find((x) => x.categoryName === sel.label);
-        return matchData?.subCategory?.map((sub) => ({
-          label: sub.name,
-          value: sub.name,
-        })) || [];
+        return (
+          matchData?.subCategory?.map((sub) => ({
+            label: sub.name,
+            value: sub.name,
+          })) || []
+        );
       });
 
       setSubCategoryOptions(data);
 
       // Filter already selected subcategories to retain valid ones
       setSelectedSubCategories((prev) =>
-        prev.filter((sub) =>
-          data.some((opt) => opt.value === sub.value)
-        )
+        prev.filter((sub) => data.some((opt) => opt.value === sub.value))
       );
 
       setIsLoad(false);
@@ -129,7 +135,6 @@ const FormSection = () => {
       setIsLoad(false);
     }
   };
-
 
   const fetchSupermarkets = async (product) => {
     try {
@@ -274,7 +279,7 @@ const FormSection = () => {
       images,
     };
 
-    console.log(productData)
+    console.log(productData);
 
     try {
       if (id) {
@@ -313,7 +318,7 @@ const FormSection = () => {
       {/* ✅ Image Upload */}
       <div className="px-2 pt-2">
         <h2 className="text-base font-HelveticaNeueMedium pb-2">
-          {id ? "Update Supermarket" : "Upload Logo"}
+          {id ? "Update Product" : "Upload Logo"}
         </h2>
         <div className="flex space-x-2">
           {images.length > 0 ? (
@@ -386,18 +391,17 @@ const FormSection = () => {
 
         {/* Sub-category Select */}
         {/* {!isLoad && ( */}
-          <div className="w-full md:w-[32%] pt-4 md:pt-0">
-
-            <label className="text-sm">Select Sub Categories</label>
-            <Select
-              isMulti
-              isDisabled={selectedCategories.length === 0}
-              options={subCategoryOptions}
-              value={selectedSubCategories}
-              onChange={setSelectedSubCategories}
-              className="mt-1 w-full"
-            />
-          </div>
+        <div className="w-full md:w-[32%] pt-4 md:pt-0">
+          <label className="text-sm">Select Sub Categories</label>
+          <Select
+            isMulti
+            isDisabled={selectedCategories.length === 0}
+            options={subCategoryOptions}
+            value={selectedSubCategories}
+            onChange={setSelectedSubCategories}
+            className="mt-1 w-full"
+          />
+        </div>
         {/* )} */}
       </div>
       <div className="pt-4 w-full">
