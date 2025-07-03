@@ -1287,6 +1287,7 @@ export const updateRecipe = async (id, formData, newImageFiles) => {
       category: formData.category,
       images: imageURLs,
       userId: formData.userId,
+      timestamp: Date.now(),
     });
 
     console.log("recipe updated successfully");
@@ -1402,7 +1403,7 @@ export const getRecipe = async () => {
   try {
     const recipeQuery = query(
       collection(firestored, "recipe"),
-      orderBy("createdAt", "desc") // sorting by Firestore Timestamp field
+      orderBy("timestamp", "desc") // sorting by Firestore Timestamp field
     );
 
     const querySnapshot = await getDocs(recipeQuery);
