@@ -168,6 +168,7 @@ const BulkFormSection = () => {
         const recipeMatch = findRecipe(Recipetitle);
         const recipe = recipeMatch
           ? {
+              showInput: false,
               category: Categorie,
               recipe: {
                 id: recipeMatch.id,
@@ -176,6 +177,7 @@ const BulkFormSection = () => {
               },
             }
           : {
+              showInput: true,
               category: Categorie,
               recipe: {
                 id: null,
