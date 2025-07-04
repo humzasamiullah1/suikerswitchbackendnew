@@ -130,7 +130,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[66%] sm:w-[70%] xl:w-[80%] pl-2 lg:pl-5">
+                      <div className="w-[74%] sm:w-[79%] xl:w-[85%] pl-2 lg:pl-5">
                         <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>
@@ -195,7 +195,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-[240px] h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[80%] pl-5">
+                      <div className="w-[85%] pl-5">
                         <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>
@@ -260,7 +260,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-[240px] h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[80%] pl-5">
+                      <div className="w-[85%] pl-5">
                         <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>
@@ -325,7 +325,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-[240px] h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[80%] pl-5">
+                      <div className="w-[85%] pl-5">
                         <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>
@@ -390,7 +390,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-[240px] h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[80%] pl-5">
+                      <div className="w-[85%] pl-5">
                         <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>
@@ -455,7 +455,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-[240px] h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[80%] pl-5">
+                      <div className="w-[85%] pl-5">
                         <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>
@@ -520,7 +520,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                           className="w-[240px] h-[90px] object-cover rounded-md"
                         />
                       </div>
-                      <div className="w-[80%] pl-5">
+                      <div className="w-[85%] pl-5">
                         <p className="font-HelveticaNeueMedium text-base line-clamp-2 text-darkColor/60">
                           {item.category}
                         </p>

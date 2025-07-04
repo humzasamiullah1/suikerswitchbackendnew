@@ -182,29 +182,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Maandag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full cursor-pointer">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full cursor-pointer"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 ">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[78px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 ">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 "
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
@@ -217,29 +245,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Dinsdag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
@@ -252,29 +308,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Woensdag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
@@ -289,29 +373,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Donderdag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
@@ -324,29 +436,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Vrijdag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
@@ -359,29 +499,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Zaterdag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
@@ -394,29 +562,57 @@ const MainMenuDetail = () => {
                   {menu?.WeeklyMenu?.Zondag.map((item, index) => (
                     <>
                       <div className="border border-gray-200 hover:border-gray-300 hover:border-2 rounded-md p-2 lg:p-4 shadow mt-4">
-                        <Link
-                              to={`/dashboard/recipes-detail/${item.recipe.id}`} className="flex justify-between items-center w-full">
-                          <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
-                            <img
-                              src={item.recipe.image}
-                              alt=""
-                              className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
-                            />
+                        {item.recipe?.id !== null ? (
+                          <Link
+                            to={`/dashboard/recipes-detail/${item.recipe.id}`}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[58%] sm:w-[68%] xl:w-[78%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
+                            <div className="w-[8%] flex justify-end">
+                              <ChevronRight className="cursor-pointer" />
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                              <img
+                                src={
+                                  item.recipe?.image.length > 0
+                                    ? item.recipe?.image[0]
+                                    : "/assets/images/default-image.png"
+                                }
+                                alt=""
+                                className="w-full sm:h-[70px] md:h-[80px] lg:w-[240px] lg:h-[100px] object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="w-[70%] sm:w-[78%] xl:w-[85%] pl-2 lg:pl-5">
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
+                                {item.category}
+                              </p>
+                              <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2">
+                                {item.recipe.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-[58%] sm:w-[62%] xl:w-[78%] pl-2 lg:pl-5">
-                            <p className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2 text-darkColor/60">
-                              {item.category}
-                            </p>
-                            <p
-                              className="font-HelveticaNeueMedium text-sm lg:text-base line-clamp-2"
-                            >
-                              {item.recipe.description}
-                            </p>
-                          </div>
-                          <div className="w-[8%] flex justify-end">
-                            <ChevronRight className="cursor-pointer" />
-                          </div>
-                        </Link>
+                        )}
                       </div>
                     </>
                   ))}
