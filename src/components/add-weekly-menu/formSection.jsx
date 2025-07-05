@@ -4,15 +4,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
-import {
-  X,
-  Plus,
-  Trash2,
-  PlusCircle,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
-import { IoClose } from "react-icons/io5";
+import { X, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import {
   getRecipe,
   addWeeklyMenu,
@@ -40,6 +32,7 @@ const categoryOptions = [
   "Zoete baksels",
   "Brunch",
   "Feestelijk",
+  "Ontbijt",
 ];
 
 const FormSection = () => {
@@ -102,6 +95,15 @@ const FormSection = () => {
     setImageFiles([...files]);
   };
 
+  const handleToggleInputMode = (day, rowIndex) => {
+    const updatedDay = [...formData[day]];
+    updatedDay[rowIndex].showInput = !updatedDay[rowIndex].showInput;
+    setFormData((prev) => ({
+      ...prev,
+      [day]: updatedDay,
+    }));
+  };
+
   const [formData, setFormData] = useState(() => {
     const initialData = {};
     daysOfWeek.forEach((day, i) => {
@@ -113,7 +115,7 @@ const FormSection = () => {
 
   const handleDayRowAdd = (day) => {
     const newFormData = { ...formData };
-    newFormData[day].push({ category: "", recipe: ""});
+    newFormData[day].push({ category: "", recipe: "", showInput: false });
     setFormData(newFormData);
 
     const newIndex = newFormData[day].length - 1;
@@ -142,33 +144,6 @@ const FormSection = () => {
       [day]: updatedDay,
     }));
   };
-
-  // const handleIngredientChange = (day, rowIndex, ingIndex, value) => {
-  //   const updatedDay = [...formData[day]];
-  //   updatedDay[rowIndex].ingredients[ingIndex] = value;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [day]: updatedDay,
-  //   }));
-  // };
-
-  // const addIngredient = (day, rowIndex) => {
-  //   const updatedDay = [...formData[day]];
-  //   updatedDay[rowIndex].ingredients.push("");
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [day]: updatedDay,
-  //   }));
-  // };
-
-  // const deleteIngredient = (day, rowIndex, ingIndex) => {
-  //   const updatedDay = [...formData[day]];
-  //   updatedDay[rowIndex].ingredients.splice(ingIndex, 1);
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [day]: updatedDay,
-  //   }));
-  // };
 
   const toggleDayExpand = (day) => {
     setExpandedDays((prev) => ({
@@ -206,11 +181,7 @@ const FormSection = () => {
           return;
         }
 
-        if (
-          !entry.recipe ||
-          typeof entry.recipe !== "object" ||
-          !entry.recipe.id
-        ) {
+        if (!entry.recipe || typeof entry.recipe !== "object") {
           toast.error(
             `Recipe is missing or invalid in ${day}, menu ${index + 1}`
           );
@@ -357,6 +328,21 @@ const FormSection = () => {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
+                          handleToggleInputMode(day, rowIndex);
+                        }}
+                        className={`w-10 h-5 flex items-center rounded-full p-1 transition ${
+                          row.showInput ? "bg-green-500" : "bg-gray-300"
+                        }`}
+                      >
+                        <div
+                          className={`w-3 h-3 bg-white rounded-full shadow-md transform transition ${
+                            row.showInput ? "translate-x-6" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleDayRowDelete(day, rowIndex);
                         }}
                         className="bg-gkRedColor text-white p-2 rounded-full hover:bg-gkRedColor/90"
@@ -394,86 +380,51 @@ const FormSection = () => {
                           </select>
                         </div>
                         <div className="w-[49%]">
-                          <select
-                            className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
-                            value={row.recipe.id}
-                            onChange={(e) => {
-                              // Find selected option based on the id
-                              const selectedOption = recipeData
-                                .map((opt) => ({
-                                  id: opt.id,
-                                  description: opt.description,
-                                  image: opt.images,
-                                })) // Extracting only id and description
-                                .find((opt) => opt.id === e.target.value); // Find the selected one
+                          {row.showInput ? (
+                            <input
+                              type="text"
+                              placeholder="Enter Recipe Name"
+                              className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
+                              value={row.recipe.description || ""}
+                              onChange={(e) =>
+                                handleChange(day, rowIndex, "recipe", {
+                                  id: null,
+                                  description: e.target.value,
+                                  image: [],
+                                })
+                              }
+                            />
+                          ) : (
+                            <select
+                              className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
+                              value={row.recipe.id}
+                              onChange={(e) => {
+                                const selectedOption = recipeData
+                                  .map((opt) => ({
+                                    id: opt.id,
+                                    description: opt.description,
+                                    image: opt.images,
+                                  }))
+                                  .find((opt) => opt.id === e.target.value);
 
-                              handleChange(
-                                day,
-                                rowIndex,
-                                "recipe",
-                                selectedOption
-                              ); // Pass the selected object to handleChange
-                            }}
-                          >
-                            <option value="">Select Recipe</option>
-                            {recipeData.map((opt) => (
-                              <option key={opt.id} value={opt.id}>
-                                {opt.description}
-                              </option>
-                            ))}
-                          </select>
+                                handleChange(
+                                  day,
+                                  rowIndex,
+                                  "recipe",
+                                  selectedOption
+                                );
+                              }}
+                            >
+                              <option value="">Select Recipe</option>
+                              {recipeData.map((opt) => (
+                                <option key={opt.id} value={opt.id}>
+                                  {opt.description}
+                                </option>
+                              ))}
+                            </select>
+                          )}
                         </div>
                       </div>
-
-                      {/* Ingredients */}
-                      {/* <hr />
-                      <div className="flex flex-wrap gap-[2%] mt-5">
-                        {row.ingredients.map((ing, ingIndex) => (
-                          <div
-                            key={ingIndex}
-                            className="flex items-center gap-2 w-[32%] mt-4"
-                          >
-                            <p className="font-HelveticaNeueMedium">
-                              {ingIndex + 1}.
-                            </p>
-                            <div className="relative w-full">
-                              <input
-                                type="text"
-                                placeholder="Ingredient"
-                                className="w-full text-sm rounded-md bg-gray-100 pl-3 pr-7 py-2 text-gray-700"
-                                value={ing}
-                                onChange={(e) =>
-                                  handleIngredientChange(
-                                    day,
-                                    rowIndex,
-                                    ingIndex,
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  deleteIngredient(day, rowIndex, ingIndex)
-                                }
-                                className="text-red-600 hover:text-red-700 text-xl absolute top-2 right-1"
-                              >
-                                <IoClose />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div
-                        onClick={() => addIngredient(day, rowIndex)}
-                        className="flex flex-col items-center justify-center py-2 text-blue-500 cursor-pointer hover:text-blue-600"
-                      >
-                        <PlusCircle size={35} className=" text-gkRedColor" />
-                        <span className="font-HelveticaNeueMedium text-darkColor text-base">
-                          Add Ingredient
-                        </span>
-                      </div> */}
                     </>
                   )}
                 </div>

@@ -33,6 +33,7 @@ const MainRecipies = () => {
     { id: "7", label: "Zoete baksels" },
     { id: "8", label: "Brunch" },
     { id: "9", label: "Feestelijk" },
+    { id: "10", label: "Ontbijt" },
   ];
 
   const [recipeData, setRecipeData] = useState([]);

@@ -29,6 +29,7 @@ const recipeCategory = [
   { label: "Feestelijk", value: "Feestelijk" },
   { label: "Glutenvrij", value: "Glutenvrij" },
   { label: "Lactosevrij", value: "Lactosevrij" },
+  { label: "Ontbijt", value: "Ontbijt" },
 ];
 
 const RichTextEditor = (props) => {

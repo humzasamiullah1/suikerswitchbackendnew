@@ -600,6 +600,7 @@ export const updateWeeklyMenuToFirebase = async (
       WeeklyMenu: formData.WeeklyMenu,
       images: imageURLs,
       timestamp: formData.timestamp,
+      createdAt: new Date()
     });
 
     console.log("✅ Category updated successfully");
