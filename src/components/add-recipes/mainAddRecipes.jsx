@@ -27,6 +27,7 @@ const recipeCategory = [
   { label: "Zoete baksels", value: "Zoete baksels" },
   { label: "Brunch", value: "Brunch" },
   { label: "Feestelijk", value: "Feestelijk" },
+  { label: "Ontbijt", value: "Ontbijt" },
 ];
 
 const RichTextEditor = (props) => {
@@ -423,7 +424,7 @@ const RichTextEditor = (props) => {
                     8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
                     23, 24, 25, 26, 27, 28, 29, 30, 32, 36, 40, 48,
                   ], // ✅ Limit font sizes
-                  lineHeight: ['1', '1.15', '1.5', '1.75', '2', '2.5', '3'],
+                  lineHeight: ["1", "1.15", "1.5", "1.75", "2", "2.5", "3"],
                   callBackSave: (content) => setContent(content),
                 }}
                 onImageUploadBefore={(files, _, uploadHandler) => {

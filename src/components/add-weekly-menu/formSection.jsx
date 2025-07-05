@@ -32,6 +32,7 @@ const categoryOptions = [
   "Zoete baksels",
   "Brunch",
   "Feestelijk",
+  "Ontbijt",
 ];
 
 const FormSection = () => {
@@ -180,10 +181,7 @@ const FormSection = () => {
           return;
         }
 
-        if (
-          !entry.recipe ||
-          typeof entry.recipe !== "object"
-        ) {
+        if (!entry.recipe || typeof entry.recipe !== "object") {
           toast.error(
             `Recipe is missing or invalid in ${day}, menu ${index + 1}`
           );
@@ -327,7 +325,7 @@ const FormSection = () => {
                     </p>
                     <div className="flex gap-2 items-center">
                       <button
-                      type="button" 
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleToggleInputMode(day, rowIndex);
