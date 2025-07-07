@@ -557,11 +557,10 @@ export const updateWeeklyMenuToFirebase = async (
     const data = docSnap.data();
     let imageURLs = data.images || [];
 
-    // 2. If new image is uploaded
+    // 2. Update main image if a new one is provided
     if (newImageFiles.length > 0) {
       const oldImageURL = imageURLs[0];
 
-      // 2.a. Delete old image from storage
       if (
         oldImageURL &&
         oldImageURL.startsWith("https://firebasestorage.googleapis.com")
@@ -578,36 +577,61 @@ export const updateWeeklyMenuToFirebase = async (
         }
       }
 
-      // 2.b. Upload new image with unique name
       const newImageFile = newImageFiles[0];
       const uniqueName = `${Date.now()}-${newImageFile.name}`;
       const storagePath = `supermarket-logos/${id}/${uniqueName}`;
       const newImageRef = ref(storage, storagePath);
-
-      console.log("📤 Uploading image to:", storagePath);
       await uploadBytes(newImageRef, newImageFile);
-
       const newImageURL = await getDownloadURL(newImageRef);
-      console.log("✅ New image URL:", newImageURL);
-
-      // Replace image URL in array
       imageURLs = [newImageURL];
     }
 
-    // 3. Update Firestore
+    // 3. Upload recipe images (inside WeeklyMenu)
+    const updatedWeeklyMenu = { ...formData.WeeklyMenu };
+
+    for (const day of Object.keys(updatedWeeklyMenu)) {
+      const updatedItems = await Promise.all(
+        updatedWeeklyMenu[day].map(async (item) => {
+          const recipeImg = item.recipe?.image?.[0];
+          if (recipeImg instanceof File) {
+            const recipeImgName = `${Date.now()}-${recipeImg.name}`;
+            const recipeImgPath = `weeklymenu/${id}/recipes/${recipeImgName}`;
+            const recipeImgRef = ref(storage, recipeImgPath);
+
+            await uploadBytes(recipeImgRef, recipeImg);
+            const downloadURL = await getDownloadURL(recipeImgRef);
+
+            return {
+              ...item,
+              recipe: {
+                ...item.recipe,
+                image: [downloadURL],
+              },
+            };
+          } else {
+            return item;
+          }
+        })
+      );
+
+      updatedWeeklyMenu[day] = updatedItems;
+    }
+
+    // 4. Update Firestore
     await updateDoc(docRef, {
       title: formData.title,
-      WeeklyMenu: formData.WeeklyMenu,
+      WeeklyMenu: updatedWeeklyMenu,
       images: imageURLs,
       timestamp: formData.timestamp,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
 
-    console.log("✅ Category updated successfully");
+    console.log("✅ Weekly Menu updated successfully");
   } catch (error) {
-    console.error("❌ Error updating category:", error.message);
+    console.error("❌ Error updating weekly menu:", error.message);
   }
 };
+
 
 export const deleteProduct = async (id) => {
   try {
@@ -730,21 +754,74 @@ export const addCategoryToFirebase = async (categoryData, imageFiles) => {
   }
 };
 
-export const addWeeklyMenu = async (menuData, imageFiles) => {
+// export const addWeeklyMenu = async (menuData, imageFiles) => {
+//   try {
+//     // Sare images upload karo aur unke URLs le lo
+//     const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
+//     const imageUrls = await Promise.all(imageUploadPromises);
+
+//     // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+//     const docRef = doc(collection(firestored, "weeklymenu"));
+//     const docId = docRef.id; // Yeh document ki generated ID hai
+
+//     // Firestore me data save karo
+//     await setDoc(docRef, {
+//       ...menuData,
+//       id: docId,
+//       images: imageUrls, // Firebase se milne wale URLs yahan save honge
+//       createdAt: new Date(),
+//     });
+
+//     return { success: true, id: docId };
+//   } catch (error) {
+//     console.error("Error adding document: ", error);
+//     return { success: false, error: error.message };
+//   }
+// };
+
+export const addWeeklyMenu = async (menuData) => {
   try {
-    // Sare images upload karo aur unke URLs le lo
-    const imageUploadPromises = imageFiles.map((file) => uploadImage(file));
-    const imageUrls = await Promise.all(imageUploadPromises);
+    const days = Object.keys(menuData.WeeklyMenu);
+    const updatedMenuData = { ...menuData };
 
-    // Firestore me ek naye document ka reference banao (yahan custom ID generate hogi)
+    for (const day of days) {
+      const items = menuData.WeeklyMenu[day];
+
+      if (!Array.isArray(items)) {
+        console.error(`Expected array for day "${day}" but got`, items);
+        continue;
+      }
+
+      const updatedItems = await Promise.all(
+        items.map(async (item) => {
+          if (
+            item.recipe?.image?.length &&
+            item.recipe.image[0] instanceof File
+          ) {
+            const uploadedUrl = await uploadImage(item.recipe.image[0]); // Upload the image
+            return {
+              ...item,
+              recipe: {
+                ...item.recipe,
+                image: [uploadedUrl], // Replace with Firebase URL
+              },
+            };
+          } else {
+            return item; // No image or already uploaded
+          }
+        })
+      );
+
+      updatedMenuData.WeeklyMenu[day] = updatedItems;
+    }
+
+    // Firestore me ek naye document ka reference banao
     const docRef = doc(collection(firestored, "weeklymenu"));
-    const docId = docRef.id; // Yeh document ki generated ID hai
+    const docId = docRef.id;
 
-    // Firestore me data save karo
     await setDoc(docRef, {
-      ...menuData,
+      ...updatedMenuData,
       id: docId,
-      images: imageUrls, // Firebase se milne wale URLs yahan save honge
       createdAt: new Date(),
     });
 

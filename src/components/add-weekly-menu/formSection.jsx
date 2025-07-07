@@ -97,7 +97,20 @@ const FormSection = () => {
 
   const handleToggleInputMode = (day, rowIndex) => {
     const updatedDay = [...formData[day]];
-    updatedDay[rowIndex].showInput = !updatedDay[rowIndex].showInput;
+    const currentRow = updatedDay[rowIndex];
+    const isTogglingOn = !currentRow.showInput;
+
+    currentRow.showInput = isTogglingOn;
+
+    if (isTogglingOn) {
+      // Clear recipe when switching to input mode
+      currentRow.recipe = {
+        id: null,
+        description: "",
+        image: [],
+      };
+    }
+
     setFormData((prev) => ({
       ...prev,
       [day]: updatedDay,
@@ -163,40 +176,66 @@ const FormSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validations
+    // Title validation
     if (!title.trim()) {
       toast.error("Title is required");
       return;
     }
 
+    // Global image validation
     if (images.length === 0) {
-      toast.error("Please upload at least one image.Title is required");
+      toast.error("Please upload at least one image.");
       return;
     }
 
+    // Loop through each day
     for (const day of daysOfWeek) {
       for (const [index, entry] of formData[day].entries()) {
+        const menuNum = index + 1;
+
         if (!entry.category) {
-          toast.error(`Category is missing in ${day}, menu ${index + 1}`);
+          toast.error(`Category is missing in ${day}, menu ${menuNum}`);
           return;
         }
 
-        if (!entry.recipe || typeof entry.recipe !== "object") {
+        const recipe = entry.recipe;
+
+        if (!recipe || typeof recipe !== "object") {
           toast.error(
-            `Recipe is missing or invalid in ${day}, menu ${index + 1}`
+            `Recipe is missing or invalid in ${day}, menu ${menuNum}`
           );
           return;
         }
 
-        // if (
-        //   !entry.ingredients.length ||
-        //   entry.ingredients.some((ing) => !ing.trim())
-        // ) {
-        //   toast.error(
-        //     `One or more ingredients are empty in ${day}, menu ${index + 1}`
-        //   );
-        //   return;
-        // }
+        if (entry.showInput) {
+          if (!recipe.description || !recipe.description.trim()) {
+            toast.error(
+              `Recipe description is required in ${day}, menu ${menuNum}`
+            );
+            return;
+          }
+
+          const image = recipe.image;
+
+          if (!image || !Array.isArray(image) || image.length === 0) {
+            toast.error(`Recipe image is required in ${day}, menu ${menuNum}`);
+            return;
+          }
+
+          // ✅ Allow already uploaded image (string) OR new file (File object)
+          const isValidImage =
+            typeof image[0] === "string" || image[0] instanceof File;
+
+          if (!isValidImage) {
+            toast.error(`Invalid recipe image in ${day}, menu ${menuNum}`);
+            return;
+          }
+        } else {
+          if (!recipe.id) {
+            toast.error(`Please select a recipe in ${day}, menu ${menuNum}`);
+            return;
+          }
+        }
       }
     }
 
@@ -213,22 +252,19 @@ const FormSection = () => {
       if (id) {
         await updateWeeklyMenuToFirebase(id, weeklyMenu, imageFiles);
         toast.success("Weekly Menu updated successfully!");
-        setTimeout(() => {
-          navigate("/dashboard/weekly-menu");
-        }, 1000);
       } else {
-        // ✅ Add new product
         await addWeeklyMenu(weeklyMenu, imageFiles);
         toast.success("Weekly Menu added successfully!");
-        setTimeout(() => {
-          navigate("/dashboard/weekly-menu");
-        }, 1000);
       }
+
+      setTimeout(() => {
+        navigate("/dashboard/weekly-menu");
+      }, 1000);
     } catch (error) {
       toast.error("Error processing request");
     }
+
     setLoading(false);
-    console.log("Final Form Data:", formData);
   };
 
   return (
@@ -330,13 +366,13 @@ const FormSection = () => {
                           e.stopPropagation();
                           handleToggleInputMode(day, rowIndex);
                         }}
-                        className={`w-10 h-5 flex items-center rounded-full p-1 transition ${
-                          row.showInput ? "bg-green-500" : "bg-gray-300"
+                        className={`w-10 h-6 flex items-center rounded-full p-1 transition ${
+                          row.showInput ? "bg-gkRedColor" : "bg-gray-300"
                         }`}
                       >
                         <div
-                          className={`w-3 h-3 bg-white rounded-full shadow-md transform transition ${
-                            row.showInput ? "translate-x-6" : "translate-x-0"
+                          className={`w-4 h-4 bg-white rounded-full shadow-md transform transition ${
+                            row.showInput ? "translate-x-5" : "translate-x-0"
                           }`}
                         />
                       </button>
@@ -357,6 +393,60 @@ const FormSection = () => {
                   {expandedMenus[key] && (
                     <>
                       {/* Category & Recipe Select */}
+                      {row.showInput && (
+                        <div className="flex justify-end w-full">
+                          <div className="mt-3 w-[49%] ">
+                            <div className="flex space-x-2 mt-2">
+                              {row.recipe.image?.length > 0 ? (
+                                <div className="relative w-20 h-20 rounded-lg overflow-hidden">
+                                  <img
+                                    src={
+                                      row.recipe.image[0] instanceof File
+                                        ? URL.createObjectURL(
+                                            row.recipe.image[0]
+                                          )
+                                        : row.recipe.image[0]
+                                    }
+                                    alt="Uploaded"
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <button
+                                    type="button"
+                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                                    onClick={() =>
+                                      handleChange(day, rowIndex, "recipe", {
+                                        ...row.recipe,
+                                        image: [],
+                                      })
+                                    }
+                                  >
+                                    <X size={16} />
+                                  </button>
+                                </div>
+                              ) : (
+                                <label className="w-20 h-20 flex items-center justify-center bg-red-100 text-red-500 rounded-lg cursor-pointer">
+                                  <Plus size={24} />
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      const file = e.target.files[0];
+                                      if (file) {
+                                        handleChange(day, rowIndex, "recipe", {
+                                          ...row.recipe,
+                                          id: null,
+                                          image: [file],
+                                        });
+                                      }
+                                    }}
+                                  />
+                                </label>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                       <div className="flex flex-col md:flex-row gap-4 my-4">
                         <div className="w-[49%]">
                           <select
@@ -381,20 +471,24 @@ const FormSection = () => {
                         </div>
                         <div className="w-[49%]">
                           {row.showInput ? (
-                            <input
-                              type="text"
-                              placeholder="Enter Recipe Name"
-                              className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
-                              value={row.recipe.description || ""}
-                              onChange={(e) =>
-                                handleChange(day, rowIndex, "recipe", {
-                                  id: null,
-                                  description: e.target.value,
-                                  image: [],
-                                })
-                              }
-                            />
+                            <>
+                              {/* Recipe Name Input */}
+                              <input
+                                type="text"
+                                placeholder="Enter Recipe Name"
+                                className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
+                                value={row.recipe?.description || ""}
+                                onChange={(e) =>
+                                  handleChange(day, rowIndex, "recipe", {
+                                    ...row.recipe,
+                                    id: null,
+                                    description: e.target.value,
+                                  })
+                                }
+                              />
+                            </>
                           ) : (
+                            // Select Dropdown View
                             <select
                               className="w-full mt-1 bg-gray-100 px-3 py-2 rounded-md text-gray-700 text-sm border border-gray-500"
                               value={row.recipe.id}
