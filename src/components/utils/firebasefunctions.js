@@ -557,10 +557,11 @@ export const updateWeeklyMenuToFirebase = async (
     const data = docSnap.data();
     let imageURLs = data.images || [];
 
-    // 2. Update main image if a new one is provided
+    // 2. Replace main image if a new image file is provided
     if (newImageFiles.length > 0) {
       const oldImageURL = imageURLs[0];
 
+      // Delete old main image from storage if it exists
       if (
         oldImageURL &&
         oldImageURL.startsWith("https://firebasestorage.googleapis.com")
@@ -571,7 +572,7 @@ export const updateWeeklyMenuToFirebase = async (
           );
           const oldImageRef = ref(storage, filePath);
           await deleteObject(oldImageRef);
-          console.log("✅ Old image deleted:", filePath);
+          console.log("✅ Old main image deleted:", filePath);
         } catch (deleteErr) {
           console.warn("⚠️ Could not delete old image:", deleteErr.message);
         }
@@ -586,38 +587,46 @@ export const updateWeeklyMenuToFirebase = async (
       imageURLs = [newImageURL];
     }
 
-    // 3. Upload recipe images (inside WeeklyMenu)
+    // 3. Update nested recipe images in WeeklyMenu (if provided)
     const updatedWeeklyMenu = { ...formData.WeeklyMenu };
 
     for (const day of Object.keys(updatedWeeklyMenu)) {
       const updatedItems = await Promise.all(
         updatedWeeklyMenu[day].map(async (item) => {
-          const recipeImg = item.recipe?.image?.[0];
+          const recipe = item.recipe;
+          const recipeImg = recipe?.image?.[0];
+
           if (recipeImg instanceof File) {
-            const recipeImgName = `${Date.now()}-${recipeImg.name}`;
-            const recipeImgPath = `weeklymenu/${id}/recipes/${recipeImgName}`;
-            const recipeImgRef = ref(storage, recipeImgPath);
+            try {
+              const recipeImgName = `${Date.now()}-${recipeImg.name}`;
+              const recipeImgPath = `weeklymenu/${id}/recipes/${recipeImgName}`;
+              const recipeImgRef = ref(storage, recipeImgPath);
 
-            await uploadBytes(recipeImgRef, recipeImg);
-            const downloadURL = await getDownloadURL(recipeImgRef);
+              await uploadBytes(recipeImgRef, recipeImg);
+              const downloadURL = await getDownloadURL(recipeImgRef);
 
-            return {
-              ...item,
-              recipe: {
-                ...item.recipe,
-                image: [downloadURL],
-              },
-            };
-          } else {
-            return item;
+              return {
+                ...item,
+                recipe: {
+                  ...recipe,
+                  image: [downloadURL], // ✅ Replace File with uploaded URL
+                },
+              };
+            } catch (uploadErr) {
+              console.warn("⚠️ Recipe image upload failed:", uploadErr.message);
+              return item; // Skip image update if upload fails
+            }
           }
+
+          // ✅ No image update needed — return as-is
+          return item;
         })
       );
 
       updatedWeeklyMenu[day] = updatedItems;
     }
 
-    // 4. Update Firestore
+    // 4. Update Firestore document
     await updateDoc(docRef, {
       title: formData.title,
       WeeklyMenu: updatedWeeklyMenu,
@@ -631,6 +640,7 @@ export const updateWeeklyMenuToFirebase = async (
     console.error("❌ Error updating weekly menu:", error.message);
   }
 };
+
 
 
 export const deleteProduct = async (id) => {
@@ -794,28 +804,37 @@ export const addWeeklyMenu = async (menuData) => {
 
       const updatedItems = await Promise.all(
         items.map(async (item) => {
+          const recipe = item.recipe;
+
+          // ✅ Check if image exists and is a File instance
           if (
-            item.recipe?.image?.length &&
-            item.recipe.image[0] instanceof File
+            recipe?.image?.length &&
+            recipe.image[0] instanceof File
           ) {
-            const uploadedUrl = await uploadImage(item.recipe.image[0]); // Upload the image
-            return {
-              ...item,
-              recipe: {
-                ...item.recipe,
-                image: [uploadedUrl], // Replace with Firebase URL
-              },
-            };
-          } else {
-            return item; // No image or already uploaded
+            try {
+              const uploadedUrl = await uploadImage(recipe.image[0]); // Upload image to Firebase
+              return {
+                ...item,
+                recipe: {
+                  ...recipe,
+                  image: [uploadedUrl], // Replace File with URL
+                },
+              };
+            } catch (uploadErr) {
+              console.warn(`⚠️ Failed to upload image in ${day}:`, uploadErr);
+              return item; // fallback to original item
+            }
           }
+
+          // ✅ If no image or already a URL, return as-is
+          return item;
         })
       );
 
       updatedMenuData.WeeklyMenu[day] = updatedItems;
     }
 
-    // Firestore me ek naye document ka reference banao
+    // Firestore: Create new document with auto-generated ID
     const docRef = doc(collection(firestored, "weeklymenu"));
     const docId = docRef.id;
 
@@ -827,10 +846,11 @@ export const addWeeklyMenu = async (menuData) => {
 
     return { success: true, id: docId };
   } catch (error) {
-    console.error("Error adding document: ", error);
+    console.error("❌ Error adding document:", error);
     return { success: false, error: error.message };
   }
 };
+
 
 export const getProducts = async () => {
   const productsRef = collection(firestored, "products");

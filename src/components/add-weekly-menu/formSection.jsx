@@ -215,21 +215,21 @@ const FormSection = () => {
             return;
           }
 
-          const image = recipe.image;
+          // const image = recipe.image;
 
-          if (!image || !Array.isArray(image) || image.length === 0) {
-            toast.error(`Recipe image is required in ${day}, menu ${menuNum}`);
-            return;
-          }
+          // if (!image || !Array.isArray(image) || image.length === 0) {
+          //   toast.error(`Recipe image is required in ${day}, menu ${menuNum}`);
+          //   return;
+          // }
 
-          // ✅ Allow already uploaded image (string) OR new file (File object)
-          const isValidImage =
-            typeof image[0] === "string" || image[0] instanceof File;
+          // // ✅ Allow already uploaded image (string) OR new file (File object)
+          // const isValidImage =
+          //   typeof image[0] === "string" || image[0] instanceof File;
 
-          if (!isValidImage) {
-            toast.error(`Invalid recipe image in ${day}, menu ${menuNum}`);
-            return;
-          }
+          // if (!isValidImage) {
+          //   toast.error(`Invalid recipe image in ${day}, menu ${menuNum}`);
+          //   return;
+          // }
         } else {
           if (!recipe.id) {
             toast.error(`Please select a recipe in ${day}, menu ${menuNum}`);
