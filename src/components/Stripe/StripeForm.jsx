@@ -49,7 +49,7 @@ const StripeForm = () => {
       currency: "eur",
       bestseller: false,
       selected: false,
-      productid: "price_1RI93kAdN8nseiVboq99rVov",
+      productid: "price_1RfcStIj51f14n3KL3JwoCEq",
     },
     {
       type: "Annual",
@@ -61,7 +61,7 @@ const StripeForm = () => {
       weekly: "€ 1.67 / week",
       currency: "eur",
       selected: true,
-      productid: "price_1RI94BAdN8nseiVbY31wyDgD",
+      productid: "price_1RfcTMIj51f14n3KY4lyv7W1",
     },
   ]);
   const emailRef = useRef(null);
