@@ -268,7 +268,7 @@ const StripeForm = () => {
           )}
           <div className="flex w-full items-center justify-center pt-[15px] pb-[20px]">
             <ImageTag
-              path="/assets/images/paymentfooter.jpeg"
+              path="/assets/images/stripe_secure.png"
               classes="w-[100%]  object-contain "
               altText="logo"
             />
