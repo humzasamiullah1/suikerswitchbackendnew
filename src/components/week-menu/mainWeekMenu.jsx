@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import NoData from "../reuseable/noData";
 import MyLoader from "../reuseable/myLoader";
 import WarningPopup from "../popup/warning";
-import ViewIngrediants from "../popup/view-ingrediants"
+import ViewIngrediants from "../popup/view-ingrediants";
 
 import { toast } from "react-toastify";
 
@@ -84,12 +84,12 @@ const MainWeekMenu = () => {
       </div>
       {!loading ? (
         <>
-          <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll">
+          <div className="lg:h-[88%] lg:overflow-y-scroll panelScroll flex flex-row flex-wrap">
             {menu.length > 0 ? (
               menu.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="w-full md:w-[85%] lg:w-[75%] mx-auto"
+                  className="w-full md:w-[48%]  mx-auto"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -99,6 +99,7 @@ const MainWeekMenu = () => {
                   }}
                 >
                   <MenuCard
+                    imageconfig=" w-[25%] sm:w-[20%] md:w-[40%]"
                     data={item}
                     onDelete={() => openConfirmPopup(item.id)}
                   />
@@ -116,7 +117,7 @@ const MainWeekMenu = () => {
           <MyLoader />
         </div>
       )}
-       {warning && (
+      {warning && (
         <WarningPopup
           name="menu"
           itemId={onDeleteId}

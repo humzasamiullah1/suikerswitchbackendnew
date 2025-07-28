@@ -184,6 +184,7 @@ export default function PaymentComplete() {
             const templateParams = {
               email: email,
               message: `username: ${username} password: ${password}`,
+              name: username,
             };
 
             emailjs

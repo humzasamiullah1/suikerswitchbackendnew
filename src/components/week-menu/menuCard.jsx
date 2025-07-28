@@ -3,7 +3,7 @@ import ImageTag from "../../components/reuseable/imageTag";
 import { Ellipsis, Trash2, Pencil, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const MenuCard = ({ data, onDelete, hideuserdata }) => {
+const MenuCard = ({ imageconfig, data, onDelete, hideuserdata }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -91,7 +91,7 @@ const MenuCard = ({ data, onDelete, hideuserdata }) => {
                     className="flex justify-between mt-4 cursor-pointer"
                   >
                     <div className="flex justify-between items-center w-full border border-gray-200 rounded-md p-2 lg:p-4 shadow">
-                      <div className="w-[25%] sm:w-[20%] xl:w-[15%]">
+                      <div className={` ${imageconfig} `}>
                         <img
                           src={
                             item.recipe?.image.length > 0

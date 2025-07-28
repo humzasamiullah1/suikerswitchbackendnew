@@ -30,9 +30,12 @@ const StripeForm = () => {
   const [clientSecret, setClientSecret] = useState("");
   const [clientdata, setclientdata] = useState("");
   const [email, setemail] = useState("");
+  const [fullname, setfullname] = useState("");
   const [validemail, setvalidemail] = useState(false);
   const [username, setusername] = useState("");
+
   const [errormessage, seterrormessage] = useState("");
+  const [nameerrormessage, setnameerrormessage] = useState("");
   const [paymentloader, setpaymentloader] = useState(false);
   // const email = searchParams.get("email");
   const dummyemail = "a@gmail.com";
@@ -204,6 +207,7 @@ const StripeForm = () => {
           {/* <h2 className="text-md font-medium mb-10">
             Amount: $ {subscriptiondata[subscriptiontypeindex || 0].value / 100}
           </h2> */}
+
           <LabelTag
             name="Email"
             classes="text-md font-medium w-full mt-[40px] text-[#808080]"
@@ -220,6 +224,25 @@ const StripeForm = () => {
             className="w-full mb-3 mt-1 text-sm font-popinsRegular rounded-md bg-white px-3 py-2 text-darkColor"
           />
 
+          <LabelTag
+            name="Full Name"
+            classes="text-md font-medium w-full mt-[5px] text-[#808080]"
+          />
+          <p class="text-sm w-full text-[12px] text-red-500">
+            {nameerrormessage}
+          </p>
+
+          <input
+            type="text"
+            value={fullname}
+            onChange={(e) => {
+              setnameerrormessage("");
+              setfullname(e.target.value);
+            }}
+            required
+            placeholder="Full Name (required)"
+            className="w-full mb-3 mt-1 text-sm font-popinsRegular rounded-md bg-white px-3 py-2 text-darkColor"
+          />
           {validemail && (
             <>
               {!clientSecret ? (
@@ -254,6 +277,9 @@ const StripeForm = () => {
                     priceId={
                       subscriptiondata[subscriptiontypeindex || 0].productid
                     }
+                    causeerror={() => {
+                      setnameerrormessage("Please enter Full Name");
+                    }}
                     updatepaymentloader={(bool) => {
                       setpaymentloader(bool);
                     }}
@@ -261,6 +287,7 @@ const StripeForm = () => {
                     clientdata={clientdata}
                     email={email}
                     username={username}
+                    fullname={fullname}
                   />
                 </Elements>
               )}
@@ -313,6 +340,8 @@ const CheckoutForm = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setloading] = useState(false);
   const [username, setusername] = useState(props.username || "");
+  const [fullname, setfullname] = useState(props.fullname || "");
+
   const [email, setemail] = useState(props.email || "");
 
   useEffect(() => {
@@ -421,6 +450,7 @@ const CheckoutForm = (props) => {
             const templateParams = {
               email: email,
               message: `username: ${username} password: ${password}`,
+              name: username,
             };
 
             emailjs
@@ -453,12 +483,17 @@ const CheckoutForm = (props) => {
   };
 
   const handleSubmit = async (event) => {
+    if (fullname == "") {
+      event.preventDefault();
+      props.causeerror();
+      return;
+    }
     props.updatepaymentloader(true);
     event.preventDefault();
     localStorage.setItem(
       "stripeform",
       JSON.stringify({
-        username,
+        fullname,
         email,
         path: window.location.pathname,
         clientdata: props.clientdata,
@@ -466,7 +501,6 @@ const CheckoutForm = (props) => {
       })
     );
     if (!stripe || !elements) {
-      alert("hit");
       props.updatepaymentloader(false);
       return;
     }
@@ -496,7 +530,7 @@ const CheckoutForm = (props) => {
       toast.error(error.message);
       props.updatepaymentloader(false);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      createsubscription(props.clientdata, props.priceId, username, email);
+      createsubscription(props.clientdata, props.priceId, fullname, email);
     }
   };
 

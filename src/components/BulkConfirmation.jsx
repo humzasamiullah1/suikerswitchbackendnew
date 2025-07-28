@@ -56,6 +56,7 @@ const BulkConfirmation = (props) => {
                     props.bulktype == "weeklymenu" ? (
                       <div className=" w-full  self-center">
                         <MenuCard
+                          imageconfig="w-[25%] sm:w-[20%] xl:w-[15%]"
                           data={item}
                           hideuserdata={true}
                           // onDelete={() => openConfirmPopup(item.id)}
