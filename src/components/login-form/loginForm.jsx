@@ -64,9 +64,7 @@ const FormSection = () => {
               "Projects dashboard is under maintenance. Please sign in with your Admin account!"
             );
           } else {
-            toast.warn(
-              "Employees are instructed to sign in using the Raftek Mobile Application"
-            );
+            toast.warn("Employees ");
             await signOut(auth);
           }
         }
