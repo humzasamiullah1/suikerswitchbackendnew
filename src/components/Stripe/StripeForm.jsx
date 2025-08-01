@@ -69,16 +69,16 @@ const StripeForm = () => {
   ]);
   const emailRef = useRef(null);
 
-  useEffect(() => {
-    emailRef.current.focus();
-    setusername("a");
-    fetchDummyPaymentIntent(
-      dummyemail,
-      dummyemail.substring(0, dummyemail.indexOf("@"))
-    );
-    seterrormessage("");
-    setvalidemail(true);
-  }, []);
+  // useEffect(() => {
+  //   emailRef.current.focus();
+  //   setusername("a");
+  //   fetchDummyPaymentIntent(
+  //     dummyemail,
+  //     dummyemail.substring(0, dummyemail.indexOf("@"))
+  //   );
+  //   seterrormessage("");
+  //   setvalidemail(true);
+  // }, []);
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (email.includes("@") && isValidEmail(email)) {
