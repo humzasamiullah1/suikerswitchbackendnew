@@ -224,7 +224,7 @@ const StripeForm = () => {
             className="w-full mb-3 mt-1 text-sm font-popinsRegular rounded-md bg-white px-3 py-2 text-darkColor"
           />
 
-          <LabelTag
+          {/* <LabelTag
             name="Full Name"
             classes="text-md font-medium w-full mt-[5px] text-[#808080]"
           />
@@ -242,7 +242,7 @@ const StripeForm = () => {
             required
             placeholder="Full Name (required)"
             className="w-full mb-3 mt-1 text-sm font-popinsRegular rounded-md bg-white px-3 py-2 text-darkColor"
-          />
+          /> */}
           {validemail && (
             <>
               {!clientSecret ? (
@@ -484,17 +484,17 @@ const CheckoutForm = (props) => {
   };
 
   const handleSubmit = async (event) => {
-    if (fullname == "") {
-      event.preventDefault();
-      props.causeerror();
-      return;
-    }
+    // if (fullname == "") {
+    //   event.preventDefault();
+    //   props.causeerror();
+    //   return;
+    // }
     props.updatepaymentloader(true);
     event.preventDefault();
     localStorage.setItem(
       "stripeform",
       JSON.stringify({
-        fullname,
+        username,
         email,
         path: window.location.pathname,
         clientdata: props.clientdata,
@@ -531,7 +531,7 @@ const CheckoutForm = (props) => {
       toast.error(error.message);
       props.updatepaymentloader(false);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      createsubscription(props.clientdata, props.priceId, fullname, email);
+      createsubscription(props.clientdata, props.priceId, username, email);
     }
   };
 
