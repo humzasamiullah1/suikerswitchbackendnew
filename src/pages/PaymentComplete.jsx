@@ -185,6 +185,7 @@ export default function PaymentComplete() {
               email: email,
               message: `username: ${username} password: ${password}`,
               name: username,
+              password: password,
             };
 
             emailjs
