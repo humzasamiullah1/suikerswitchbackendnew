@@ -45,6 +45,7 @@ export default function PaymentComplete() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const clientSecret = params.get("payment_intent_client_secret");
+
     if (!stripe || !clientSecret) return;
 
     stripe
@@ -55,20 +56,19 @@ export default function PaymentComplete() {
             setMessage("✅ Payment succeeded!");
             const saved = localStorage.getItem("stripeform");
 
-            if (saved) {
-              const { username, email, path, clientdata, priceId } =
-                JSON.parse(saved);
+            // if (saved) {
+            const { username, email, path, clientdata, priceId } =
+              JSON.parse(saved);
 
-              if (
-                path != null &&
-                username != null &&
-                email != null &&
-                clientdata != null &&
-                priceId != null
-              ) {
-                setloading(true);
-                createsubscription(clientdata, priceId, username, email);
-              }
+            if (
+              path != null &&
+              username != null &&
+              email != null &&
+              clientdata != null &&
+              priceId != null
+            ) {
+              setloading(true);
+              createsubscription(clientdata, priceId, username, email);
             }
 
             // setTimeout(() => {
@@ -84,8 +84,21 @@ export default function PaymentComplete() {
             setMessage(
               '❌ Payment failed. Please <a href="/retry">try again</a>.'
             );
+
+            const localstorage = localStorage.getItem("stripeform");
+
+            // if (saved) {
+            const { typeindex } = JSON.parse(localstorage);
+            navigate(`/subscription-requests?type=${typeindex}`);
             localStorage.removeItem("stripeform");
+
             break;
+          // case "failed":
+          //   navigate("/subscription-requests?type=0");
+
+          //   localStorage.removeItem("stripeform");
+          //   break;
+
           default:
             setMessage("Something went wrong.");
         }

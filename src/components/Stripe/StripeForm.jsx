@@ -33,17 +33,18 @@ const StripeForm = () => {
   const [fullname, setfullname] = useState("");
   const [validemail, setvalidemail] = useState(false);
   const [username, setusername] = useState("");
-
+  const [typeindex, settypeindex] = useState(1);
+  const subscriptiontypeindex = searchParams.get("type");
   const [errormessage, seterrormessage] = useState("");
   const [nameerrormessage, setnameerrormessage] = useState("");
   const [paymentloader, setpaymentloader] = useState(false);
   // const email = searchParams.get("email");
   const dummyemail = "a@gmail.com";
-  const subscriptiontypeindex = searchParams.get("type");
+
   // const username = email.substring(0, email.indexOf("@"));
   const [subscriptiondata, setsubscriptiondata] = useState([
     {
-      type: "Monthly",
+      type: "Maandelijks",
       title: "Month",
       description: "€ 9.99",
       value: 999,
@@ -55,7 +56,7 @@ const StripeForm = () => {
       productid: "price_1RfcStIj51f14n3KL3JwoCEq",
     },
     {
-      type: "Annual",
+      type: "Jaarlijks",
       title: "Year",
       bestseller: true,
       info: "Billed annually",
@@ -65,6 +66,28 @@ const StripeForm = () => {
       currency: "eur",
       selected: true,
       productid: "price_1RfcTMIj51f14n3KY4lyv7W1",
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+      type: "Jaarlijks",
+      title: "Year",
+      bestseller: true,
+      info: "Billed annually",
+      description: "€ 69.99",
+      value: 6999,
+      weekly: "€ 1.67 / week",
+      currency: "eur",
+      selected: true,
+      productid: "price_1RrgUCIj51f14n3KwTC8oB0N",
     },
   ]);
   const emailRef = useRef(null);
@@ -96,6 +119,18 @@ const StripeForm = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [email]);
 
+  useEffect(() => {
+    if (
+      subscriptiontypeindex == 0 ||
+      subscriptiontypeindex == 1 ||
+      subscriptiontypeindex == 12
+    ) {
+      settypeindex(subscriptiontypeindex);
+    } else {
+      settypeindex(1);
+    }
+  }, []);
+
   const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
@@ -110,11 +145,11 @@ const StripeForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amount: subscriptiondata[subscriptiontypeindex || 0].value,
-          currency: subscriptiondata[subscriptiontypeindex || 0].currency,
+          amount: subscriptiondata[typeindex || 0].value,
+          currency: subscriptiondata[typeindex || 0].currency,
           email: email,
           name: username,
-          priceId: subscriptiondata[subscriptiontypeindex || 0].productid,
+          priceId: subscriptiondata[typeindex || 0].productid,
           // amount: 9.99,
           // currency: 'gbp',
           // email: 'cs1712148@szabist.pk',
@@ -140,11 +175,11 @@ const StripeForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amount: subscriptiondata[subscriptiontypeindex || 0].value,
-          currency: subscriptiondata[subscriptiontypeindex || 0].currency,
+          amount: subscriptiondata[typeindex || 0].value,
+          currency: subscriptiondata[typeindex || 0].currency,
           email: dummyemail,
           name: dummyusername,
-          priceId: subscriptiondata[subscriptiontypeindex || 0].productid,
+          priceId: subscriptiondata[typeindex || 0].productid,
           // amount: 9.99,
           // currency: 'gbp',
           // email: 'cs1712148@szabist.pk',
@@ -191,17 +226,15 @@ const StripeForm = () => {
             />
           </div>
           <div className="flex flex-row justify-center ">
-            <p class="text-sm  text-[18px] text-black">
-              {"Subscription Type:"}
-            </p>
+            <p class="text-sm  text-[18px] text-black">{"Type abonnement:"}</p>
             <p class=" ml-[5px] text-sm  font-bold text-black text-[18px] ">
-              {subscriptiondata[subscriptiontypeindex || 0].type}
+              {subscriptiondata[typeindex || 0].type}
             </p>
           </div>
           <div className="flex flex-row justify-center ">
-            <p class="text-sm text-[18px] text-black">Amount: </p>
+            <p class="text-sm text-[18px] text-black">Prijs: </p>
             <p class="ml-[5px] text-sm  font-bold text-[18px] text-black">
-              $ {subscriptiondata[subscriptiontypeindex || 0].value / 100}
+              € {subscriptiondata[typeindex || 0].value / 100}
             </p>
           </div>
           {/* <h2 className="text-md font-medium mb-10">
@@ -209,7 +242,7 @@ const StripeForm = () => {
           </h2> */}
 
           <LabelTag
-            name="Email"
+            name="E-mail"
             classes="text-md font-medium w-full mt-[40px] text-[#808080]"
           />
           <p class="text-sm w-full text-[12px] text-red-500">{errormessage}</p>
@@ -220,7 +253,7 @@ const StripeForm = () => {
             value={email}
             onChange={(e) => setemail(e.target.value)}
             required
-            placeholder="Email (required)"
+            placeholder="E-mail (verplicht)"
             className="w-full mb-3 mt-1 text-sm font-popinsRegular rounded-md bg-white px-3 py-2 text-darkColor"
           />
 
@@ -272,11 +305,10 @@ const StripeForm = () => {
               ) : (
                 <Elements stripe={stripePromise} options={{ clientSecret }}>
                   <CheckoutForm
-                    amount={subscriptiondata[subscriptiontypeindex || 0].value}
-                    type={subscriptiondata[subscriptiontypeindex || 0].type}
-                    priceId={
-                      subscriptiondata[subscriptiontypeindex || 0].productid
-                    }
+                    amount={subscriptiondata[typeindex || 0].value}
+                    type={subscriptiondata[typeindex || 0].type}
+                    typeindex={typeindex}
+                    priceId={subscriptiondata[typeindex || 0].productid}
                     causeerror={() => {
                       setnameerrormessage("Please enter Full Name");
                     }}
@@ -499,6 +531,7 @@ const CheckoutForm = (props) => {
         path: window.location.pathname,
         clientdata: props.clientdata,
         priceId: props.priceId,
+        typeindex: props.typeindex,
       })
     );
     if (!stripe || !elements) {
