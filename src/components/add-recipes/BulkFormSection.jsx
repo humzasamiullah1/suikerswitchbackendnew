@@ -145,124 +145,124 @@ const BulkFormSection = () => {
     console.log("Timestamp:", timestamp);
     return timestamp;
   }
-  // const handleFileUpload = async (event) => {
-  //   const file = event.target.files[0];
-  //   if (!file) return;
+  const handleFileUploaded = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  //   const reader = new FileReader();
-  //   reader.onload = async (e) => {
-  //     const binaryStr = e.target.result;
-  //     const workbook = XLSX.read(binaryStr, { type: "binary" });
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const binaryStr = e.target.result;
+      const workbook = XLSX.read(binaryStr, { type: "binary" });
 
-  //     // Read first sheet
-  //     const sheetName = workbook.SheetNames[0];
-  //     const sheet = workbook.Sheets[sheetName];
+      // Read first sheet
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
 
-  //     // Convert to JSON
-  //     const jsonData = XLSX.utils.sheet_to_json(sheet);
+      // Convert to JSON
+      const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-  //     let newdata = [];
+      let newdata = [];
 
-  //     jsonData.forEach((item) => {
-  //       let datset = {
-  //         email: item?.email?.trim(),
-  //         username: getUsernameFromEmail(item?.email?.trim()),
-  //         subscriptionid: item?.id,
-  //         subscriptionexpirydate: gettimestamp(item?.expirydate),
-  //         subscriptiontype: item?.type == 0 ? "month" : "year",
-  //       };
-  //       newdata.push(datset);
-  //     });
+      jsonData.forEach((item) => {
+        let datset = {
+          email: item?.email?.trim(),
+          username: getUsernameFromEmail(item?.email?.trim()),
+          subscriptionid: item?.id,
+          subscriptionexpirydate: gettimestamp(item?.expirydate),
+          subscriptiontype: item?.type == 0 ? "month" : "year",
+        };
+        newdata.push(datset);
+      });
 
-  //     console.log(JSON.stringify(newdata));
+      console.log(JSON.stringify(newdata));
 
-  //     try {
-  //       for (const user of newdata) {
-  //         const email = user.email;
-  //         const username = user.username;
-  //         const subscriptionexpirydate = user.subscriptionexpirydate;
-  //         const subscriptiontype = user.subscriptiontype;
+      try {
+        for (const user of newdata) {
+          const email = user.email;
+          const username = user.username;
+          const subscriptionexpirydate = user.subscriptionexpirydate;
+          const subscriptiontype = user.subscriptiontype;
 
-  //         const subscriptionid = user.subscriptionid;
-  //         if (!email) continue;
+          const subscriptionid = user.subscriptionid;
+          if (!email) continue;
 
-  //         const charset =
-  //           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-  //         let password = "";
+          const charset =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+          let password = "";
 
-  //         for (let i = 0; i < 8; i++) {
-  //           const randomIndex = Math.floor(Math.random() * charset.length);
-  //           password += charset[randomIndex];
-  //         }
+          for (let i = 0; i < 8; i++) {
+            const randomIndex = Math.floor(Math.random() * charset.length);
+            password += charset[randomIndex];
+          }
 
-  //         try {
-  //           await createUserWithEmailAndPassword(auth, email, password)
-  //             .then(async (userCredential) => {
-  //               const user = userCredential.user;
+          try {
+            await createUserWithEmailAndPassword(auth, email, password)
+              .then(async (userCredential) => {
+                const user = userCredential.user;
 
-  //               // Profile picture as empty string
-  //               let data = {
-  //                 id: user?.uid,
-  //                 username: username,
-  //                 email: email,
-  //                 subscriptionid: subscriptionid,
-  //                 createdAt: Date.now(),
-  //                 generatedPassword: password,
-  //                 olderuser: true,
-  //                 usertype: "Client",
-  //                 subscriptionexpirydate: subscriptionexpirydate,
-  //                 subscriptiontype: subscriptiontype,
-  //               };
+                // Profile picture as empty string
+                let data = {
+                  id: user?.uid,
+                  username: username,
+                  email: email,
+                  subscriptionid: subscriptionid,
+                  createdAt: Date.now(),
+                  generatedPassword: password,
+                  olderuser: true,
+                  usertype: "Client",
+                  subscriptionexpirydate: subscriptionexpirydate,
+                  subscriptiontype: subscriptiontype,
+                };
 
-  //               await saveuserdata(data, user?.uid).then(async (response) => {
-  //                 console.log("User data response: ", response);
-  //                 if (response === "success") {
-  //                   const templateParams = {
-  //                     email: email,
-  //                     message: `email: ${data.email} password: ${password}`,
-  //                   };
+                await saveuserdata(data, user?.uid).then(async (response) => {
+                  console.log("User data response: ", response);
+                  if (response === "success") {
+                    const templateParams = {
+                      email: email,
+                      message: `email: ${data.email} password: ${password}`,
+                    };
 
-  //                   await emailjs
-  //                     .send(
-  //                       "service_5z77uef", // Replace with your Service ID
-  //                       "template_felqroq", // Replace with your Template ID
-  //                       templateParams,
-  //                       "reWowgm4fTZaLSeML" // Replace with your User ID
-  //                     )
-  //                     .then((response) => {
-  //                       console.log("SUCCESS!", response.status, response.text);
-  //                     })
-  //                     .catch((err) => {
-  //                       console.error("FAILED...", err);
-  //                     });
+                    await emailjs
+                      .send(
+                        "service_5z77uef", // Replace with your Service ID
+                        "template_felqroq", // Replace with your Template ID
+                        templateParams,
+                        "reWowgm4fTZaLSeML" // Replace with your User ID
+                      )
+                      .then((response) => {
+                        console.log("SUCCESS!", response.status, response.text);
+                      })
+                      .catch((err) => {
+                        console.error("FAILED...", err);
+                      });
 
-  //                   console.log(`✅ Created user: ${email}`);
+                    console.log(`✅ Created user: ${email}`);
 
-  //                   // navigate("/");
-  //                 } else {
-  //                   toast.error(response);
-  //                 }
-  //               });
-  //             })
-  //             .catch((error) => {
-  //               toast.error(error.message);
-  //             });
-  //         } catch (error) {
-  //           console.error(`❌ Failed to create user ${email}:`, error.message);
-  //         }
-  //       }
+                    // navigate("/");
+                  } else {
+                    toast.error(response);
+                  }
+                });
+              })
+              .catch((error) => {
+                toast.error(error.message);
+              });
+          } catch (error) {
+            console.error(`❌ Failed to create user ${email}:`, error.message);
+          }
+        }
 
-  //       console.log("✅ All users processed.");
-  //       toast.success("users uploaded successfully!");
-  //     } catch (error) {
-  //       console.error("Error uploading data:", error);
-  //       toast.error("Error uploading users");
-  //       setIsUploading(false);
-  //       setmodal(false);
-  //     }
-  //   };
-  //   reader.readAsBinaryString(file);
-  // };
+        console.log("✅ All users processed.");
+        toast.success("users uploaded successfully!");
+      } catch (error) {
+        console.error("Error uploading data:", error);
+        toast.error("Error uploading users");
+        setIsUploading(false);
+        setmodal(false);
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
 
   const bulkUpload = async () => {
     setIsUploading(true);
@@ -321,6 +321,7 @@ const BulkFormSection = () => {
   return (
     <div className="w-full py-[20px] ">
       <input type="file" accept=".xls,.xlsx" onChange={handleFileUpload} />
+      <input type="file" accept=".xls,.xlsx" onChange={handleFileUploaded} />
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
 
       <BulkConfirmation
