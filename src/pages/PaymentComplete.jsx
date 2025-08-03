@@ -56,21 +56,21 @@ export default function PaymentComplete() {
             setMessage("✅ Payment succeeded!");
             const saved = localStorage.getItem("stripeform");
 
-            // if (saved) {
-            const { username, email, path, clientdata, priceId } =
-              JSON.parse(saved);
+            if (saved) {
+              const { username, email, path, clientdata, priceId } =
+                JSON.parse(saved);
 
-            if (
-              path != null &&
-              username != null &&
-              email != null &&
-              clientdata != null &&
-              priceId != null
-            ) {
-              setloading(true);
-              createsubscription(clientdata, priceId, username, email);
+              if (
+                path != null &&
+                username != null &&
+                email != null &&
+                clientdata != null &&
+                priceId != null
+              ) {
+                setloading(true);
+                createsubscription(clientdata, priceId, username, email);
+              }
             }
-
             // setTimeout(() => {
             //   navigate("/dashboard");
             // }, 2000);
@@ -89,8 +89,10 @@ export default function PaymentComplete() {
 
             // if (saved) {
             const { typeindex } = JSON.parse(localstorage);
-            navigate(`/subscription-requests?type=${typeindex}`);
-            localStorage.removeItem("stripeform");
+            if (localstorage) {
+              navigate(`/subscription-requests?type=${typeindex}`);
+              localStorage.removeItem("stripeform");
+            }
 
             break;
           // case "failed":
