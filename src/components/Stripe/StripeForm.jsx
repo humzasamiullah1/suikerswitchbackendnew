@@ -390,10 +390,10 @@ const CheckoutForm = (props) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setusername(props.username);
-  //   setusername(props.email);
-  // }, [props.email, props.username]);
+  useEffect(() => {
+    setusername(props.username);
+    setemail(props.email);
+  }, [props.email, props.username]);
 
   const createsubscription = async (customerid, productid, username, email) => {
     try {
