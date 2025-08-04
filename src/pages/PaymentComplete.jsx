@@ -228,8 +228,7 @@ export default function PaymentComplete() {
             setloading(false);
             await signOut(auth);
             setTimeout(() => {
-              alert("success");
-              // window.location.href = "https://suikerswitch.nl/bedankt/";
+              window.location.href = "https://suikerswitch.nl/bedankt/";
             }, 2000);
           } else {
             toast.error(response);
