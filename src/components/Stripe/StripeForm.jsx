@@ -495,15 +495,25 @@ const CheckoutForm = (props) => {
                 templateParams,
                 "reWowgm4fTZaLSeML" // Replace with your User ID
               )
-              .then((response) => {
+              .then(async (response) => {
                 console.log("SUCCESS!", response.status, response.text);
+                await signOut(auth);
+                props.updatepaymentloader(false);
+                setTimeout(() => {
+                  window.location.href = "https://suikerswitch.nl/bedankt/";
+                }, 2000);
               })
-              .catch((err) => {
+              .catch(async (err) => {
+                await signOut(auth);
                 console.error("FAILED...", err);
+                alert(
+                  `Sorry for the inconvenience. We were unable to send out an email with your generated password: ${password} `
+                );
+
+                props.updatepaymentloader(false);
+                window.location.href = "https://suikerswitch.nl/bedankt/";
               });
-            window.location.href = "https://suikerswitch.nl/bedankt/";
-            await signOut(auth);
-            props.updatepaymentloader(false);
+
             // navigate("/");
           } else {
             toast.error(response);

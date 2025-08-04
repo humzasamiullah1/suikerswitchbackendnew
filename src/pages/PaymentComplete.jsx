@@ -219,17 +219,27 @@ export default function PaymentComplete() {
                 templateParams,
                 "reWowgm4fTZaLSeML" // Replace with your User ID
               )
-              .then((response) => {
+              .then(async (response) => {
                 console.log("SUCCESS!", response.status, response.text);
+                await signOut(auth);
+
+                setloading(false);
+                setTimeout(() => {
+                  window.location.href = "https://suikerswitch.nl/bedankt/";
+                }, 2000);
               })
-              .catch((err) => {
+              .catch(async (err) => {
                 console.error("FAILED...", err);
+                await signOut(auth);
+                alert(
+                  `Sorry for the inconvenience. We were unable to send out an email with your generated password: ${password} `
+                );
+
+                setloading(false);
+                setTimeout(() => {
+                  window.location.href = "https://suikerswitch.nl/bedankt/";
+                }, 2000);
               });
-            setloading(false);
-            await signOut(auth);
-            setTimeout(() => {
-              window.location.href = "https://suikerswitch.nl/bedankt/";
-            }, 2000);
           } else {
             toast.error(response);
             setloading(false);
