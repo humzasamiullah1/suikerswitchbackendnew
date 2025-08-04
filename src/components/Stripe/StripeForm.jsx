@@ -401,7 +401,7 @@ const CheckoutForm = (props) => {
     try {
       console.log(customerid + "customerid");
 
-      //const res = await fetch(`http://localhost:3003/create-subscription`, {
+      // const res = await fetch(`http://localhost:3003/create-subscription`, {
       const res = await fetch(
         `https://us-central1-suiker-switch.cloudfunctions.net/api/create-subscription`,
         {
@@ -547,7 +547,7 @@ const CheckoutForm = (props) => {
       confirmParams: {
         return_url: window.location.origin + "/PaymentComplete",
         payment_method_data: {
-          billing_details: { name: username, email: email },
+          billing_details: { email: email },
         },
       },
       // payment_method: {

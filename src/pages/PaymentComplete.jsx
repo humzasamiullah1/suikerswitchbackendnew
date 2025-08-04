@@ -123,7 +123,7 @@ export default function PaymentComplete() {
     try {
       console.log(customerid + "customerid");
 
-      //  const res = await fetch(`http://localhost:3003/create-subscription`, {
+      //const res = await fetch(`http://localhost:3003/create-subscription`, {
       const res = await fetch(
         `https://us-central1-suiker-switch.cloudfunctions.net/api/create-subscription`,
         {
