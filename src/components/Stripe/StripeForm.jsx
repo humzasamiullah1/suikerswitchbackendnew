@@ -53,6 +53,7 @@ const StripeForm = () => {
       currency: "eur",
       bestseller: false,
       selected: false,
+      // productid: "price_1RI93kAdN8nseiVboq99rVov",
       productid: "price_1RfcStIj51f14n3KL3JwoCEq",
     },
     {
@@ -139,6 +140,7 @@ const StripeForm = () => {
   const fetchPaymentIntent = async (username) => {
     const res = await fetch(
       `https://us-central1-suiker-switch.cloudfunctions.net/api/payment-intent/v2`,
+      // "http://localhost:3003/payment-intent/v2",
       {
         method: "POST",
         headers: {
@@ -399,7 +401,7 @@ const CheckoutForm = (props) => {
     try {
       console.log(customerid + "customerid");
 
-      // const res = await fetch(`http://localhost:3003/create-subscription`, {
+      //const res = await fetch(`http://localhost:3003/create-subscription`, {
       const res = await fetch(
         `https://us-central1-suiker-switch.cloudfunctions.net/api/create-subscription`,
         {
@@ -440,7 +442,7 @@ const CheckoutForm = (props) => {
     } catch (error) {
       console.error("Error:", error);
       toast.error("Payment Error!");
-
+      props.updatepaymentloader(false);
       setloading(false);
     }
   };
@@ -511,6 +513,7 @@ const CheckoutForm = (props) => {
       })
       .catch((error) => {
         toast.error(error.message);
+        props.updatepaymentloader(false);
         setloading(false);
       });
   };

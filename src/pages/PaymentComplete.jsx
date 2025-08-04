@@ -4,7 +4,7 @@ import {
   getAuth,
   signOut,
 } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveuserdata } from "../components/utils/firebasefunctions";
 import { toast } from "react-toastify";
@@ -48,6 +48,15 @@ export default function PaymentComplete() {
 
     if (!stripe || !clientSecret) return;
 
+    const processedKey = localStorage.getItem(`processed-${clientSecret}`);
+    if (processedKey) {
+      console.log("Already processed this payment intent. Skipping...");
+      return;
+    }
+
+    localStorage.setItem(`processed-${clientSecret}`, "true");
+
+    console.log("hiting subscription");
     stripe
       .retrievePaymentIntent(clientSecret)
       .then(({ paymentIntent }) => {
@@ -114,7 +123,7 @@ export default function PaymentComplete() {
     try {
       console.log(customerid + "customerid");
 
-      // const res = await fetch(`http://localhost:3003/create-subscription`, {
+      //  const res = await fetch(`http://localhost:3003/create-subscription`, {
       const res = await fetch(
         `https://us-central1-suiker-switch.cloudfunctions.net/api/create-subscription`,
         {
@@ -219,7 +228,8 @@ export default function PaymentComplete() {
             setloading(false);
             await signOut(auth);
             setTimeout(() => {
-              window.location.href = "https://suikerswitch.nl/bedankt/";
+              alert("success");
+              // window.location.href = "https://suikerswitch.nl/bedankt/";
             }, 2000);
           } else {
             toast.error(response);
