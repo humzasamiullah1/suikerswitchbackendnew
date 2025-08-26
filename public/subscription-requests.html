@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <script>
+      (function () {
+        const p = new URLSearchParams(location.search);
+        const t = p.get('type');
+        let dest;
+
+        if (t === '0') {
+          dest = 'https://betalen.topfitsuikervrij.nl/checkout/suiker-switch';
+        } else if (t === '1') {
+          dest = 'https://betalen.topfitsuikervrij.nl/checkout/suiker-switch-jaar-so';
+        } else {
+          dest = 'https://betalen.topfitsuikervrij.nl/checkout/suiker-switch-jaar';
+        }
+
+        window.location.replace(dest);
+      })();
+    </script>
+  </body>
+</html>
